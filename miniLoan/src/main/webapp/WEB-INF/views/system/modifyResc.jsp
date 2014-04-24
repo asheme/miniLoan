@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ include file="/WEB-INF/views/common.jsp"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -12,33 +13,28 @@
 	$(function() {
 		//初始化combobox
 		initComboboxContent("isLeaf", "YES_OR_NO");
+		initComboboxContent("rescStatus", "STATUS");
 		initRescParentId();		
 	});
 
 	//返回列表页
-	function backRescList() {
-		var currTab = $('#mainTabs').tabs('getSelected');
-		$('#mainTabs').tabs('update', {
-			tab : currTab,
-			options : {
-				href : '${path}menu/rescList.do'
-			}
-		});
+	function backList() {
+		window.location.href = '${pageContext.request.contextPath}/menu/rescList.do';
 	}
 
 	//保存信息
-	function saveRescObj() {
+	function saveObj() {
 		if (!validate()) {
 			return;
 		}
 
 		$('#modifyForm').form('submit', {
-			url : '${path}resc/modifyResc.do',
+			url : '${pageContext.request.contextPath}/resc/modifyResc.do',
 			success : function(result) {
 				try {
 					var r = $.parseJSON(result);
 					if (r.success) {
-						$.messager.alert('信息提示', r.msg, "info", backRescList);
+						$.messager.alert('信息提示', r.msg, "info", backList);
 					}
 				} catch (e) {
 					$.messager.alert('信息提示', result);
@@ -54,7 +50,7 @@
 
 	function initRescParentId() {
 		$("#parentId").combobox({
-			url : 'resc/getParentResc.do',
+			url : '${pageContext.request.contextPath}/resc/getParentResc.do',
 			valueField : 'value',
 			textField : 'title',
 			editable : false,
@@ -104,7 +100,7 @@
 			<tr>
 				<th align="center" width="35%">父级模块</th>
 				<td><input name="parentId" id="parentId" style="width: 200px"
-					value="${resc.parentId}" /></td>
+					value="${resc.parentId=='0'?'':resc.parentId}" /></td>
 			</tr>
 			<tr>
 				<th align="center" width="35%">是否叶子节点</th>
@@ -123,14 +119,14 @@
 			<tr>
 				<th align="center" width="35%">模块状态</th>
 				<td><input name="rescStatus" value="${resc.rescStatus}"
-					id="rescStatus" data-options="required:true" style="width: 100px" /></td>
+					id="rescStatus" data-options="required:true,validType:'emptyString[\'#rescStatus\']'" style="width: 100px" /></td>
 			</tr>
 
 			<tr>
 				<td colspan="2" align="center"><input type="button" value="保存"
-					class="btn" onclick="javascript:saveRescObj();" /> <input
+					class="btn" onclick="javascript:saveObj();" /> <input
 					type="button" value="返回" class="btn"
-					onclick="javascript:backRescList();" /> <input type="hidden"
+					onclick="javascript:backList();" /> <input type="hidden"
 					name="rescId" value="${resc.rescId}" /> <input type="hidden"
 					name="flag" value="${flag}"></td>
 			</tr>

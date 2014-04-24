@@ -115,7 +115,7 @@
 						ids.push(rows[i].rescId);
 					}
 					$.ajax({
-						url : '${path}resc/deleteResc.do',
+						url : '${pageContext.request.contextPath}/resc/deleteResc.do',
 						data : {
 							ids : ids.join(',')
 						},

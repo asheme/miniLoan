@@ -51,7 +51,7 @@ function saveUserObj() {
 			<tr>
 				<th align="center" width="35%">描述</th>
 				<td><input class="easyui-validatebox" name="description"
-					style="width: 400px"validType="length[1,100]" value="${users.description}" /></td>
+					style="width: 400px" validType="length[1,100]" value="${users.description}" /></td>
 			</tr>			
             <tr>
 				<th align="center" width="35%">状态</th>
