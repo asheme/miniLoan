@@ -48,7 +48,7 @@ public class KeyGenerator implements ApplicationContextAware {
 					keyMap.put(tableName, key);
 				}
 			}
-			if(!key.isInitFinish()){
+			if (!key.isInitFinish()) {
 				key.setTableName(tableName);
 				key.setTableKeyName(keyName);
 				key.init();

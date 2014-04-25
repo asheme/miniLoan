@@ -74,7 +74,10 @@
 				field : 'rescStatus',
 				title : '模块状态',
 				width : 10,
-				sortable : true
+				sortable : true,
+				formatter : function(value, row, index) {
+					return getDictItem("STATUS", value);
+				}
 			} ] ],
 			toolbar : '#toolbar'
 		});

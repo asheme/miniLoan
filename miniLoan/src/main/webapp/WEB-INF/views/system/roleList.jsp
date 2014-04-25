@@ -40,17 +40,12 @@
 				title : '角色描述',
 				width : 160
 			}, {
-				field : 'caseInspectLvl',
-				title : '案件审批等级',
-				width : 50,
-				sortable : true
-			}, {
 				field : 'status',
 				title : '状态',
 				width : 50,
 				sortable : true,
 				formatter : function(value, row, index) {
-					return getItem('SYS_STATUS', value);
+					return getItem('STATUS', value);
 				}
 			} ] ],
 			toolbar : '#toolbar'
@@ -131,6 +126,17 @@
 			$.messager.alert('信息提示', "请您选择要删除的角色！", "info");
 		}
 	}
+	
+	//查询
+	function search() {
+		$('#datagrid').datagrid('load', serializeObject($('#searchForm')));
+	}
+	
+    //清空
+	function resetSearch() {
+		$('#searchForm :text').val('');
+		$('#datagrid').datagrid('load', {});
+	}
 //-->
 </script>
 </head>
@@ -149,8 +155,8 @@
 					</tr>
 					<tr>
 						<td colspan="4" align="center"><input type="button"
-							class="btn" value="查询" onclick="searchRole();" /> <input
-							type="button" value="清空" class="btn" onclick="clean();" /></td>
+							class="btn" value="查询" onclick="search();" /> <input
+							type="button" value="清空" class="btn" onclick="resetSearch();" /></td>
 					</tr>
 				</table>
 			</form>

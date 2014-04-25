@@ -37,25 +37,25 @@
 			}, {
 				field : 'name',
 				title : '姓名',
-				width : 25,
+				width : 50,
 				sortable : true
 			}, {
 				field : 'loginId',
 				title : '登录名',
-				width : 20,
+				width : 50,
 				sortable : true
 			}, {
 				field : 'description',
 				title : '描述',
-				width : 150,
+				width : 110,
 				sortable : true
 			}, {
 				field : 'status',
 				title : '状态',
-				width : 10,
+				width : 50,
 				sortable : true,
 				formatter : function(value, row, index) {
-					return getItem("SYS_STATUS", value);
+					return getDictItem("STATUS", value);
 				}
 			} ] ],
 			toolbar : '#toolbar'
@@ -86,7 +86,7 @@
 		}
 	}
 
-	function deleteUserObj() {
+	function deleteObj() {
 		var rows = $('#datagrid').datagrid('getChecked');
 		var ids = [];
 		if (rows.length > 0) {
@@ -96,7 +96,7 @@
 						ids.push(rows[i].userId);
 					}
 					$.ajax({
-						url : '${path}user/deleteUser.do',
+						url : '${pageContext.request.contextPath}/user/deleteUser.do',
 						data : {
 							ids : ids.join(',')
 						},
@@ -118,6 +118,17 @@
 			$.messager.alert('信息提示', '请勾选要删除的记录！', "info");
 		}
 	}
+	
+	//查询
+	function search() {
+		$('#datagrid').datagrid('load', serializeObject($('#searchForm')));
+	}
+	
+    //清空
+	function resetSearch() {
+		$('#searchForm :text').val('');
+		$('#datagrid').datagrid('load', {});
+	}	
 //-->
 </script>
 </head>
@@ -129,18 +140,15 @@
 			<form id="searchForm">
 				<table class="querytable" width="100%">
 					<tr>
-						<th width="16.6%">姓名</th>
-						<td width="16.6%"><input name="name" style="width: 210px;" /></td>
-						<th width="16.6%">登录名</th>
-						<td width="16.6%"><input name="loginId" style="width: 210px;" /></td>
-						<th width="16.6%">部门</th>
-						<td width="16.6%"><input id="deptId" name="deptId"
-							style="width: 210px;"></td>
+						<th width="20%">姓名</th>
+						<td width="30%"><input name="name" style="width: 315px;" /></td>
+						<th width="20%">登录名</th>
+						<td width="30%"><input name="loginId" style="width: 315px;" /></td>
 					</tr>
 					<tr>
 						<td colspan="6" align="center"><input type="button"
-							class="btn" value="查询" onclick="userListQuery();" /> <input
-							type="button" value="清空" class="btn" onclick="userListClean();" /></td>
+							class="btn" value="查询" onclick="search();" /> <input
+							type="button" value="清空" class="btn" onclick="resetSearch();" /></td>
 					</tr>
 				</table>
 			</form>

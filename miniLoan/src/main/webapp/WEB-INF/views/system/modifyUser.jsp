@@ -1,20 +1,27 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ include file="/WEB-INF/views/common.jsp"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>the user modify page</title>
 <script type="text/javascript">
 <!--
-function backUserList() {
-	var currTab = $('#mainTabs').tabs('getSelected');
-	$('#mainTabs').tabs('update', {
-		tab : currTab,
-		options : {
-			href : '${path}menu/userList.do' // the new content URL
-		}
-	});
+$(function() {
+	//初始化combobox
+	initComboboxContent("status", "STATUS");
+});
+
+function backList() {
+	window.location.href = '${pageContext.request.contextPath}/menu/userList.do';
 }
 
-function saveUserObj() {
-	$('#form1').form('submit', {
-	   url : '${path}user/modifyUser.do',
+function saveObj() {
+	$('#modifyForm').form('submit', {
+	   url : '${pageContext.request.contextPath}/user/modifyUser.do',
 	   success : function(result) {
 		  try {
 				var r = $.parseJSON(result);
@@ -32,10 +39,12 @@ function saveUserObj() {
 }
 //-->
 </script>
+</head>
+<body>
 <div id="updatePanel" class="easyui-panel" title="修改用户"
 	data-options="border:false,fit:true"
 	style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
-	<form id="form1" method="post">
+	<form id="modifyForm" method="post">
 		<table id="update" class="modifytable" width="100%">
 			<tr>
 				<th align="center" width="35%">&nbsp &nbsp登录名</th>
@@ -55,18 +64,19 @@ function saveUserObj() {
 			</tr>			
             <tr>
 				<th align="center" width="35%">状态</th>
-				<td><select  name="status" id="userStatus"
-					data-options="required:true" valueField="${users.status}"
-					editable="false" style="width: 400px">
-				</select></td>
+				<td><input  name="status" id="status"
+					data-options="required:true,validType:'emptyString[\'#status\']'" value="${users.status}"
+					style="width: 400px" />
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center">
-				<input type="button" value="保存" class="btn" onclick="saveUserObj();" />
-			    <input type="button" value="返回" class="btn" onclick="backUserList();" />
+				<input type="button" value="保存" class="btn" onclick="saveObj();" />
+			    <input type="button" value="返回" class="btn" onclick="backList();" />
                 <input type="hidden" name="userId" value="${users.userId}" />  
 				<input type="hidden" name="flag" value="${flag}"></td>
 			</tr>
 		</table>
 	</form>
 </div>
+</body>

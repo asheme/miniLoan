@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract interface RescServiceI
 {
-  public abstract PageList<MlSysResc> getRescPageList(Page paramPage);
+  public abstract PageList<MlSysResc> getRescPageList(Page paramPage,MlSysResc resc);
 
   public abstract List<MlSysResc> getParentRescList();
 
