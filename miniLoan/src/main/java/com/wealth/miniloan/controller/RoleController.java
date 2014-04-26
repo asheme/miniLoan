@@ -203,13 +203,42 @@ public class RoleController {
 				result.put("data", rescAuthList);
 			}else{
 				result.put("success", false);
-				result.put("msg", "角色模块为空，请先分配角色模块！");
+				result.put("msg", "角色权限模块未初始化，请联系管理员完成初始化！");
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
-			result.put("msg", "读取角色权限失败，服务器端未获得角色权限！");
+			result.put("msg", "角色权限模块未初始化，请联系管理员完成初始化！");
+		}
+
+		return result;
+	}
+	
+	/**
+	 * 修改角色权限
+	 * @return
+	 */
+	@RequestMapping(value = "saveRoleAuth")
+	@ResponseBody
+	public Map<String, Object> saveRoleAuth(long roleId,long[] rescIdList, long[] authIdList) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if(!"".equals(roleId) && (authIdList.length>0 || rescIdList.length>0)){
+				//保存权限
+				this.roleService.saveRoleResc(roleId, rescIdList);				
+				this.roleService.saveRoleAuth(roleId, authIdList);
+				
+				result.put("success", true);
+				result.put("msg", "角色权限设置成功！");
+			}else{
+				result.put("success", false);
+				result.put("msg", "角色权限设置失败，服务器端未获得要修改的角色权限！");
+			}
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("msg", "角色权限设置失败，服务器端未获得要修改的角色权限！");
 		}
 
 		return result;

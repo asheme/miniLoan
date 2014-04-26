@@ -12,8 +12,12 @@ public class RescAuthModel {
 	private String status = "open";
 	private boolean checked = false;
 	private Map<String, Object> attributes = new HashMap<String, Object>();
-	private List<Menu> children;
+	private List<RescAuthModel> children;
 	private String type;
+	private String url;
+	private String iconCls;
+	private String isLeaf;
+	private int seq;
 
 	public String getPid() {
 		return pid;
@@ -71,11 +75,11 @@ public class RescAuthModel {
 		this.attributes = attributes;
 	}
 
-	public List<Menu> getChildren() {
+	public List<RescAuthModel> getChildren() {
 		return children;
 	}
 
-	public void setChildren(List<Menu> children) {
+	public void setChildren(List<RescAuthModel> children) {
 		this.children = children;
 	}
 
@@ -85,6 +89,38 @@ public class RescAuthModel {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public String getIconCls() {
+		return iconCls;
+	}
+
+	public void setIconCls(String iconCls) {
+		this.iconCls = iconCls;
+	}
+
+	public String getIsLeaf() {
+		return isLeaf;
+	}
+
+	public void setIsLeaf(String isLeaf) {
+		this.isLeaf = isLeaf;
+	}
+
+	public int getSeq() {
+		return seq;
+	}
+
+	public void setSeq(int seq) {
+		this.seq = seq;
 	}
 
 }
