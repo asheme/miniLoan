@@ -9,6 +9,7 @@
 	<configs>
 		<config>src/main/webapp/WEB-INF/spring/cache-config.xml</config>
 		<config>src/main/webapp/WEB-INF/spring/spring-mybatis.xml</config>
+		<config>src/main/webapp/WEB-INF/spring/spring-shiro.xml</config>
 	</configs>
 	<autoconfigs>
 		<config>src/main/webapp/WEB-INF/spring/root-context.xml</config>

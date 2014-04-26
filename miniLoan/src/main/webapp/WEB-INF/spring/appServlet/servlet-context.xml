@@ -58,4 +58,32 @@
 			<beans:value>4096</beans:value>
 		</beans:property>
 	</beans:bean>
+	
+	<!-- Support Shiro Annotation -->
+	<beans:bean
+		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<beans:property name="defaultErrorView">
+			<beans:value>unKnownErr</beans:value>
+		</beans:property>
+		<beans:property name="exceptionMappings">
+			<beans:props>
+				<!-- <prop key="org.apache.shiro.authc.AuthenticationException">noPermission</prop> 
+					<prop key="org.apache.shiro.authc.ExpiredCredentialsException">noPermission</prop> -->
+				<beans:prop key="org.apache.shiro.authz.UnauthorizedException">noPermission</beans:prop>
+				<beans:prop key="org.apache.shiro.authz.AuthorizationException">noPermission</beans:prop>
+			</beans:props>
+		</beans:property>
+		<!-- 设置日志输出级别，不定义则默认不输出警告等错误日志信息 -->
+		<beans:property name="warnLogCategory"
+			value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" />
+	</beans:bean>
+	<beans:bean
+		class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+		depends-on="lifecycleBeanPostProcessor">
+		<beans:property name="proxyTargetClass" value="true" />
+	</beans:bean>
+	<beans:bean
+		class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+		<beans:property name="securityManager" ref="securityManager" />
+	</beans:bean>
 </beans:beans>
