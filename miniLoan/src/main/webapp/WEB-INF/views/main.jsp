@@ -37,7 +37,7 @@
 		data-options="region:'west',title:'功能导航',collapsible:true,split:true,href:'${path}toMenu.do'"
 		style="width: 210px; overflow: hidden;"></div>
 	<div id="mainLayout"
-		data-options="region:'center',title:'欢迎使用欺诈风险管理系统',href:'${path}toContent.do'"
+		data-options="region:'center',title:'欢迎使用融益小额信贷管理系统',href:'${path}toContent.do'"
 		style="overflow: auto;"></div>
 	<div data-options="region:'south'"
 		style="height: 30px; line-height: 30px; text-align: center; vertical-align: middle; overflow: hidden; border: 0; background: #EAEEF5;">

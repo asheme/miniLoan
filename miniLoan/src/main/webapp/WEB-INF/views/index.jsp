@@ -28,7 +28,7 @@
       <tr>
         <td align="right" style="font-size: 12px;">密&nbsp;&nbsp;&nbsp;&nbsp;码：</td>
         <td align="left">
-        <input class="easyui-validatebox" data-options="required:true" type="password" name="password" id="password" style="width: 180px;"  onMouseOver="this.className='inputover'" onMouseOut="this.className='inputout'" value="sysadmin" />        </td>
+        <input class="easyui-validatebox" data-options="required:true" type="password" name="password" id="password" style="width: 180px;"  onMouseOver="this.className='inputover'" onMouseOut="this.className='inputout'" value="password" />        </td>
     	<td><div id="passwordInfo" style="display: none;"><font style="color: red;">密码不能为空</font></div></td>
       </tr>
       <tr>
