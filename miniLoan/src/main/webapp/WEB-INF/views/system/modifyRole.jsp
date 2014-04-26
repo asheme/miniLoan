@@ -46,7 +46,7 @@ function saveObj(){
 			<tr>
 				<th align="center" width="35%">角色名称</th>
 				<td><input class="easyui-validatebox" name="roleName" id="roleName"
-					value="${role.roleName}" data-options="required:true" onchange="checkRoleName()" 
+					value="${role.roleName}" data-options="required:true" 
 					validType="length[0, 50]" invalidMessage="描述长度不能大于50字符"
 					style="width: 400px" /></td>
 			</tr>
@@ -59,10 +59,10 @@ function saveObj(){
 			</tr>
 			<tr>
 				<th align="center" width="35%">角色状态</th>
-				<td><select  name="status" id="status"
-					data-options="required:true" valueField="${role.status}" panelHeight='auto'
-					editable="false" style="width: 400px">
-				</select></td>
+				<td><input name="status" id="status"
+					data-options="required:true,validType:'emptyString[\'#status\']'" value="${role.status}" panelHeight='auto'
+					editable="false" style="width: 400px" />
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="button" value="保存"

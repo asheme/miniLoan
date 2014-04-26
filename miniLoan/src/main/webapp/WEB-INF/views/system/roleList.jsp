@@ -45,7 +45,7 @@
 				width : 50,
 				sortable : true,
 				formatter : function(value, row, index) {
-					return getItem('STATUS', value);
+					return getDictItem('STATUS', value);
 				}
 			} ] ],
 			toolbar : '#toolbar'
@@ -83,8 +83,8 @@
 		if (rows.length > 0) {
 			$.messager
 					.confirm(
-							'提示',
-							'确定删除？',
+							'信息提示',
+							'您确定要删除勾选的记录吗？',
 							function(r) {
 								if (r) {
 									for (var i = 0; i < rows.length; i++) {
@@ -95,7 +95,7 @@
 												type : 'post',//可选get
 												url : '${pageContext.request.contextPath}/role/deleteRole.do', //这里是接收数据的
 												data : 'roleIds=' + ids, //传给数据，多个参数用&连接
-												dataType : 'text',
+												dataType : 'json',
 												success : function(result) {
 													$.messager
 															.alert(
@@ -137,6 +137,20 @@
 		$('#searchForm :text').val('');
 		$('#datagrid').datagrid('load', {});
 	}
+    
+    //角色权限配置
+    function roleAuthManager(){
+    	var rows = $('#datagrid').datagrid('getChecked');
+		if (rows.length > 0) {
+			if (rows.length == 1) {
+				window.location.href = '${pageContext.request.contextPath}/role/toRoleAuthManager.do?roleId='+rows[0].roleId;
+			} else {
+				$.messager.alert('信息提示', "只能选择一条要修改权限的角色！", "info");
+			}
+		} else {
+			$.messager.alert('信息提示', "请您选择要修改权限的角色！", "info");
+		}
+    }
 //-->
 </script>
 </head>

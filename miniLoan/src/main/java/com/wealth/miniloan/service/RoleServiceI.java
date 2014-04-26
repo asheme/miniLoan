@@ -1,18 +1,22 @@
 package com.wealth.miniloan.service;
 
+import java.util.List;
+
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.MlRole;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.entity.RescAuthModel;
 
-public abstract interface RoleServiceI
-{
-  public abstract PageList<MlRole> getRolePageList(Page paramPage, MlRole paramMlRole);
+public abstract interface RoleServiceI {
+	public PageList<MlRole> getRolePageList(Page page, MlRole role);
 
-  public abstract MlRole getRoleByPrikey(MlRole paramMlRole);
+	public MlRole getRoleByPrikey(MlRole role);
 
-  public abstract int createRole(MlRole paramMlRole);
+	public int createRole(MlRole role);
 
-  public abstract int updateRoleByPriKey(MlRole paramMlRole);
+	public int updateRoleByPriKey(MlRole role);
 
-  public abstract int deleteRoleByPriKey(long paramLong);
+	public int deleteRoleByPriKey(long roleId);
+
+	public List<RescAuthModel> loadRoleAuthTree(MlRole role);
 }
