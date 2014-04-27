@@ -3,6 +3,7 @@ package com.wealth.miniloan.utils.orm.mybatis;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -82,6 +83,13 @@ public abstract class BaseMybatisDao<E, PK extends Serializable> extends
 		prepareObjectForSaveOrUpdate(entity);
 		return getSqlSession().update(getUpdateStatement() + "Selective",
 				entity);
+	}
+	
+	@SuppressWarnings("unused")
+	@Override
+	public int updateByExampleSelective(Map param){
+		return getSqlSession().update(getUpdateByExampleSelectiveStatement(),param);
+		
 	}
 
 	/**
@@ -175,6 +183,10 @@ public abstract class BaseMybatisDao<E, PK extends Serializable> extends
 
 	public String getUpdateStatement() {
 		return getMybatisMapperNamesapce() + ".updateByPrimaryKey";
+	}
+	
+	public String getUpdateByExampleSelectiveStatement() {
+		return getMybatisMapperNamesapce() + ".updateByExampleSelective";
 	}
 
 	public String getDeleteStatement() {

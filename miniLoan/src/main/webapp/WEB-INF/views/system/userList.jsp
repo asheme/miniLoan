@@ -128,7 +128,56 @@
 	function resetSearch() {
 		$('#searchForm :text').val('');
 		$('#datagrid').datagrid('load', {});
-	}	
+	}
+    
+	/*  初始化密码*/
+	function initPwd() {
+		var rows = $('#datagrid').datagrid('getChecked');
+		var ids = [];
+		if (rows.length > 0) {
+			$.messager.confirm('信息提示', '您确认要初始化当前选中用户密码吗？', function(r) {
+				if (r) {
+					for ( var i = 0; i < rows.length; i++) {
+						ids.push(rows[i].userId);
+					}
+					$.ajax({
+						url : '${pageContext.request.contextPath}/user/initPwd.do',
+						data : {
+							ids : ids.join(',')
+						},
+						type : "POST",
+						dataType : 'json',
+						success : function(result) {
+							if (result.success) {
+								$('#datagrid').datagrid('load');
+								$('#datagrid').datagrid('uncheckAll')
+										.datagrid('unselectAll').datagrid(
+												'clearSelections');
+							}
+							$.messager.alert('信息提示', result.msg, "info");
+						}
+					});
+				}
+			});
+		} else {
+			$.messager.alert('信息提示', '请勾选要初始化密码的记录！', "info");
+		}
+	}
+	
+	/*  用户角色信息 */
+	function setUserRole() {
+		var rows = $('#datagrid').datagrid('getChecked');
+		if (rows.length > 0) {
+			if (rows.length == 1) {
+				window.location.href = '${pageContext.request.contextPath}/user/toUserRoleConfig.do?userId='
+					+ rows[0].userId;
+			} else {
+				$.messager.alert('信息提示', "只能选择一条记录，请重新选择！", "info");
+			}
+		} else {
+			$.messager.alert('信息提示', "请您选择要设置角色的记录！", "info");
+		}
+	}
 //-->
 </script>
 </head>

@@ -2,8 +2,10 @@ package com.wealth.miniloan.utils.orm;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public abstract interface EntityDao<E, PK extends Serializable>
 {
@@ -20,6 +22,8 @@ public abstract interface EntityDao<E, PK extends Serializable>
   public abstract int update(E paramE);
 
   public abstract int updateSelective(E paramE);
+  
+  public abstract int updateByExampleSelective(Map param);
 
   public abstract int saveOrUpdate(E paramE);
 

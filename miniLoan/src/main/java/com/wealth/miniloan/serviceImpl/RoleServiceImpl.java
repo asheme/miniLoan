@@ -115,7 +115,7 @@ public class RoleServiceImpl implements RoleServiceI {
 	}
 
 	public int updateRoleByPriKey(MlRole role) {
-		return this.roleDao.update(role);
+		return this.roleDao.updateSelective(role);
 	}
 
 	public int deleteRoleByPriKey(long id) {
@@ -241,7 +241,7 @@ public class RoleServiceImpl implements RoleServiceI {
 	 */
 	private void generatorAuthOfResc(RescAuthModel rescAuthModel,
 			List<MlSysAuthority> allAuthList, List<MlSysAuthority> roleAuthList) {
-		if ("N".equals(rescAuthModel.getIsLeaf()) || allAuthList == null)
+		if (!"Y".equals(rescAuthModel.getIsLeaf()) || allAuthList == null)
 			return;
 
 		MlSysAuthority tempAuth = null;
@@ -249,7 +249,7 @@ public class RoleServiceImpl implements RoleServiceI {
 		List<RescAuthModel> authChildList = new ArrayList<RescAuthModel>();
 		for (int i = 0; i < allAuthList.size(); ++i) {
 			tempAuth = (MlSysAuthority) allAuthList.get(i);
-			if (tempAuth.getRescId().equals(rescAuthModel.getId())) {
+			if (rescAuthModel.getId().equals(tempAuth.getRescId().toString())) {
 				authChild = convertRescAuthByAuth(tempAuth);
 				authChild.setChecked(isAuthModelChecked(authChild,roleAuthList));
 				authChildList.add(authChild);
@@ -272,6 +272,7 @@ public class RoleServiceImpl implements RoleServiceI {
 			rescAuthModel.setId(String.valueOf(auth.getAuthId()));
 			rescAuthModel.setPid(String.valueOf(auth.getRescId()));
 			rescAuthModel.setText(auth.getAuthDesc());
+			rescAuthModel.setIconCls("icon-ui-auth");
 			rescAuthModel.setType("A");
 		}
 		
@@ -356,5 +357,15 @@ public class RoleServiceImpl implements RoleServiceI {
 			roleAuth.setAuthId(authIdList[i]);
 			this.roleAuthDao.save(roleAuth);
 		}
+	}
+
+	@Override
+	public List<MlRole> loadUnselectedRole(long userId) {		
+		return this.roleDao.getUnselectByUserId(userId);
+	}
+
+	@Override
+	public List<MlRole> loadSelectedRole(long userId) {
+		return this.roleDao.selectByUserId(userId);
 	}
 }

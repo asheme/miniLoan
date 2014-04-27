@@ -8,4 +8,11 @@
 		from ML_ROLE
 		where ROLE_ID in (select ROLE_ID from ML_USER_ROLE where USER_ID=#{userId,jdbcType=BIGINT}) 
 	</select>
+	<select id="getUnselectByUserId" resultMap="BaseResultMap"
+		parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		from ML_ROLE
+		where ROLE_ID not in (select ROLE_ID from ML_USER_ROLE where USER_ID=#{userId,jdbcType=BIGINT}) 
+	</select>
 </mapper>

@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping({ "/" })
-@SessionAttributes({ "user" })
+@SessionAttributes("user")
 public class LogonController {
 	private static final Logger logger = LoggerFactory
 			.getLogger(LogonController.class);
@@ -40,12 +40,12 @@ public class LogonController {
 		this.loginService = loginService;
 	}
 
-	@RequestMapping({ "toLogin" })
+	@RequestMapping(value = "toLogin")
 	public String toLogin() {
 		return "index";
 	}
 
-	@RequestMapping(value = { "logon" }, method = { org.springframework.web.bind.annotation.RequestMethod.POST })
+	@RequestMapping(value = "logon", method = { org.springframework.web.bind.annotation.RequestMethod.POST })
 	public ModelAndView logon(String loginId, String password) {
 		ModelAndView modelAndView = new ModelAndView();
 		Subject currUser = SecurityUtils.getSubject();
@@ -86,17 +86,17 @@ public class LogonController {
 		return modelAndView;
 	}
 
-	@RequestMapping({ "toMenu" })
+	@RequestMapping(value = "toMenu")
 	public String toMenu() {
 		return "menu";
 	}
 
-	@RequestMapping({ "toContent" })
+	@RequestMapping(value = "toContent")
 	public String toContent() {
 		return "content";
 	}
 
-	@RequestMapping({ "toHome" })
+	@RequestMapping(value = "toHome")
 	public String toHome() {
 		return "home";
 	}

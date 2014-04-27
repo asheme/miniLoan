@@ -194,7 +194,7 @@ public class RoleController {
 	@ResponseBody
 	public Map<String, Object>  loadAuth(MlRole role) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		List<RescAuthModel> rescAuthList = new ArrayList<RescAuthModel>();
+		List<RescAuthModel> rescAuthList = null;
 		
 		try {
 			rescAuthList= this.roleService.loadRoleAuthTree(role);

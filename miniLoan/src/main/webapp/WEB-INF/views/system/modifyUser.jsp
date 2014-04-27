@@ -50,22 +50,22 @@ function saveObj() {
 				<th align="center" width="35%">&nbsp &nbsp登录名</th>
 				<td><input id ="loginId" class="easyui-validatebox" name="loginId"
 					validType="length[1,10]" data-options="required:true"
-					value="${users.loginId}" style="width: 400px" /><span id="loginId_id_span">${users.loginId}</span></td>
+					value="${userObj.loginId}" style="width: 400px" /></td>
 			</tr>
 			<tr>
 				<th align="center" width="35%">姓名</th>
 				<td><input class="easyui-validatebox" name="name"
-					style="width: 400px" validType="length[1,50]" data-options="required:true" value="${users.name}" /></td>
+					style="width: 400px" validType="length[1,50]" data-options="required:true" value="${userObj.name}" /></td>
 			</tr>
 			<tr>
 				<th align="center" width="35%">描述</th>
 				<td><input class="easyui-validatebox" name="description"
-					style="width: 400px" validType="length[1,100]" value="${users.description}" /></td>
+					style="width: 400px" validType="length[1,100]" value="${userObj.description}" /></td>
 			</tr>			
             <tr>
 				<th align="center" width="35%">状态</th>
 				<td><input  name="status" id="status"
-					data-options="required:true,validType:'emptyString[\'#status\']'" value="${users.status}"
+					data-options="required:true,validType:'emptyString[\'#status\']'" value="${userObj.status}"
 					style="width: 400px" />
 				</td>
 			</tr>
@@ -73,7 +73,7 @@ function saveObj() {
 				<td colspan="2" align="center">
 				<input type="button" value="保存" class="btn" onclick="saveObj();" />
 			    <input type="button" value="返回" class="btn" onclick="backList();" />
-                <input type="hidden" name="userId" value="${users.userId}" />  
+                <input type="hidden" name="userId" value="${userObj.userId}" />  
 				<input type="hidden" name="flag" value="${flag}"></td>
 			</tr>
 		</table>

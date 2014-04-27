@@ -23,4 +23,8 @@ public abstract interface RoleServiceI {
 	public void saveRoleResc(long roleId,long[] rescIdList);
 	
 	public void saveRoleAuth(long roleId,long[] authIdList);
+	
+	public List<MlRole> loadUnselectedRole(long userId);
+	
+	public List<MlRole> loadSelectedRole(long userId);
 }

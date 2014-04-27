@@ -69,7 +69,7 @@ public class DataDictServiceImpl implements DataDictServiceI {
 
 	@TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
 	public int updateDict(MlDict dict) {
-		return this.dictDao.update(dict);
+		return this.dictDao.updateSelective(dict);
 	}
 
 	public MlDict queryDictById(MlDict dict) {

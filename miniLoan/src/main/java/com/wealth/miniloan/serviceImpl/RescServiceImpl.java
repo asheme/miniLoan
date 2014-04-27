@@ -68,7 +68,7 @@ public class RescServiceImpl implements RescServiceI {
 			resc.setParentId(0l);
 		}
 
-		return this.rescDao.update(resc);
+		return this.rescDao.updateSelective(resc);
 	}
 
 	public List<MlSysResc> getParentRescList() {

@@ -7,10 +7,6 @@
 //-->
 </script>
 <link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/js/easyui/themes/default/easyui.css">
-<link rel="stylesheet" type="text/css"
-	href="${pageContext.request.contextPath}/resources/js/easyui/themes/icon.css">
-<link rel="stylesheet" type="text/css"
 	href="${pageContext.request.contextPath}/resources/css/font-awesome/font-awesome.min.css">
 <!--[if IE 7]>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/font-awesome/font-awesome-ie7.min.css">

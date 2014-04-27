@@ -5,13 +5,18 @@ import com.wealth.miniloan.dao.UserDao;
 import com.wealth.miniloan.dao.UserRoleDao;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.MlUserExample;
+import com.wealth.miniloan.entity.MlUserRole;
 import com.wealth.miniloan.entity.MlUserRoleExample;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.UserServiceI;
 import com.wealth.miniloan.utils.SysUtil;
 import com.wealth.miniloan.utils.key.KeyGenerator;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,9 +59,7 @@ public class UserServiceImpl implements UserServiceI {
 			criteria.andLoginIdLike("%" + loginId + "%");
 		}
 
-		String order = SysUtil.dealOrderby(page,
-				"name,loginId,description,status",
-				"NAME,LOGIN_ID,DESCRIPTION,STATUS");
+		String order = SysUtil.dealOrderby(page, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!"".equals(order)) {
 			example.setOrderByClause(order);
 		}
@@ -74,7 +77,7 @@ public class UserServiceImpl implements UserServiceI {
 	}
 
 	public int updateUser(MlUser user) {
-		return this.userDao.update(user);
+		return this.userDao.updateSelective(user);
 	}
 
 	public int deleteUserByKeys(String ids) {
@@ -111,5 +114,52 @@ public class UserServiceImpl implements UserServiceI {
 		List userRoleList = this.userRoleDao.findAll(example);
 
 		return (userRoleList != null) && (userRoleList.size() > 0);
+	}
+
+	@Override
+	public void initializePassword(String ids) {
+		MlUserExample example = new MlUserExample();
+		String[] idArray = ids.split(",");
+		List idList = new ArrayList();
+
+		for (int i = 0; i < idArray.length; ++i) {
+			idList.add(idArray[i]);
+		}
+		example.createCriteria().andUserIdIn(idList);
+		MlUser user = new MlUser();
+		user.setPassword(SysUtil.encryptByMd5("888888"));
+		Map param = new HashMap();
+		param.put("example", example);
+		param.put("record", user);
+		this.userDao.updateByExampleSelective(param);
+	}
+
+	@Override
+	public void addUserRoles(String ids, long userId) {
+		String[] idArray = ids.split(",");
+
+		if (idArray.length > 0) {
+			for (int i = 0; i < idArray.length; i++) {
+				MlUserRole userRole = new MlUserRole();
+				userRole.setRoleId(Long.parseLong(idArray[i]));
+				userRole.setUserId(userId);
+				this.userRoleDao.save(userRole);
+			}
+		}
+	}
+
+	@Override
+	public int deleteUserRole(String ids, long userId) {
+		String[] idArray = ids.split(",");
+		List idList = new ArrayList();
+		for (int i = 0; i < idArray.length; ++i) {
+			idList.add(idArray[i]);
+		}
+		MlUserRoleExample example = new MlUserRoleExample();
+		example.createCriteria().andUserIdEqualTo(userId).andRoleIdIn(idList);
+
+		int result = this.userRoleDao.deleteByExample(example);
+	
+		return result;
 	}
 }

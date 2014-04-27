@@ -71,7 +71,7 @@ public class DictItemServiceImpl implements DictItemServiceI {
 
 	@TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
 	public int updateItem(MlDictItem item) {
-		return this.dictItemDao.update(item);
+		return this.dictItemDao.updateSelective(item);
 	}
 
 	public MlDictItem getDictItemById(MlDictItem item) {

@@ -23,4 +23,15 @@ public class RoleDao extends BaseMybatisDao<MlRole, Long> {
 		return getSqlSession().selectList(
 				getMybatisMapperNamesapce() + ".selectByUserId", userId);
 	}
+	
+	/**
+	 * 查询用户未选择的角色信息
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	public List<MlRole> getUnselectByUserId(Long userId) {
+		return getSqlSession().selectList(
+				getMybatisMapperNamesapce() + ".getUnselectByUserId", userId);
+	}
 }
