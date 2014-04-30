@@ -18,4 +18,5 @@ public abstract interface RescServiceI
   public abstract MlSysResc getRescById(MlSysResc paramMlSysResc);
 
   public abstract int deleteRescByKeys(String paramString);
+  
 }

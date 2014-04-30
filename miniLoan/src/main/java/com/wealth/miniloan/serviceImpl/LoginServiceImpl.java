@@ -11,6 +11,7 @@ import com.wealth.miniloan.entity.MlOrg;
 import com.wealth.miniloan.entity.MlRole;
 import com.wealth.miniloan.entity.MlSysAuthority;
 import com.wealth.miniloan.entity.MlSysResc;
+import com.wealth.miniloan.entity.MlSysRescExample;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.MlUserExample;
 import com.wealth.miniloan.entity.User;
@@ -104,11 +105,30 @@ public class LoginServiceImpl implements LoginServiceI {
 
 		if (user.getCurrRole() != null) {
 			// 查询用户角色对应的菜单
-			List<MlSysResc> rescs = this.rescDao.selectByRoleId(roleId);
+			List<MlSysResc> rescs = this.rescDao.selectRealRescByRoleId(roleId);
+			MlSysRescExample example = new MlSysRescExample();
+			example.createCriteria().andRescTypeEqualTo("M")
+					.andRescStatusEqualTo("1");
+			example.setOrderByClause("RESC_SEQ ASC");
+			List<MlSysResc> menuList = this.rescDao.findAll(example);
+			if (rescs != null) {
+				MlSysResc tempResc = null;
+				for (int i = 0; i < rescs.size(); ++i) {
+					tempResc = rescs.get(i);
+
+					while (tempResc.getParentId() != 0l) {
+						tempResc = getParentResc(menuList, tempResc);
+						if (!isExistRescs(rescs, tempResc)) {
+							rescs.add(tempResc);
+						}
+					}
+				}
+			}
 			user.setRescs(rescs);
 
 			// 查询角色拥有的操作权限
-			List<MlSysAuthority> authorities = this.authorityDao.selectByRoleId(roleId);
+			List<MlSysAuthority> authorities = this.authorityDao
+					.selectByRoleId(roleId);
 			user.setAuthorities(authorities);
 		}
 
@@ -117,6 +137,36 @@ public class LoginServiceImpl implements LoginServiceI {
 		user.setOrg(org);
 
 		return user;
+	}
+
+	private MlSysResc getParentResc(List<MlSysResc> menuList, MlSysResc resc) {
+		MlSysResc parentResc = null;
+		MlSysResc tempResc = null;
+
+		for (int i = 0; i < menuList.size(); ++i) {
+			tempResc = menuList.get(i);
+			if (tempResc.getRescId() == resc.getParentId()) {
+				parentResc = tempResc;
+				break;
+			}
+		}
+
+		return parentResc;
+	}
+
+	private boolean isExistRescs(List<MlSysResc> ownerRescs, MlSysResc resc) {
+		boolean result = false;
+
+		MlSysResc tempResc = null;
+		for (int i = 0; i < ownerRescs.size(); ++i) {
+			tempResc = (MlSysResc) ownerRescs.get(i);
+			if (tempResc.getRescId() == resc.getRescId()) {
+				result = true;
+				break;
+			}
+		}
+
+		return result;
 	}
 
 	/**

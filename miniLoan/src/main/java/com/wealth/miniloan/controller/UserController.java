@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -50,6 +51,7 @@ public class UserController {
 		this.roleService = roleService;
 	}
 
+//	@RequiresPermissions("SYS_MANAGE:USER_LIST")
 	@RequestMapping(value = "userlist")
 	@ResponseBody
 	public DataGrid getUserList(Page page, MlUser userObj) {

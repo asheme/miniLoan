@@ -15,10 +15,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
- * @author xtuali
- * 负责更新KEY的值
+ * @author xtuali 负责更新KEY的值
  */
 @Repository
 @Transactional
@@ -42,10 +40,12 @@ public class KeyDao {
 	private static final String selectKeySQL = "select " + MAX_KEY_VALUE
 			+ " from " + TABLE + " where " + COLS_TABLE_NAME + " = ?";
 
-	private static final String testExistSQL = "select count(*) from "+ TABLE + " where "+ COLS_TABLE_NAME +" = ?";
-	
-	
-	private static final String insertSQL = "insert into "+ TABLE + " (KEY_VALUE, TABLE_NAME, KEY_NAME) values(?, ?, ?)";
+	private static final String testExistSQL = "select count(*) from " + TABLE
+			+ " where " + COLS_TABLE_NAME + " = ?";
+
+	private static final String insertSQL = "insert into " + TABLE
+			+ " (KEY_VALUE, TABLE_NAME, KEY_NAME) values(?, ?, ?)";
+
 	@Autowired
 	public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -53,16 +53,15 @@ public class KeyDao {
 
 	@Transactional(rollbackFor = Exception.class)
 	public void initKeyPool(final KeyPool keyPool) {
-		//首先做查询，表存不存在
-		
-		
+		// 首先做查询，表存不存在
+
 		// String updateSQL =
 		// "update key_table set max_keyValue = max_keyValue + "+KeyPool.getPoolSize()
 		// + "where keyName = ?";
 		// 更新数据库中的key记录，主要是key的键值要增加
 		// jdbcTemplate.update("update key_table set max_keyValue = max_keyValue + "+KeyPool.getPoolSize()
 		// + "where keyName = ?");
-		if(keyPool.getMaxValue()==null){
+		if (keyPool.getMaxValue() == null) {
 			queryAndInit(keyPool);
 		}
 		jdbcTemplate.update(updateKeySQL, new PreparedStatementSetter() {
@@ -72,26 +71,29 @@ public class KeyDao {
 			}
 		});
 		jdbcTemplate.queryForObject(selectKeySQL,
-				new Object[] { keyPool.getTableName()},
+				new Object[] { keyPool.getTableName() },
 				new RowMapper<KeyPool>() {
 					@Override
 					public KeyPool mapRow(ResultSet rs, int rowNum)
 							throws SQLException {
-						keyPool.setMaxValue(new AtomicLong(rs.getLong(MAX_KEY_VALUE)));
-						keyPool.setNextValue(new AtomicLong(getCurrentValue(keyPool) + 1));
+						keyPool.setMaxValue(new AtomicLong(rs
+								.getLong(MAX_KEY_VALUE)));
+						keyPool.setNextValue(new AtomicLong(
+								getCurrentValue(keyPool) + 1));
 						return keyPool;
 					}
 				});
 	}
 
-	private void queryAndInit(final KeyPool keyPool){
-		Long count = jdbcTemplate.queryForObject(testExistSQL, new Object[]{keyPool.getTableName()}, Long.class);
-		if(count.longValue() == 0){
+	private void queryAndInit(final KeyPool keyPool) {
+		Long count = jdbcTemplate.queryForObject(testExistSQL,
+				new Object[] { keyPool.getTableName() }, Long.class);
+		if (count.longValue() == 0) {
 			insert(keyPool);
 		}
 	}
-	
-	private void insert(final KeyPool keyPool){
+
+	private void insert(final KeyPool keyPool) {
 		jdbcTemplate.update(insertSQL, new PreparedStatementSetter() {
 			@Override
 			public void setValues(PreparedStatement ps) throws SQLException {
@@ -101,15 +103,18 @@ public class KeyDao {
 			}
 		});
 	}
+
 	private Long getCurrentValue(final KeyPool keyPool) {
-/*		jdbcTemplate.query(getTableAndKeyName, new Object[]{keyPool.getTableName().toLowerCase()}, new RowMapper<KeyPool>() {
-			@Override
-			public KeyPool mapRow(ResultSet rs, int rowNum) throws SQLException {
-				keyPool.setTableName(rs.getString(COLS_TABLE_NAME));
-				keyPool.setTableKeyName(rs.getString(COLS_TABLE_KEY_NAME));
-				return keyPool;
-			}
-		});*/
+		/*
+		 * jdbcTemplate.query(getTableAndKeyName, new
+		 * Object[]{keyPool.getTableName().toLowerCase()}, new
+		 * RowMapper<KeyPool>() {
+		 * 
+		 * @Override public KeyPool mapRow(ResultSet rs, int rowNum) throws
+		 * SQLException { keyPool.setTableName(rs.getString(COLS_TABLE_NAME));
+		 * keyPool.setTableKeyName(rs.getString(COLS_TABLE_KEY_NAME)); return
+		 * keyPool; } });
+		 */
 
 		String sql = "select max(" + keyPool.getTableKeyName() + ") from "
 				+ keyPool.getTableName();

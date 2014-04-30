@@ -60,8 +60,9 @@ public class LogonController {
 			User user = this.loginService.getLoginUserPersistInfo(loginId);
 			Session session = currUser.getSession(true);
 			session.setAttribute("user", user);
-
+			
 			modelAndView.setViewName("main");
+			modelAndView.addObject("user", user);
 		} catch (IncorrectCredentialsException e) {
 			modelAndView.addObject("errorMsg", "您所输入的密码不正确！");
 			modelAndView.setViewName("index");

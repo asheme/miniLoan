@@ -137,7 +137,7 @@ public class RoleServiceImpl implements RoleServiceI {
 		List<MlSysAuthority> allAuthList = this.authorityDao.getAll();
 
 		// 获取角色对应的模块信息
-		List<MlSysResc> roleRescList = this.rescDao.selectByRoleId(role
+		List<MlSysResc> roleRescList = this.rescDao.getSavedRescByRoleId(role
 				.getRoleId());
 
 		// 获取角色对应的权限信息

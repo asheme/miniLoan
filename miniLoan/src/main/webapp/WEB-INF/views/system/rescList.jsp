@@ -48,6 +48,14 @@
 				sortable : true,
 				width : 20
 			}, {
+				field : 'rescNamespace',
+				title : '命名空间',
+				sortable : true,
+				width : 20,
+				formatter : function(value, row, index) {
+					return getDictItem("RESC_NAMESPACE", value);
+				}
+			}, {
 				field : 'rescUrl',
 				title : '模块URL',
 				width : 20,

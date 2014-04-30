@@ -190,6 +190,18 @@
 		var rows = $('#datagridUserRole').datagrid('getChecked');
 		var ids = [];
 		if (rows.length > 0) {
+			var hasDefaultRole=false;
+			for (var i = 0; i < rows.length; i++) {
+				if(rows[i].isDefaultRole=='Y'){
+					hasDefaultRole=true;
+					break;
+				}
+			}
+			if(hasDefaultRole){
+				$.messager.alert('信息提示','默认角色不能被删除，请重新设置默认角色后，再进行删除。','info');
+				return;
+			}
+			
 			$.messager
 					.confirm(
 							'信息提示',

@@ -5,9 +5,12 @@ import com.wealth.miniloan.entity.Menu;
 import com.wealth.miniloan.entity.MlSysResc;
 import com.wealth.miniloan.entity.MlSysRescExample;
 import com.wealth.miniloan.entity.MlSysRescExample.Criteria;
+import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.MenuServiceI;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +27,27 @@ public class MenuServiceImpl implements MenuServiceI {
 		this.rescDao = rescDao;
 	}
 
-	public List<Menu> loadMenu() {
+	public List<Menu> loadMenu(User user) {
 		List<MlSysResc> rescList = null;
 		List<Menu> menuList = null;
 
 		try {
-			MlSysRescExample example = new MlSysRescExample();
-			example.createCriteria().andRescTypeEqualTo("M")
-					.andRescStatusEqualTo("1");
-			example.setOrderByClause("RESC_SEQ ASC");
-			rescList = this.rescDao.findAll(example);
+			rescList = user.getRescs();
+			if (rescList != null) {
+				List rescIds = new ArrayList();
+				MlSysResc tempResc = null;
+				for (int i = 0; i < rescList.size(); ++i) {
+					tempResc = (MlSysResc) rescList.get(i);
+					rescIds.add(tempResc.getRescId());
+				}
 
+				MlSysRescExample example = new MlSysRescExample();
+				example.createCriteria().andRescTypeEqualTo("M")
+						.andRescStatusEqualTo("1").andRescIdIn(rescIds);
+				example.setOrderByClause("RESC_SEQ ASC");
+				rescList = this.rescDao.findAll(example);
+			}
+			
 			menuList = new ArrayList<Menu>();
 			generatorMenu(rescList, menuList);
 		} catch (Exception e) {
