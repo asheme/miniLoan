@@ -358,4 +358,75 @@ public class UserController {
 
 		return result;
 	}	
+	
+	/**
+	 * Description 修改用户基本信息
+	 * 
+	 * @param user
+	 * @return result
+	 * @author 
+	 */
+	@RequestMapping(value = "saveOwnerInfo")
+	@ResponseBody
+	public Map<String, Object> basicUserInfoModfiy(@ModelAttribute("user") User user) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if (user != null) {
+				this.userService.updateUser(user);
+				result.put("success", true);
+				result.put("msg", "用户基本信息修改成功！");
+			} else {
+				result.put("success", false);
+				result.put("msg", "用户基本信息修改失败，服务器端未获得要修改的用户基本信息！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("success", false);
+			result.put("msg", "用户基本信息修改失败，服务器端处理异常！");
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Description 修改密码
+	 * 
+	 * @param user
+	 * @param oldPassword
+	 * @param newPassword
+	 * @return result
+	 * @author 
+	 */
+	@RequestMapping(value = "modifyPassWord")
+	@ResponseBody
+	public Map<String, Object> modifyPassword(String oldPassword,
+			String newPassword, @ModelAttribute("user") User user) {
+
+		Map<String, Object> result = new HashMap<String, Object>();
+		String encryptInputOldPwd = SysUtil.encryptByMd5(oldPassword);
+		String encryptOldPwd = user.getPassword();
+
+		if (!encryptOldPwd.equals(encryptInputOldPwd)) {
+			result.put("msg", "您输入的原密码有误，请重新输入！");
+		} else {
+			try {
+				if (user != null) {
+					user.setPassword(SysUtil.encryptByMd5(newPassword));
+					this.userService.updateUser(user);
+					result.put("success", true);
+					result.put("msg", "密码修改成功！");
+				} else{
+					result.put("success", false);
+					result.put("msg", "密码修改失败，服务器端未获得要修改的用户密码信息！");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				result.put("success", false);
+				result.put("msg", "用户密码修改失败，服务器端处理异常！");
+			}
+		}
+
+		return result;
+	}
 }
