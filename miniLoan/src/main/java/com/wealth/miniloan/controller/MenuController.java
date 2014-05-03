@@ -77,4 +77,9 @@ public class MenuController {
 	public String toParamLists() {
 		return "config/paramList";
 	}
+	
+	@RequestMapping(value = "fileUpload")
+	public String toFileUpload() {
+		return "system/fileUploadTest";
+	}
 }
