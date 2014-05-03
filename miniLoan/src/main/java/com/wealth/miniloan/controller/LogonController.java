@@ -1,5 +1,8 @@
 package com.wealth.miniloan.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.LoginServiceI;
@@ -58,9 +61,17 @@ public class LogonController {
 
 			// 用户信息保存进入session
 			User user = this.loginService.getLoginUserPersistInfo(loginId);
+			// 获取登陆时间
+			Date date = new Date();
+			SimpleDateFormat dateFormat = new SimpleDateFormat(
+					"yyyy-MM-dd HH:mm:ss");
+			String dateStr = dateFormat.format(date);
+			user.setLastLogin(date);
+			user.setLastLoginDateStr(dateStr);
+
 			Session session = currUser.getSession(true);
 			session.setAttribute("user", user);
-			
+
 			modelAndView.setViewName("main");
 			modelAndView.addObject("user", user);
 		} catch (IncorrectCredentialsException e) {

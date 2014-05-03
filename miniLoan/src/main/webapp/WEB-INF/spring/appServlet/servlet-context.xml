@@ -16,7 +16,14 @@
 	</context:component-scan>
 
 	<!-- Enables the Spring MVC @Controller programming model -->
-	<annotation-driven />
+	<annotation-driven>
+		<message-converters>
+			<beans:bean
+				class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+				<beans:property name="objectMapper" ref="customObjectMapper"></beans:property>
+			</beans:bean>
+		</message-converters>
+	</annotation-driven>
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
 		up static resources in the ${webappRoot}/resources directory -->
@@ -58,7 +65,7 @@
 			<beans:value>4096</beans:value>
 		</beans:property>
 	</beans:bean>
-	
+
 	<!-- Support Shiro Annotation -->
 	<beans:bean
 		class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">

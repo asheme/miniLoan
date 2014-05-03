@@ -16,7 +16,8 @@ body{ padding:0px; margin:0;   overflow:hidden;font-family: Helvetica, "Helvetic
 .topbar .content .top_right a { border: none; color: #fff;}
 .topbar .content .top_right .open a:focus { background: #6b8ac3;}
 .topbar .content .top_right .menu-topbar_user { position: absolute; right: 10px; left: auto; margin-top: 0px; width: auto;}
-.topbar .content .top_right .topbar_language { position: absolute; right: 105px; left: auto; margin-top: 0px; width: auto;}
+.topbar .content .top_right .topbar_role { position: absolute; right: 105px; left: auto; margin-top: 0px; width: auto;}
+.topbar .content .top_right .topbar_text { font-size: 1.1em; color: #FFFFFF;}
 .topbar .content .top_right ul a { color: #666; line-height: 30px; height: 30px; display: block;}
 .topbar .content .top_right ul a:hover,.topbar .content .top_right ul a.this { background: #e6e6e6; color: #000;}
 .topbar .content .top_right ul .font-icon { width: 18px; display: inline-block;}

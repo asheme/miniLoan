@@ -23,10 +23,13 @@
 				</div>
 				<div class="top_right">
 					<div>
-						<a id='topbar_language' data-toggle="dropdown" href="#"><i class='icon-flag'></i>Language<b class="caret"></b></a>
+						<span class="topbar_text">欢迎 </span><a id='topbar_user' data-toggle="dropdown" href="#"><i class='icon-user'></i>${user.name}<b class="caret"></b></a>
 					</div>
 					<div>
-						<a href="#" id='topbar_user' data-toggle="dropdown"><i class="icon-user"></i>demo<b class="caret"></b></a>
+						<a href="#" id='topbar_role' data-toggle="dropdown"><i class="icon-flag"></i>${user.currRole.roleName}<b class="caret"></b></a>
+					</div>
+					<div>
+						<span class="topbar_text">系统日期：${user.lastLoginDateStr}</span>
 					</div>
 				</div>
 				<div style="clear:both"></div>

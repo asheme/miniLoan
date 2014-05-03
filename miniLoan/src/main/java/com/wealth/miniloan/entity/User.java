@@ -6,6 +6,7 @@ public class User extends MlUser {
 	private MlRole currRole; // 当前role
 	private MlRole defaultRole; // 系统默认role
 	private MlOrg org; // 所属机构
+	private String lastLoginDateStr;
 
 	private List<MlRole> roles;
 	private List<MlSysResc> rescs;
@@ -59,4 +60,13 @@ public class User extends MlUser {
 		this.authorities = authorities;
 	}
 
+	public String getLastLoginDateStr() {
+		return lastLoginDateStr;
+	}
+
+	public void setLastLoginDateStr(String lastLoginDateStr) {
+		this.lastLoginDateStr = lastLoginDateStr;
+	}
+
+	
 }
