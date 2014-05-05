@@ -26,7 +26,7 @@
 					}
 				});
 		} else {
-			$.messager.confirm('信息提示！', '请选择要上传的附件！');
+			$.messager.confirm('信息提示', '请选择要上传的附件！');
 		}
 	}
 //-->
@@ -51,7 +51,7 @@
 					</tr>
 					<tr>
 						<th align="center" width="35%">文件下载</th>
-						<td><a href="${pageContext.request.contextPath}/attach/case/张三测试.docx">张三测试.docx</td>
+						<td><a href="${pageContext.request.contextPath}/test/download.do">张三测试.docx</td>
 					</tr>
 					<tr>
 						<td colspan="2" align="center"><input type="button"

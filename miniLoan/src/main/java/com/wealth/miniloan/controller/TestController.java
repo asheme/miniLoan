@@ -1,11 +1,17 @@
 package com.wealth.miniloan.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +27,13 @@ public class TestController {
 	@RequestMapping(value = "uploadTest")
 	@ResponseBody
 	public Map<String, Object> toAddDict(@RequestParam String fileName,
-			@RequestParam("mFile") CommonsMultipartFile[] files,HttpServletRequest request) {
+			@RequestParam("mFile") CommonsMultipartFile[] files,
+			HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			if (files!=null) {
-				System.out.println("==========>>>>"+fileName);
+			if (files != null) {
+				System.out.println("==========>>>>" + fileName);
 				String path = request.getSession().getServletContext()
 						.getRealPath("./attach/case");
 				File file = new File(path);
@@ -53,5 +60,18 @@ public class TestController {
 		}
 
 		return result;
+	}
+
+	@RequestMapping("download")
+	public ResponseEntity<byte[]> download(HttpServletRequest request) throws IOException {
+		String path = request.getSession().getServletContext()
+				.getRealPath("./attach/case");
+		File file = new File(path+"/张三测试.docx");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment",  new String("张三测试.docx".getBytes("utf-8"),"ISO8859-1"));
+		return new ResponseEntity<byte[]>(
+				FileUtils.readFileToByteArray(file), headers,
+				HttpStatus.CREATED);
 	}
 }
