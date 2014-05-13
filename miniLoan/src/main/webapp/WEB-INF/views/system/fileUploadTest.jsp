@@ -20,7 +20,7 @@
 						{
 							url : '${pageContext.request.contextPath}/test/uploadTest.do',
 							success : function(results) {
-								$.messager.confirm('信息提示！','附件上传成功！');
+								$.messager.confirm('信息提示','附件上传成功！');
 							}
 						});
 					}
@@ -28,6 +28,28 @@
 		} else {
 			$.messager.confirm('信息提示', '请选择要上传的附件！');
 		}
+	}
+	
+	function exec(){
+		$('#modifyForm').form(
+				'submit',
+				{
+					url : '${pageContext.request.contextPath}/test/executeStrategy.do',
+					success : function(results) {
+						$.messager.confirm('信息提示','执行成功！');
+					}
+				});
+	}
+	
+	function reExec(){
+		$('#modifyForm').form(
+				'submit',
+				{
+					url : '${pageContext.request.contextPath}/test/reExecuteStrategy.do',
+					success : function(results) {
+						$.messager.confirm('信息提示','执行成功！');
+					}
+				});
 	}
 //-->
 </script>
@@ -54,8 +76,14 @@
 						<td><a href="${pageContext.request.contextPath}/test/download.do">张三测试.docx</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center"><input type="button"
-							value="保存" class="btn" onclick="upload();" /></td>
+						<td colspan="2" align="center">
+							<input type="button"
+							value="保存" class="btn" onclick="upload();" />
+							<input type="button"
+							value="测试执行" class="btn" onclick="exec();" />
+							<input type="button"
+							value="重新加载执行" class="btn" onclick="reExec();" />
+						</td>
 					</tr>
 				</table>
 			</form>
