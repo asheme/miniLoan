@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.springframework.stereotype.Repository;
@@ -49,6 +50,9 @@ public class ParseStrategy {
 		try {
 			SAXReader saxReader = new SAXReader();
 			Document document = saxReader.read(new File(this.strategy.getStgFileName()));
+			
+//			document = DocumentHelper.parseText(this.strategy.getStgContent()); // 将字符串转为XML
+			
 			// 获取根元素
 			Element root = document.getRootElement();
 
