@@ -114,7 +114,7 @@ public class StrategyExecute {
 		this.parseStrategy.loadStrategy();
 		this.strategy = this.parseStrategy.getStrategy();
 		if (strategy != null) {
-			script = strategy.getContent();
+			script = strategy.getScripts();
 		}
 
 		return script;

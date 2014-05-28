@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author xtuali 负责更新KEY的值
+ * @author 
  */
 @Repository
 @Transactional
