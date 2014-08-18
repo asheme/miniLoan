@@ -67,17 +67,22 @@ public class MenuController {
 	public String toDictLits() {
 		return "config/dictList";
 	}
-	
+
 	@RequestMapping(value = "modfiyOwner")
 	public String modfiyOwner() {
 		return "system/modfiyOwner";
 	}
-	
+
 	@RequestMapping(value = "paramList")
 	public String toParamLists() {
 		return "config/paramList";
 	}
-	
+
+	@RequestMapping(value = "loanNaturalAppList")
+	public String loanNaturalAppList() {
+		return "loan/loanNaturalAppList";
+	}
+
 	@RequestMapping(value = "fileUpload")
 	public String toFileUpload() {
 		return "system/fileUploadTest";

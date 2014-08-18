@@ -125,7 +125,7 @@ public class RescController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
-			result.put("msg", "服务器端出现异常");
+			result.put("msg", "服务器端出现异常！");
 		}
 
 		return result;

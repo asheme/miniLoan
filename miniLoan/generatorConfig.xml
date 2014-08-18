@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
-  <classPathEntry location="F:\source\lib\mysql-connector-java-5.1.29.jar" />
+  <classPathEntry location="F:\lib\mysql-connector-java-5.1.29.jar" />
 	<context id="context1">
 		
 			
@@ -22,20 +22,16 @@
 			targetProject="miniLoan" type="XMLMAPPER">
 			<property name="enableSubPackages" value="true" />
 		</javaClientGenerator>
-		
-		<table tableName="ML_USER"/>
-		<table tableName="ML_ROLE"/>
-		<table tableName="ML_SYS_RESC"/>
-		<table tableName="ML_USER_ROLE"/>
-		<table tableName="ML_SYS_PARAM"/>
-		<table tableName="ML_SYS_LOG"/>
-		<table tableName="ML_SYS_KEY"/>
-		<table tableName="ML_SYS_AUTHORITY"/>
-		<table tableName="ML_ROLE_RESC"/>
-		<table tableName="ML_ROLE_AUTH"/>
-		<table tableName="ML_ORG"/>
-		<table tableName="ML_DICT"/>
-		<table tableName="ML_DICT_ITEM"/>
+
+	<!-- <table tableName="ML_USER"/> <table tableName="ML_ROLE"/> <table tableName="ML_SYS_RESC"/> 
+		<table tableName="ML_USER_ROLE"/> <table tableName="ML_SYS_PARAM"/> <table 
+		tableName="ML_SYS_LOG"/> <table tableName="ML_SYS_KEY"/> <table tableName="ML_SYS_AUTHORITY"/> 
+		<table tableName="ML_ROLE_RESC"/> <table tableName="ML_ROLE_AUTH"/> <table 
+		tableName="ML_ORG"/> <table tableName="ML_DICT"/> <table tableName="ML_DICT_ITEM"/> -->		<table tableName="ML_NATURAL_APP"/>
+		<table tableName="ML_CORP_APP"/>
+		<table tableName="ML_APPROVE_RESULT"/>
+		<table tableName="ML_APPROVE_DEAL_INFO"/>
+		<table tableName="ML_APPROVE_TASK_CFG"/>
 
 	</context>
 </generatorConfiguration>
