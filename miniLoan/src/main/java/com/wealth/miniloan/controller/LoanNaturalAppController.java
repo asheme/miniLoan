@@ -47,7 +47,7 @@ public class LoanNaturalAppController {
 	@RequestMapping(value="toAddNaturalApp")
 	public ModelAndView toAddNaturalApp() {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("system/modifyNaturalApp");
+		modelAndView.setViewName("loan/modifyNaturalApp");
 		modelAndView.addObject("flag", "ADD");
 		return modelAndView;
 	}
