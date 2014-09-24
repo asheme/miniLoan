@@ -22,15 +22,15 @@ import javassist.CtMethod;
  * @author 春国
  *
  */
-@Service(value="strategyExecute")
-@Lazy(value=false)
+@Service(value = "strategyExecute")
+@Lazy(value = false)
 @Singleton
 public class StrategyExecute {
-	private static boolean isLoaded = false;
-	private static boolean needReLoad = false;
+	private boolean isLoaded = false;
+	private boolean needReLoad = false;
 	private Strategy strategy = null;
 	private ParseStrategy parseStrategy = null;
-	private static ExecuteAssistDecisionI access = null;
+	private ExecuteAssistDecisionI access = null;
 
 	public ParseStrategy getParseStrategy() {
 		return parseStrategy;
@@ -40,10 +40,23 @@ public class StrategyExecute {
 	public void setParseStrategy(ParseStrategy parseStrategy) {
 		this.parseStrategy = parseStrategy;
 	}
-	
+
 	@PostConstruct
-	public void loadStrategy(){
-		
+	public void loadStrategy() {
+		try {
+			if (this.isLoaded == false || this.needReLoad == true) {
+				byte[] bytes = createExecuteClass();
+				DirectLoader s_classLoader = new DirectLoader();
+				Class clas = s_classLoader.load(
+						"com.wealth.miniloan.strategy.ExecuteAssistDecision",
+						bytes);
+				this.access = (ExecuteAssistDecisionI) clas.newInstance();
+
+				this.needReLoad = false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void execute() {
@@ -54,8 +67,8 @@ public class StrategyExecute {
 				Class clas = s_classLoader.load(
 						"com.wealth.miniloan.strategy.ExecuteAssistDecision",
 						bytes);
-				this.access=(ExecuteAssistDecisionI) clas.newInstance();
-				
+				this.access = (ExecuteAssistDecisionI) clas.newInstance();
+
 				this.needReLoad = false;
 			}
 
