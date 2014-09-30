@@ -93,6 +93,7 @@ public class RescController {
 		return modelAndView;
 	}
 
+
 	@RequestMapping(value="modifyResc")
 	@ResponseBody
 	public Map<String, Object> modifyResc(MlSysResc resc, String flag) {

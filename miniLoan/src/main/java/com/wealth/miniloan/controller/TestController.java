@@ -24,7 +24,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.wealth.miniloan.strategy.StrategyExecute;
 
-@Controller
+//@Controller
 @RequestMapping(value = "/test")
 public class TestController {
 	private StrategyExecute strategyExecute = null;

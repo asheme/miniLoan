@@ -82,6 +82,11 @@ public class MenuController {
 	public String loanNaturalAppList() {
 		return "loan/loanNaturalAppList";
 	}
+	@RequestMapping(value="loanCorpAppList.do")
+	public String loanCompanyAppList()
+	{
+		return "loan/loanCorpAppList";
+	}
 
 	@RequestMapping(value = "fileUpload")
 	public String toFileUpload() {

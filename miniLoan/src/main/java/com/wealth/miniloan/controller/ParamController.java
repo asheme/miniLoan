@@ -61,6 +61,14 @@ public class ParamController {
 		return result;
 	}
 
+	@RequestMapping(value = "toAddParam")
+	public ModelAndView toAddUser() {
+		ModelAndView modelView = new ModelAndView();
+		modelView.setViewName("config/modifyParam");
+		modelView.addObject("flag", "ADD");
+		return modelView;
+	}
+	
 	@RequestMapping(value = "toUpdate")
 	@ResponseBody
 	public ModelAndView toUpdate(MlSysParam param) {
