@@ -29,7 +29,7 @@ public class RescServiceImpl implements RescServiceI {
 		this.rescDao = rescDao;
 	}
 
-	public PageList<MlSysResc> getRescPageList(Page page,MlSysResc resc) {
+	public PageList<MlSysResc> getRescPageList(Page page, MlSysResc resc) {
 		MlSysRescExample example = new MlSysRescExample();
 		String rescName = resc.getRescName();
 		String rescDesc = resc.getRescDesc();
@@ -40,7 +40,7 @@ public class RescServiceImpl implements RescServiceI {
 		if (rescDesc != null && !"".equals(rescDesc)) {
 			criteria.andRescDescLike("%" + rescDesc + "%");
 		}
-		
+
 		String order = SysUtil.dealOrderby(page, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {
 			example.setOrderByClause(order);

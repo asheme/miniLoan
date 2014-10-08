@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserServiceI {
 		example.createCriteria().andUserIdEqualTo(userId).andRoleIdIn(idList);
 
 		int result = this.userRoleDao.deleteByExample(example);
-	
+
 		return result;
 	}
 }

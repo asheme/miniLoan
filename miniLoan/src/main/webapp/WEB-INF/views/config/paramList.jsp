@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ include file="/WEB-INF/views/common.jsp"%>
@@ -71,6 +73,16 @@
 			toolbar : '#toolbar'
 		});
 	});
+	
+	function addNew() {
+		window.location.href = '${pageContext.request.contextPath}/param/toAddParam.do';
+		if (navigator.userAgent.indexOf("MSIE") > 0) {// IE特有回收内存方法
+			try {
+				CollectGarbage();
+			} catch (e) {
+			}
+		}
+	}
 
 	function updateObj() {
 		var rows = $('#datagrid').datagrid('getChecked');
@@ -128,10 +140,26 @@
 				style="height: auto !important; height: 28px; min-height: 28px;">
 				<table cellspacing="0" cellpadding="0">
 					<tr>
-						<td><a href="#" class="easyui-linkbutton"
-							data-options="iconCls:'icon-ui-edit',plain:true"
-							onClick="javascript:updateObj();" style="float: left;">修改</a></td>
+						<shiro:hasPermission name="SYS_MANAGE:ADD_PARAM">
+							<td><a href="#" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ui-add',plain:true"
+								onClick="javascript:addNew();" style="float: left;">新增</a></td>
+						</shiro:hasPermission>
 						<td><div class="datagrid-btn-separator"></div></td>
+
+						<shiro:hasPermission name="SYS_MANAGE:UPDATE_PARAM">
+							<td><a href="#" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ui-edit',plain:true"
+								onClick="javascript:updateObj();" style="float: left;">修改</a></td>
+						</shiro:hasPermission>
+						<td><div class="datagrid-btn-separator"></div></td>
+
+						<shiro:hasPermission name="SYS_MANAGE:DELETE_PARAM">
+							<td><a href="#" class="easyui-linkbutton"
+								data-options="iconCls:'icon-ui-remove',plain:true"
+								onClick="javascript:deleteObj();" style="float: left;">删除</a></td>
+						</shiro:hasPermission>
+
 					</tr>
 				</table>
 			</div>

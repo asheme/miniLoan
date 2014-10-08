@@ -16,13 +16,13 @@ import com.wealth.miniloan.utils.SysUtil;
 
 @Service
 public class LoanCorpAttachServiceImpl implements CommonServiceI<MlCorpAttach> {
-	private CorpAttachDao CorpAttachDao = null;
-	private final String _ORDER_ATTRS = "appNo";
-	private final String _ORDER_FIELDS = "APP_NO";
-	
+	private CorpAttachDao corpAttachDao = null;
+	private final String _ORDER_ATTRS = "fileNo";
+	private final String _ORDER_FIELDS = "FILE_NO";
+
 	@Autowired
-	public void setCorpAttachDao(CorpAttachDao CorpAttachDao) {
-		this.CorpAttachDao = CorpAttachDao;
+	public void setCorpAttachDao(CorpAttachDao corpAttachDao) {
+		this.corpAttachDao = corpAttachDao;
 	}
 
 	@Override
@@ -33,36 +33,44 @@ public class LoanCorpAttachServiceImpl implements CommonServiceI<MlCorpAttach> {
 		if (appNo != null && !"".equals(appNo)) {
 			criteria.andAppNoEqualTo(appNo);
 		}
-		return this.CorpAttachDao.findPage(SysUtil.convertPage(paramPage), example);
+		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
+		if (!order.equals("")) {
+			example.setOrderByClause(order);
+		}
+		return this.corpAttachDao.findPage(SysUtil.convertPage(paramPage), example);
 	}
 
 	@Override
 	public int create(MlCorpAttach obj) {
-		return this.CorpAttachDao.save(obj);
+		return this.corpAttachDao.save(obj);
 	}
 
 	@Override
 	public int update(MlCorpAttach obj) {
-		return this.CorpAttachDao.update(obj);
+		return this.corpAttachDao.update(obj);
 	}
 
 	@Override
 	public int delete(String ids) {
 		String[] idArray = ids.split(",");
-		List<String> list = new ArrayList<String>();
+		List<Long> list = new ArrayList<Long>();
 		for (int i = 0; i < idArray.length; i++) {
-			list.add(idArray[i]);
+			list.add(Long.valueOf(idArray[i]));
 		}
 		MlCorpAttachExample example = new MlCorpAttachExample();
-		example.createCriteria().andAppNoIn(list);
-		return this.CorpAttachDao.deleteByExample(example);
+		example.createCriteria().andFileNoIn(list);
+		return this.corpAttachDao.deleteByExample(example);
 	}
 
 	@Override
 	public MlCorpAttach getByPriKey(MlCorpAttach obj) {
-		return (MlCorpAttach) this.CorpAttachDao.getById(obj.getAppNo());
+		return (MlCorpAttach) this.corpAttachDao.getById(obj.getFileNo());
 	}
 
-	
+	@Override
+	public Object getByExample(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

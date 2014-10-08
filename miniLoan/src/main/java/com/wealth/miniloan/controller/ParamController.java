@@ -51,8 +51,7 @@ public class ParamController {
 			paramList = this.paramService.getParamList(page, param);
 			if (paramList != null) {
 				result.setRows(paramList);
-				result.setTotal(Long.valueOf(paramList.getPaginator()
-						.getTotalCount()));
+				result.setTotal(Long.valueOf(paramList.getPaginator().getTotalCount()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -68,7 +67,7 @@ public class ParamController {
 		modelView.addObject("flag", "ADD");
 		return modelView;
 	}
-	
+
 	@RequestMapping(value = "toUpdate")
 	@ResponseBody
 	public ModelAndView toUpdate(MlSysParam param) {
@@ -82,8 +81,7 @@ public class ParamController {
 
 	@RequestMapping(value = "modifyParam")
 	@ResponseBody
-	public Map<String, Object> addAndUpdate(MlSysParam param, String flag,
-			@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> addAndUpdate(MlSysParam param, String flag, @ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
@@ -91,7 +89,7 @@ public class ParamController {
 				param.setOperId(user.getUserId());
 				param.setOpTime(new Date());
 				this.paramService.updateParam(param);
-				
+
 				result.put("success", true);
 				result.put("msg", "参数信息修改成功！");
 			} else {

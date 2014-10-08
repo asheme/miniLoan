@@ -10,6 +10,7 @@
 <title>the mini loan home page</title>
 </head>
 <body>
-	<div class="easyui-panel" data-options="fit:true" style="background: url('${path}resources/images/welcome.png');background-repeat:no-repeat;border:0">
+	<div class="easyui-panel" data-options="fit:true"
+		style="background: url('${path}resources/images/welcome.png');background-repeat:no-repeat;border:0">
 	</div>
 </body>

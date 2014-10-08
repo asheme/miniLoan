@@ -5,7 +5,7 @@ import com.wealth.miniloan.entity.MlNaturalMortgage;
 import com.wealth.miniloan.utils.orm.mybatis.BaseMybatisDao;
 
 @Repository
-public class NaturalMortgageDao  extends BaseMybatisDao<MlNaturalMortgage, String>{
+public class NaturalMortgageDao  extends BaseMybatisDao<MlNaturalMortgage, Long>{
 	@Override
 	public String getNamespace() {
 		return MlNaturalMortgageMapper.class.getCanonicalName();

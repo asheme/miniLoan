@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value="/resc")
+@RequestMapping(value = "/resc")
 public class RescController {
 	private RescServiceI rescService = null;
 
@@ -31,23 +31,22 @@ public class RescController {
 		this.rescService = rescService;
 	}
 
-	@RequestMapping(value="rescList")
+	@RequestMapping(value = "rescList")
 	@ResponseBody
 	public DataGrid getRescList(Page page, MlSysResc resc) {
 		DataGrid resut = new DataGrid();
 		PageList<MlSysResc> rescList = null;
-		rescList = this.rescService.getRescPageList(page,resc);
-		
+		rescList = this.rescService.getRescPageList(page, resc);
+
 		if (rescList != null) {
 			resut.setRows(rescList);
-			resut.setTotal(Long
-					.valueOf(rescList.getPaginator().getTotalCount()));
+			resut.setTotal(Long.valueOf(rescList.getPaginator().getTotalCount()));
 		}
 
 		return resut;
 	}
 
-	@RequestMapping(value="getParentResc")
+	@RequestMapping(value = "getParentResc")
 	@ResponseBody
 	public List<ComboOption> getParentResc() {
 		List<MlSysResc> rescList = this.rescService.getParentRescList();
@@ -70,7 +69,7 @@ public class RescController {
 		return comboOptionList;
 	}
 
-	@RequestMapping(value="toAddResc")
+	@RequestMapping(value = "toAddResc")
 	public ModelAndView toAddResc() {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("system/modifyResc");
@@ -78,7 +77,7 @@ public class RescController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value="toUpdate")
+	@RequestMapping(value = "toUpdate")
 	@ResponseBody
 	public ModelAndView toUpdate(MlSysResc resc) {
 		try {
@@ -93,8 +92,7 @@ public class RescController {
 		return modelAndView;
 	}
 
-
-	@RequestMapping(value="modifyResc")
+	@RequestMapping(value = "modifyResc")
 	@ResponseBody
 	public Map<String, Object> modifyResc(MlSysResc resc, String flag) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -113,7 +111,7 @@ public class RescController {
 
 	public Map<String, Object> addResc(MlSysResc resc) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (resc != null) {
 				this.rescService.createResc(resc);
@@ -134,7 +132,7 @@ public class RescController {
 
 	public Map<String, Object> updateResc(MlSysResc resc) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (resc != null) {
 				this.rescService.updateResc(resc);
@@ -153,11 +151,11 @@ public class RescController {
 		return result;
 	}
 
-	@RequestMapping(value="deleteResc")
+	@RequestMapping(value = "deleteResc")
 	@ResponseBody
 	public Map<String, Object> deleteResc(String ids) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if ((ids != null) && (!"".equals(ids.trim()))) {
 				this.rescService.deleteRescByKeys(ids);

@@ -42,12 +42,11 @@ public class MenuServiceImpl implements MenuServiceI {
 				}
 
 				MlSysRescExample example = new MlSysRescExample();
-				example.createCriteria().andRescTypeEqualTo("M")
-						.andRescStatusEqualTo("1").andRescIdIn(rescIds);
+				example.createCriteria().andRescTypeEqualTo("M").andRescStatusEqualTo("1").andRescIdIn(rescIds);
 				example.setOrderByClause("RESC_SEQ ASC");
 				rescList = this.rescDao.findAll(example);
 			}
-			
+
 			menuList = new ArrayList<Menu>();
 			generatorMenu(rescList, menuList);
 		} catch (Exception e) {

@@ -107,8 +107,7 @@ public class LoginServiceImpl implements LoginServiceI {
 			// 查询用户角色对应的菜单
 			List<MlSysResc> rescs = this.rescDao.selectRealRescByRoleId(roleId);
 			MlSysRescExample example = new MlSysRescExample();
-			example.createCriteria().andRescTypeEqualTo("M")
-					.andRescStatusEqualTo("1");
+			example.createCriteria().andRescTypeEqualTo("M").andRescStatusEqualTo("1");
 			example.setOrderByClause("RESC_SEQ ASC");
 			List<MlSysResc> menuList = this.rescDao.findAll(example);
 			if (rescs != null) {
@@ -127,8 +126,7 @@ public class LoginServiceImpl implements LoginServiceI {
 			user.setRescs(rescs);
 
 			// 查询角色拥有的操作权限
-			List<MlSysAuthority> authorities = this.authorityDao
-					.selectByRoleId(roleId);
+			List<MlSysAuthority> authorities = this.authorityDao.selectByRoleId(roleId);
 			user.setAuthorities(authorities);
 		}
 

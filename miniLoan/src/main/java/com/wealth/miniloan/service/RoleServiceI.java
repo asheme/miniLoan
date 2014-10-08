@@ -19,12 +19,12 @@ public abstract interface RoleServiceI {
 	public int deleteRoleByPriKey(long roleId);
 
 	public List<RescAuthModel> loadRoleAuthTree(MlRole role);
-	
-	public void saveRoleResc(long roleId,long[] rescIdList);
-	
-	public void saveRoleAuth(long roleId,long[] authIdList);
-	
+
+	public void saveRoleResc(long roleId, long[] rescIdList);
+
+	public void saveRoleAuth(long roleId, long[] authIdList);
+
 	public List<MlRole> loadUnselectedRole(long userId);
-	
+
 	public List<MlRole> loadSelectedRole(long userId);
 }

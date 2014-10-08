@@ -66,9 +66,6 @@
 		<form id="modifyForm" method="post">
 			<table class="modifytable" width="100%">
 				<tr>
-					<th colspan="4" align="left" height="20px"><strong>申请人信息</strong></th>
-				</tr>
-				<tr>
 					<th align="center" width="25%">姓名</th>
 					<td width="25%"><input class="easyui-validatebox" name="name"
 						value="${naturalApp.name}"

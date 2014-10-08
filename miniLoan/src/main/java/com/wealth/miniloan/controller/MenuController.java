@@ -78,14 +78,24 @@ public class MenuController {
 		return "config/paramList";
 	}
 
-	@RequestMapping(value = "loanNaturalAppList")
-	public String loanNaturalAppList() {
-		return "loan/loanNaturalAppList";
+	@RequestMapping(value = "naturalAppList")
+	public String naturalAppList() {
+		return "naturalApp/naturalAppList";
 	}
-	@RequestMapping(value="loanCorpAppList.do")
-	public String loanCompanyAppList()
-	{
-		return "loan/loanCorpAppList";
+
+	@RequestMapping(value = "corpAppList")
+	public String corpAppList() {
+		return "corpApp/corpAppList";
+	}
+
+	@RequestMapping(value = "appSummaryList")
+	public String appSummaryList() {
+		return "check/appSummaryList";
+	}
+
+	@RequestMapping(value = "manualCheckList")
+	public String manualCheckList() {
+		return "check/manualCheckList";
 	}
 
 	@RequestMapping(value = "fileUpload")

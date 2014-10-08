@@ -51,7 +51,7 @@ public class UserController {
 		this.roleService = roleService;
 	}
 
-//	@RequiresPermissions("SYS_MANAGE:USER_LIST")
+	// @RequiresPermissions("SYS_MANAGE:USER_LIST")
 	@RequestMapping(value = "userlist")
 	@ResponseBody
 	public DataGrid getUserList(Page page, MlUser userObj) {
@@ -61,8 +61,7 @@ public class UserController {
 		try {
 			userList = this.userService.getUserPageList(page, userObj);
 			if (userList != null) {
-				result.setTotal(Long.valueOf(userList.getPaginator()
-						.getTotalCount()));
+				result.setTotal(Long.valueOf(userList.getPaginator().getTotalCount()));
 				result.setRows(userList);
 			}
 		} catch (Exception e) {
@@ -97,8 +96,7 @@ public class UserController {
 
 	@RequestMapping(value = "modifyUser")
 	@ResponseBody
-	public Map<String, Object> modifyUser(MlUser userObj, String flag,
-			@ModelAttribute("user") User user) {
+	public Map<String, Object> modifyUser(MlUser userObj, String flag, @ModelAttribute("user") User user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		if ("ADD".equals(flag)) {
@@ -275,8 +273,7 @@ public class UserController {
 					userRoleEntity.setRoleName(tempRole.getRoleName());
 					userRoleEntity.setRoleDesc(tempRole.getRoleDesc());
 					userRoleEntity.setOrgNo(tempRole.getOrgNo());
-					if (selUser.getRoleId() != null
-							&& selUser.getRoleId() == tempRole.getRoleId()) {
+					if (selUser.getRoleId() != null && selUser.getRoleId() == tempRole.getRoleId()) {
 						userRoleEntity.setIsDefaultRole("Y");
 					}
 					userRoleList.add(userRoleEntity);
@@ -340,7 +337,7 @@ public class UserController {
 	@ResponseBody
 	public Map<String, Object> deleteUserRole(String ids, long userId) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (ids != null && !"".equals(ids.trim())) {
 				this.userService.deleteUserRole(ids, userId);
@@ -357,14 +354,14 @@ public class UserController {
 		}
 
 		return result;
-	}	
-	
+	}
+
 	/**
 	 * Description 修改用户基本信息
 	 * 
 	 * @param user
 	 * @return result
-	 * @author 
+	 * @author
 	 */
 	@RequestMapping(value = "saveOwnerInfo")
 	@ResponseBody
@@ -388,7 +385,7 @@ public class UserController {
 
 		return result;
 	}
-	
+
 	/**
 	 * Description 修改密码
 	 * 
@@ -396,12 +393,11 @@ public class UserController {
 	 * @param oldPassword
 	 * @param newPassword
 	 * @return result
-	 * @author 
+	 * @author
 	 */
 	@RequestMapping(value = "modifyPassWord")
 	@ResponseBody
-	public Map<String, Object> modifyPassword(String oldPassword,
-			String newPassword, @ModelAttribute("user") User user) {
+	public Map<String, Object> modifyPassword(String oldPassword, String newPassword, @ModelAttribute("user") User user) {
 
 		Map<String, Object> result = new HashMap<String, Object>();
 		String encryptInputOldPwd = SysUtil.encryptByMd5(oldPassword);
@@ -416,7 +412,7 @@ public class UserController {
 					this.userService.updateUser(user);
 					result.put("success", true);
 					result.put("msg", "密码修改成功！");
-				} else{
+				} else {
 					result.put("success", false);
 					result.put("msg", "密码修改失败，服务器端未获得要修改的用户密码信息！");
 				}

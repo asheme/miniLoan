@@ -44,8 +44,7 @@ public class DictItemController {
 	public ModelAndView toItemList(MlDict dict) {
 		ModelAndView view = new ModelAndView();
 		dict = this.dataDictService.queryDictById(dict);
-		view.addObject("dictTitle",
-				dict.getDictTitle() + "-" + dict.getDictDesc());
+		view.addObject("dictTitle", dict.getDictTitle() + "-" + dict.getDictDesc());
 		view.setViewName("config/dictItemList");
 		view.addObject("dict", dict);
 
@@ -57,12 +56,11 @@ public class DictItemController {
 	public DataGrid geItemtList(Page page, MlDictItem item) {
 		DataGrid result = new DataGrid();
 		PageList<MlDictItem> list = null;
-		
+
 		try {
 			list = this.dictItemService.getDictItemList(page, item);
 			if (list.getPaginator().getTotalCount() != 0) {
-				result.setTotal(Long.valueOf(list.getPaginator()
-						.getTotalCount()));
+				result.setTotal(Long.valueOf(list.getPaginator().getTotalCount()));
 				result.setRows(list);
 			}
 		} catch (Exception e) {
@@ -112,7 +110,7 @@ public class DictItemController {
 
 	public Map<String, Object> addDictItem(MlDictItem item) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (item != null) {
 				this.dictItemService.creatDictItem(item);
@@ -133,7 +131,7 @@ public class DictItemController {
 
 	public Map<String, Object> updateDictItem(MlDictItem item) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (item != null) {
 				this.dictItemService.updateItem(item);
@@ -156,7 +154,7 @@ public class DictItemController {
 	@ResponseBody
 	public Map<String, Object> deleteDictItem(String ids) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if ((ids != null) && (!"".equals(ids.trim()))) {
 				this.dictItemService.deleteItem(ids);

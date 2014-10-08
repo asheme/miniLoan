@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.wealth.miniloan.dao.AppSummaryDao;
 import com.wealth.miniloan.dao.NaturalAppDao;
+import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlAppSummaryExample;
+import com.wealth.miniloan.entity.MlAppSummaryExample.Criteria;
 import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlNaturalAppExample;
 import com.wealth.miniloan.entity.Page;
@@ -16,6 +20,7 @@ import com.wealth.miniloan.utils.SysUtil;
 @Service
 public class LoanNaturalAppServiceImpl implements CommonServiceI<MlNaturalApp> {
 	private NaturalAppDao naturalAppDao = null;
+	private AppSummaryDao appSummaryDao = null;
 	private final String _ORDER_ATTRS = "appNo";
 	private final String _ORDER_FIELDS = "APP_NO";
 
@@ -27,19 +32,40 @@ public class LoanNaturalAppServiceImpl implements CommonServiceI<MlNaturalApp> {
 	public void setNaturalAppDao(NaturalAppDao naturalAppDao) {
 		this.naturalAppDao = naturalAppDao;
 	}
+
+	@Autowired
+	public void setAppSummaryDao(AppSummaryDao appSummaryDao) {
+		this.appSummaryDao = appSummaryDao;
+	}
+
 	@Override
 	public PageList<MlNaturalApp> getPageList(Page paramPage, MlNaturalApp obj) {
-		MlNaturalAppExample example = new MlNaturalAppExample();
-		String name = obj.getName();
-		String idNo = obj.getIdNo();
-		MlNaturalAppExample.Criteria criteria = example.createCriteria();
-		if (name != null && !"".equals(name)) {
-			criteria.andNameLike("%" + name + "%");
-		}
-		if (idNo != null && !"".equals(idNo)) {
-			criteria.andIdNoLike("%" + idNo + "%");
-		}
+		List<String> appNoList = new ArrayList<String>();
+		MlAppSummaryExample asExample = new MlAppSummaryExample();
+		Criteria c = asExample.createCriteria();
+		c.andAppTypeEqualTo("01");
+		c.andCurrStepEqualTo("00");
+		List<MlAppSummary> asList = this.appSummaryDao.findAll(asExample);
 
+		for (MlAppSummary as : asList) {
+			appNoList.add(as.getAppNo());
+		}
+		MlNaturalAppExample example = new MlNaturalAppExample();
+		MlNaturalAppExample.Criteria criteria = example.createCriteria();
+		// String name = obj.getName();
+		// String idNo = obj.getIdNo();
+		// if (name != null && !"".equals(name)) {
+		// criteria.andNameLike("%" + name + "%");
+		// }
+		// if (idNo != null && !"".equals(idNo)) {
+		// criteria.andIdNoLike("%" + idNo + "%");
+		// }
+
+		if (appNoList.size() != 0) {
+			criteria.andAppNoIn(appNoList);
+		} else {
+			criteria.andAppNoEqualTo("0");
+		}
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {
 			example.setOrderByClause(order);
@@ -72,6 +98,12 @@ public class LoanNaturalAppServiceImpl implements CommonServiceI<MlNaturalApp> {
 	@Override
 	public MlNaturalApp getByPriKey(MlNaturalApp obj) {
 		return (MlNaturalApp) this.naturalAppDao.getById(obj.getAppNo());
+	}
+
+	@Override
+	public Object getByExample(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

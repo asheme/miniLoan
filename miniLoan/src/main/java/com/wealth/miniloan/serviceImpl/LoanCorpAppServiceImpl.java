@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.wealth.miniloan.dao.AppSummaryDao;
 import com.wealth.miniloan.dao.CorpAppDao;
+import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlAppSummaryExample;
 import com.wealth.miniloan.entity.MlCorpApp;
 import com.wealth.miniloan.entity.MlCorpAppExample;
 import com.wealth.miniloan.entity.MlCorpAppExample.Criteria;
@@ -18,21 +21,43 @@ import com.wealth.miniloan.utils.SysUtil;
 @Service
 public class LoanCorpAppServiceImpl implements CommonServiceI<MlCorpApp> {
 	private CorpAppDao corpAppDao = null;
+	private AppSummaryDao appSummaryDao = null;
 	private final String _ORDER_ATTRS = "appNo";
 	private final String _ORDER_FIELDS = "APP_NO";
-	
+
 	@Autowired
 	public void setCorpAppDao(CorpAppDao corpAppDao) {
 		this.corpAppDao = corpAppDao;
 	}
 
+	@Autowired
+	public void setAppSummaryDao(AppSummaryDao appSummaryDao) {
+		this.appSummaryDao = appSummaryDao;
+	}
+
 	@Override
 	public PageList<MlCorpApp> getPageList(Page paramPage, MlCorpApp obj) {
+
+		List<String> appNoList = new ArrayList<String>();
+		MlAppSummaryExample asExample = new MlAppSummaryExample();
+		com.wealth.miniloan.entity.MlAppSummaryExample.Criteria c = asExample.createCriteria();
+		c.andAppTypeEqualTo("02");
+		c.andCurrStepEqualTo("00");
+		List<MlAppSummary> asList = this.appSummaryDao.findAll(asExample);
+
+		for (MlAppSummary as : asList) {
+			appNoList.add(as.getAppNo());
+		}
 		MlCorpAppExample example = new MlCorpAppExample();
-		String name = obj.getCompName();
 		Criteria criteria = example.createCriteria();
-		if (name != null && !"".equals(name)) {
-			criteria.andCompNameLike("%" + name + "%");
+		// String name = obj.getCompName();
+		// if (name != null && !"".equals(name)) {
+		// criteria.andCompNameLike("%" + name + "%");
+		// }
+		if (appNoList.size() != 0) {
+			criteria.andAppNoIn(appNoList);
+		} else {
+			criteria.andAppNoEqualTo("0");
 		}
 
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
@@ -69,6 +94,10 @@ public class LoanCorpAppServiceImpl implements CommonServiceI<MlCorpApp> {
 		return (MlCorpApp) this.corpAppDao.getById(obj.getAppNo());
 	}
 
-	
+	@Override
+	public Object getByExample(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

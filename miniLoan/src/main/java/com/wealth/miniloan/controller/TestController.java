@@ -41,15 +41,13 @@ public class TestController {
 	@RequestMapping(value = "uploadTest")
 	@ResponseBody
 	public Map<String, Object> toAddDict(@RequestParam String fileName,
-			@RequestParam("mFile") CommonsMultipartFile[] files,
-			HttpServletRequest request) {
+			@RequestParam("mFile") CommonsMultipartFile[] files, HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			if (files != null) {
 				System.out.println("==========>>>>" + fileName);
-				String path = request.getSession().getServletContext()
-						.getRealPath("./attach/case");
+				String path = request.getSession().getServletContext().getRealPath("./attach/case");
 				File file = new File(path);
 
 				if (!file.exists() && !file.isDirectory()) {
@@ -57,8 +55,7 @@ public class TestController {
 				}
 				for (MultipartFile tmpFile : files) {
 					String newFileName = tmpFile.getOriginalFilename();
-					FileCopyUtils.copy(tmpFile.getBytes(), new File(path + "/"
-							+ newFileName));
+					FileCopyUtils.copy(tmpFile.getBytes(), new File(path + "/" + newFileName));
 
 					result.put("success", true);
 					result.put("msg", "附件上传成功！");
@@ -77,17 +74,13 @@ public class TestController {
 	}
 
 	@RequestMapping("download")
-	public ResponseEntity<byte[]> download(HttpServletRequest request)
-			throws IOException {
-		String path = request.getSession().getServletContext()
-				.getRealPath("./attach/case");
+	public ResponseEntity<byte[]> download(HttpServletRequest request) throws IOException {
+		String path = request.getSession().getServletContext().getRealPath("./attach/case");
 		File file = new File(path + "/张三测试.docx");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		headers.setContentDispositionFormData("attachment", new String(
-				"张三测试.docx".getBytes("utf-8"), "ISO8859-1"));
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),
-				headers, HttpStatus.CREATED);
+		headers.setContentDispositionFormData("attachment", new String("张三测试.docx".getBytes("utf-8"), "ISO8859-1"));
+		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(value = "executeStrategy")
@@ -107,7 +100,7 @@ public class TestController {
 
 		return result;
 	}
-	
+
 	@RequestMapping(value = "reExecuteStrategy")
 	@ResponseBody
 	public Map<String, Object> reExecuteStrategy() {

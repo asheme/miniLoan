@@ -34,8 +34,8 @@ import org.springframework.stereotype.Service;
 public class RoleServiceImpl implements RoleServiceI {
 	private RoleDao roleDao = null;
 	private RescDao rescDao = null;
-	private RoleRescDao roleRescDao=null;
-	private RoleAuthDao roleAuthDao=null;
+	private RoleRescDao roleRescDao = null;
+	private RoleAuthDao roleAuthDao = null;
 	private AuthorityDao authorityDao = null;
 	private final String _ORDER_ATTRS = "roleName,status";
 	private final String _ORDER_FIELDS = "ROLE_NAME,STATUS";
@@ -137,17 +137,14 @@ public class RoleServiceImpl implements RoleServiceI {
 		List<MlSysAuthority> allAuthList = this.authorityDao.getAll();
 
 		// 获取角色对应的模块信息
-		List<MlSysResc> roleRescList = this.rescDao.getSavedRescByRoleId(role
-				.getRoleId());
+		List<MlSysResc> roleRescList = this.rescDao.getSavedRescByRoleId(role.getRoleId());
 
 		// 获取角色对应的权限信息
-		List<MlSysAuthority> roleAuthList = this.authorityDao
-				.selectByRoleId(role.getRoleId());
+		List<MlSysAuthority> roleAuthList = this.authorityDao.selectByRoleId(role.getRoleId());
 
 		if (allRescList != null) {
 			rescAuthList = new ArrayList<RescAuthModel>();
-			generatorRescAuth(allRescList, roleRescList, allAuthList,
-					roleAuthList, rescAuthList);
+			generatorRescAuth(allRescList, roleRescList, allAuthList, roleAuthList, rescAuthList);
 		}
 
 		return rescAuthList;
@@ -162,9 +159,8 @@ public class RoleServiceImpl implements RoleServiceI {
 	 * @param roleAuthList
 	 * @param rescAuthList
 	 */
-	private void generatorRescAuth(List<MlSysResc> allRescList,
-			List<MlSysResc> roleRescList, List<MlSysAuthority> allAuthList,
-			List<MlSysAuthority> roleAuthList, List<RescAuthModel> rescAuthList) {
+	private void generatorRescAuth(List<MlSysResc> allRescList, List<MlSysResc> roleRescList,
+			List<MlSysAuthority> allAuthList, List<MlSysAuthority> roleAuthList, List<RescAuthModel> rescAuthList) {
 		RescAuthModel rescAuthModel = null;
 		MlSysResc resc = null;
 
@@ -176,7 +172,7 @@ public class RoleServiceImpl implements RoleServiceI {
 					rescAuthModel = convertRescAuthByResc(resc);
 					rescAuthModel.setChecked(isRescModelChecked(rescAuthModel, roleRescList));
 					generatorAuthOfResc(rescAuthModel, allAuthList, roleAuthList);
-					generatorChildRescAuth(rescAuthModel, allRescList,allAuthList,roleRescList,roleAuthList);
+					generatorChildRescAuth(rescAuthModel, allRescList, allAuthList, roleRescList, roleAuthList);
 					rescAuthList.add(rescAuthModel);
 				}
 			}
@@ -197,8 +193,7 @@ public class RoleServiceImpl implements RoleServiceI {
 			rescAuthModel.setId(String.valueOf(resc.getRescId()));
 			rescAuthModel.setText(resc.getRescTitle());
 			rescAuthModel.setType("M");
-			rescAuthModel.setUrl(resc.getRescUrl() == null ? "" : resc
-					.getRescUrl());
+			rescAuthModel.setUrl(resc.getRescUrl() == null ? "" : resc.getRescUrl());
 			rescAuthModel.setIconCls(resc.getRescIcon());
 			rescAuthModel.setIsLeaf(resc.getIsLeaf());
 			rescAuthModel.setSeq(resc.getRescSeq().intValue());
@@ -214,8 +209,7 @@ public class RoleServiceImpl implements RoleServiceI {
 	 * @param roleRescList
 	 * @return
 	 */
-	private boolean isRescModelChecked(RescAuthModel rescAuthModel,
-			List<MlSysResc> roleRescList) {
+	private boolean isRescModelChecked(RescAuthModel rescAuthModel, List<MlSysResc> roleRescList) {
 		if (roleRescList == null)
 			return false;
 
@@ -239,8 +233,8 @@ public class RoleServiceImpl implements RoleServiceI {
 	 * @param allAuthList
 	 * @param roleAuthList
 	 */
-	private void generatorAuthOfResc(RescAuthModel rescAuthModel,
-			List<MlSysAuthority> allAuthList, List<MlSysAuthority> roleAuthList) {
+	private void generatorAuthOfResc(RescAuthModel rescAuthModel, List<MlSysAuthority> allAuthList,
+			List<MlSysAuthority> roleAuthList) {
 		if (!"Y".equals(rescAuthModel.getIsLeaf()) || allAuthList == null)
 			return;
 
@@ -251,7 +245,7 @@ public class RoleServiceImpl implements RoleServiceI {
 			tempAuth = (MlSysAuthority) allAuthList.get(i);
 			if (rescAuthModel.getId().equals(tempAuth.getRescId().toString())) {
 				authChild = convertRescAuthByAuth(tempAuth);
-				authChild.setChecked(isAuthModelChecked(authChild,roleAuthList));
+				authChild.setChecked(isAuthModelChecked(authChild, roleAuthList));
 				authChildList.add(authChild);
 			}
 		}
@@ -261,6 +255,7 @@ public class RoleServiceImpl implements RoleServiceI {
 
 	/**
 	 * 将权限对象转化为脚色权限设置对象
+	 * 
 	 * @param auth
 	 * @return
 	 */
@@ -275,17 +270,18 @@ public class RoleServiceImpl implements RoleServiceI {
 			rescAuthModel.setIconCls("icon-ui-auth");
 			rescAuthModel.setType("A");
 		}
-		
+
 		return rescAuthModel;
 	}
-	
+
 	/**
 	 * 检查当前权限是否应当被选中
+	 * 
 	 * @param rescAuthModel
 	 * @param roleAuthList
 	 * @return
 	 */
-	private boolean isAuthModelChecked(RescAuthModel rescAuthModel,	List<MlSysAuthority> roleAuthList) {
+	private boolean isAuthModelChecked(RescAuthModel rescAuthModel, List<MlSysAuthority> roleAuthList) {
 		if (roleAuthList == null)
 			return false;
 
@@ -293,8 +289,7 @@ public class RoleServiceImpl implements RoleServiceI {
 		boolean isChecked = false;
 		for (int i = 0; i < roleAuthList.size(); ++i) {
 			tempAuth = (MlSysAuthority) roleAuthList.get(i);
-			if (rescAuthModel.getId().equalsIgnoreCase(
-					tempAuth.getAuthId().toString())) {
+			if (rescAuthModel.getId().equalsIgnoreCase(tempAuth.getAuthId().toString())) {
 				isChecked = true;
 				break;
 			}
@@ -305,11 +300,12 @@ public class RoleServiceImpl implements RoleServiceI {
 
 	/**
 	 * 生成权限设置子菜单
+	 * 
 	 * @param RescAuthModel
 	 * @param rescList
 	 */
-	private void generatorChildRescAuth(RescAuthModel rescAuthModel,
-			List<MlSysResc> allRescList,List<MlSysAuthority> allAuthList,List<MlSysResc> roleRescList, List<MlSysAuthority> roleAuthList) {
+	private void generatorChildRescAuth(RescAuthModel rescAuthModel, List<MlSysResc> allRescList,
+			List<MlSysAuthority> allAuthList, List<MlSysResc> roleRescList, List<MlSysAuthority> roleAuthList) {
 		if ("Y".equals(rescAuthModel.getIsLeaf()))
 			return;
 
@@ -321,13 +317,12 @@ public class RoleServiceImpl implements RoleServiceI {
 			if (rescAuthModel.getId().equals(resc.getParentId().toString())) {
 				childRescAuthModel = convertRescAuthByResc(resc);
 				childRescAuthModel.setChecked(isRescModelChecked(childRescAuthModel, roleRescList));
-				generatorAuthOfResc(childRescAuthModel, allAuthList,
-						roleAuthList);
-				generatorChildRescAuth(childRescAuthModel, allRescList,allAuthList,roleRescList,roleAuthList);
+				generatorAuthOfResc(childRescAuthModel, allAuthList, roleAuthList);
+				generatorChildRescAuth(childRescAuthModel, allRescList, allAuthList, roleRescList, roleAuthList);
 				childRescAuthModelList.add(childRescAuthModel);
 			}
 		}
-		
+
 		rescAuthModel.setChildren(childRescAuthModelList);
 	}
 
@@ -360,7 +355,7 @@ public class RoleServiceImpl implements RoleServiceI {
 	}
 
 	@Override
-	public List<MlRole> loadUnselectedRole(long userId) {		
+	public List<MlRole> loadUnselectedRole(long userId) {
 		return this.roleDao.getUnselectByUserId(userId);
 	}
 

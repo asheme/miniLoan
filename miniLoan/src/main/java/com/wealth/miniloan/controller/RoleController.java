@@ -56,8 +56,7 @@ public class RoleController {
 		try {
 			roleList = this.roleService.getRolePageList(page, role);
 			if (roleList != null) {
-				result.setTotal(Long.valueOf(roleList.getPaginator()
-						.getTotalCount()));
+				result.setTotal(Long.valueOf(roleList.getPaginator().getTotalCount()));
 				result.setRows(roleList);
 			}
 		} catch (Exception e) {
@@ -189,23 +188,23 @@ public class RoleController {
 
 		return modelViewRole;
 	}
-	
+
 	@RequestMapping(value = "rescAuthList")
 	@ResponseBody
-	public Map<String, Object>  loadAuth(MlRole role) {
+	public Map<String, Object> loadAuth(MlRole role) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		List<RescAuthModel> rescAuthList = null;
-		
+
 		try {
-			rescAuthList= this.roleService.loadRoleAuthTree(role);
-			if(rescAuthList!=null){
+			rescAuthList = this.roleService.loadRoleAuthTree(role);
+			if (rescAuthList != null) {
 				result.put("success", true);
 				result.put("data", rescAuthList);
-			}else{
+			} else {
 				result.put("success", false);
 				result.put("msg", "角色权限模块未初始化，请联系管理员完成初始化！");
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
@@ -214,25 +213,26 @@ public class RoleController {
 
 		return result;
 	}
-	
+
 	/**
 	 * 修改角色权限
+	 * 
 	 * @return
 	 */
 	@RequestMapping(value = "saveRoleAuth")
 	@ResponseBody
-	public Map<String, Object> saveRoleAuth(long roleId,long[] rescIdList, long[] authIdList) {
+	public Map<String, Object> saveRoleAuth(long roleId, long[] rescIdList, long[] authIdList) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			if(!"".equals(roleId) && (authIdList.length>0 || rescIdList.length>0)){
-				//保存权限
-				this.roleService.saveRoleResc(roleId, rescIdList);				
+			if (!"".equals(roleId) && (authIdList.length > 0 || rescIdList.length > 0)) {
+				// 保存权限
+				this.roleService.saveRoleResc(roleId, rescIdList);
 				this.roleService.saveRoleAuth(roleId, authIdList);
-				
+
 				result.put("success", true);
 				result.put("msg", "角色权限设置成功！");
-			}else{
+			} else {
 				result.put("success", false);
 				result.put("msg", "角色权限设置失败，服务器端未获得要修改的角色权限！");
 			}

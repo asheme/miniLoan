@@ -16,13 +16,13 @@ import com.wealth.miniloan.utils.SysUtil;
 
 @Service
 public class LoanNaturalMortgageServiceImpl implements CommonServiceI<MlNaturalMortgage> {
-	private NaturalMortgageDao NaturalMortgageDao = null;
-	private final String _ORDER_ATTRS = "appNo";
-	private final String _ORDER_FIELDS = "APP_NO";
-	
+	private NaturalMortgageDao naturalMortgageDao = null;
+	private final String _ORDER_ATTRS = "mortgageId";
+	private final String _ORDER_FIELDS = "MORTGAGE_ID";
+
 	@Autowired
-	public void setNaturalMortgageDao(NaturalMortgageDao NaturalMortgageDao) {
-		this.NaturalMortgageDao = NaturalMortgageDao;
+	public void setNaturalMortgageDao(NaturalMortgageDao naturalMortgageDao) {
+		this.naturalMortgageDao = naturalMortgageDao;
 	}
 
 	@Override
@@ -33,36 +33,45 @@ public class LoanNaturalMortgageServiceImpl implements CommonServiceI<MlNaturalM
 		if (appNo != null && !"".equals(appNo)) {
 			criteria.andAppNoEqualTo(appNo);
 		}
-		return this.NaturalMortgageDao.findPage(SysUtil.convertPage(paramPage), example);
+
+		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
+		if (!order.equals("")) {
+			example.setOrderByClause(order);
+		}
+		return this.naturalMortgageDao.findPage(SysUtil.convertPage(paramPage), example);
 	}
 
 	@Override
 	public int create(MlNaturalMortgage obj) {
-		return this.NaturalMortgageDao.save(obj);
+		return this.naturalMortgageDao.save(obj);
 	}
 
 	@Override
 	public int update(MlNaturalMortgage obj) {
-		return this.NaturalMortgageDao.update(obj);
+		return this.naturalMortgageDao.update(obj);
 	}
 
 	@Override
 	public int delete(String ids) {
 		String[] idArray = ids.split(",");
-		List<String> list = new ArrayList<String>();
+		List<Long> list = new ArrayList<Long>();
 		for (int i = 0; i < idArray.length; i++) {
-			list.add(idArray[i]);
+			list.add(Long.valueOf(idArray[i]));
 		}
 		MlNaturalMortgageExample example = new MlNaturalMortgageExample();
-		example.createCriteria().andAppNoIn(list);
-		return this.NaturalMortgageDao.deleteByExample(example);
+		example.createCriteria().andMortgageIdIn(list);
+		return this.naturalMortgageDao.deleteByExample(example);
 	}
 
 	@Override
 	public MlNaturalMortgage getByPriKey(MlNaturalMortgage obj) {
-		return (MlNaturalMortgage) this.NaturalMortgageDao.getById(obj.getAppNo());
+		return (MlNaturalMortgage) this.naturalMortgageDao.getById(obj.getMortgageId());
 	}
 
-	
+	@Override
+	public Object getByExample(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

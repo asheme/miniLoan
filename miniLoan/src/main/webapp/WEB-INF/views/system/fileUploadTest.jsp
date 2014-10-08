@@ -73,16 +73,14 @@
 					</tr>
 					<tr>
 						<th align="center" width="35%">文件下载</th>
-						<td><a href="${pageContext.request.contextPath}/test/download.do">张三测试.docx</td>
+						<td><a
+							href="${pageContext.request.contextPath}/test/download.do">张三测试.docx</td>
 					</tr>
 					<tr>
-						<td colspan="2" align="center">
-							<input type="button"
-							value="保存" class="btn" onclick="upload();" />
-							<input type="button"
-							value="测试执行" class="btn" onclick="exec();" />
-							<input type="button"
-							value="重新加载执行" class="btn" onclick="reExec();" />
+						<td colspan="2" align="center"><input type="button"
+							value="保存" class="btn" onclick="upload();" /> <input
+							type="button" value="测试执行" class="btn" onclick="exec();" /> <input
+							type="button" value="重新加载执行" class="btn" onclick="reExec();" />
 						</td>
 					</tr>
 				</table>

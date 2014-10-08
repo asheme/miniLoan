@@ -41,7 +41,8 @@ function addTab(params) {
 <div id="mainTabs" class="easyui-tabs"
 	data-options="fit:true,border:false" style="overflow: hidden;">
 	<div title="首页" data-options="border:false" style="overflow: hidden;">
-		<iframe src="${path}toHome.do" frameborder="0" style="border: 0; width: 100%; height: 100%;"></iframe>
+		<iframe src="${path}toHome.do" frameborder="0"
+			style="border: 0; width: 100%; height: 100%;"></iframe>
 	</div>
 </div>
 <div id="mainTabsMenu" style="width: 120px; display: none;">

@@ -5,9 +5,12 @@ import com.wealth.miniloan.entity.MlCorpAttach;
 import com.wealth.miniloan.entity.Page;
 
 public interface LoanCorpAttachServiceI {
-	  public PageList<MlCorpAttach> getCorpAttachPageList(Page paramPage,MlCorpAttach CorpAttachApp);
-	  public abstract int createCorpAttachApp(MlCorpAttach paramMlCorpAttach);
-	  public abstract int updateCorpAttachApp(MlCorpAttach paramMlCorpAttach);
-	  public abstract MlCorpAttach getCorpAttachByPriKey(MlCorpAttach paramMlCorpAttachApp);
+	public PageList<MlCorpAttach> getCorpAttachPageList(Page paramPage, MlCorpAttach CorpAttachApp);
+
+	public abstract int createCorpAttachApp(MlCorpAttach paramMlCorpAttach);
+
+	public abstract int updateCorpAttachApp(MlCorpAttach paramMlCorpAttach);
+
+	public abstract MlCorpAttach getCorpAttachByPriKey(MlCorpAttach paramMlCorpAttachApp);
 
 }

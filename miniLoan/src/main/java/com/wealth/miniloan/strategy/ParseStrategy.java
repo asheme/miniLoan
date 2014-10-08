@@ -23,7 +23,7 @@ import com.wealth.miniloan.strategy.model.Result;
  * @author 春国
  *
  */
-//@Repository
+@Repository
 public class ParseStrategy {
 	private String scripts = "";
 	private List<Attribute> inVariableList = null;

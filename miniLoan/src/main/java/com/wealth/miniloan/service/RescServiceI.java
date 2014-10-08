@@ -5,18 +5,17 @@ import com.wealth.miniloan.entity.MlSysResc;
 import com.wealth.miniloan.entity.Page;
 import java.util.List;
 
-public abstract interface RescServiceI
-{
-  public abstract PageList<MlSysResc> getRescPageList(Page paramPage,MlSysResc resc);
+public abstract interface RescServiceI {
+	public abstract PageList<MlSysResc> getRescPageList(Page paramPage, MlSysResc resc);
 
-  public abstract List<MlSysResc> getParentRescList();
+	public abstract List<MlSysResc> getParentRescList();
 
-  public abstract int createResc(MlSysResc paramMlSysResc);
+	public abstract int createResc(MlSysResc paramMlSysResc);
 
-  public abstract int updateResc(MlSysResc paramMlSysResc);
+	public abstract int updateResc(MlSysResc paramMlSysResc);
 
-  public abstract MlSysResc getRescById(MlSysResc paramMlSysResc);
+	public abstract MlSysResc getRescById(MlSysResc paramMlSysResc);
 
-  public abstract int deleteRescByKeys(String paramString);
-  
+	public abstract int deleteRescByKeys(String paramString);
+
 }

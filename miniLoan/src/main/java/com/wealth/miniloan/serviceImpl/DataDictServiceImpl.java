@@ -98,10 +98,8 @@ public class DataDictServiceImpl implements DataDictServiceI {
 
 		if (dataDictionary.getDict() != null) {
 			MlDictItemExample itemExample = new MlDictItemExample();
-			itemExample.createCriteria().andDictIdEqualTo(
-					dataDictionary.getDict().getDictId());
-			dataDictionary.setDictItemList(this.dictItemDao
-					.findAll(itemExample));
+			itemExample.createCriteria().andDictIdEqualTo(dataDictionary.getDict().getDictId());
+			dataDictionary.setDictItemList(this.dictItemDao.findAll(itemExample));
 		}
 
 		return dataDictionary;

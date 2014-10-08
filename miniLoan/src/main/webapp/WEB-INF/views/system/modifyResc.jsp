@@ -93,7 +93,8 @@
 				<tr>
 					<th align="center" width="35%">命名空间</th>
 					<td><input name="rescNamespace" id="rescNamespace"
-						value="${resc.rescNamespace}" style="width: 200px" data-options="required:true,validType:'emptyString[\'#rescNamespace\']'" />
+						value="${resc.rescNamespace}" style="width: 200px"
+						data-options="required:true,validType:'emptyString[\'#rescNamespace\']'" />
 					</td>
 				</tr>
 				<tr>

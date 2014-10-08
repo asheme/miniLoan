@@ -169,53 +169,53 @@
 </script>
 </head>
 <body>
-<div class="easyui-layout" data-options="fit : true,border : false">
-	<div data-options="region:'north',title:'查询条件',border:false"
-		style="height: 103px; overflow: hidden; padding-left: 1px; padding-right: 1px; padding-bottom: 1px; padding-top: 1px;"
-		align="center">
-		<form id="searchForm">
-			<table class="querytable" width="100%">
-				<tr height="30px;">
-					<th width="20%">字典名称</th>
-					<td width="30%"><input name="dictTitle" style="width: 275px;"
-						class="easyui-validatebox" validType="length[0,20]" /></td>
-					<th width="20%">字典描述</th>
-					<td width="30%"><input name="dictDesc" style="width: 275px;"
-						class="easyui-validatebox" validType="length[0,20]" /></td>
-				</tr>
-				<tr height="30px;">
-					<td colspan="4" align="center"><input type="button"
-						class="btn" value="查询" onclick="search();" /> <input type="button"
-						value="清空" class="btn" onclick="resetSearch();" /></td>
-				</tr>
+	<div class="easyui-layout" data-options="fit : true,border : false">
+		<div data-options="region:'north',title:'查询条件',border:false"
+			style="height: 103px; overflow: hidden; padding-left: 1px; padding-right: 1px; padding-bottom: 1px; padding-top: 1px;"
+			align="center">
+			<form id="searchForm">
+				<table class="querytable" width="100%">
+					<tr height="30px;">
+						<th width="20%">字典名称</th>
+						<td width="30%"><input name="dictTitle" style="width: 275px;"
+							class="easyui-validatebox" validType="length[0,20]" /></td>
+						<th width="20%">字典描述</th>
+						<td width="30%"><input name="dictDesc" style="width: 275px;"
+							class="easyui-validatebox" validType="length[0,20]" /></td>
+					</tr>
+					<tr height="30px;">
+						<td colspan="4" align="center"><input type="button"
+							class="btn" value="查询" onclick="search();" /> <input
+							type="button" value="清空" class="btn" onclick="resetSearch();" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+		<div data-options="region:'center',border:false">
+			<table id="datagrid">
 			</table>
-		</form>
-	</div>
-	<div data-options="region:'center',border:false">
-		<table id="datagrid">
-		</table>
-		<div id="toolbar"
-			style="height: auto !important; height: 28px; min-height: 28px;">
-			<table cellspacing="0" cellpadding="0">
-				<tr>
-					<td><a href="#" class="easyui-linkbutton"
-						data-options="iconCls:'icon-ui-add',plain:true"
-						onClick="javascript:addNew();" style="float: left;">新增</a></td>
-					<td><div class="datagrid-btn-separator"></div></td>
-					<td><a href="#" class="easyui-linkbutton"
-						data-options="iconCls:'icon-ui-edit',plain:true"
-						onClick="javascript:updateObj();" style="float: left;">修改</a></td>
-					<td><div class="datagrid-btn-separator"></div></td>
-					<td><a href="#" class="easyui-linkbutton"
-						data-options="iconCls:'icon-ui-remove',plain:true"
-						onClick="javascript:deleteObj();" style="float: left;">删除</a></td>
-					<td><div class="datagrid-btn-separator"></div></td>
-					<td><a href="#" class="easyui-linkbutton"
-						data-options="iconCls:'icon-ui-search',plain:true"
-						onClick="javascript:dictItemConfig();" style="float: left;">字典项配置</a></td>
-				</tr>
-			</table>
+			<div id="toolbar"
+				style="height: auto !important; height: 28px; min-height: 28px;">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-add',plain:true"
+							onClick="javascript:addNew();" style="float: left;">新增</a></td>
+						<td><div class="datagrid-btn-separator"></div></td>
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-edit',plain:true"
+							onClick="javascript:updateObj();" style="float: left;">修改</a></td>
+						<td><div class="datagrid-btn-separator"></div></td>
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-remove',plain:true"
+							onClick="javascript:deleteObj();" style="float: left;">删除</a></td>
+						<td><div class="datagrid-btn-separator"></div></td>
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:dictItemConfig();" style="float: left;">字典项配置</a></td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
-</div>
 </body>

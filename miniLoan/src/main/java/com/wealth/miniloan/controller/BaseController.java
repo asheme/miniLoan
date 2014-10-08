@@ -12,8 +12,8 @@ public class BaseController {
 	public void setGetAppNoService(GetAppNoService getAppNoService) {
 		this.getAppNoService = getAppNoService;
 	}
-	
-	public String getAppNo(){
+
+	public String getAppNo() {
 		return getAppNoService.getAppNo();
 	}
 }

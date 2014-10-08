@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
-import com.wealth.miniloan.dao.CorpAppDao;
 import com.wealth.miniloan.dao.NaturalCreditDao;
-import com.wealth.miniloan.entity.MlCorpApp;
 import com.wealth.miniloan.entity.MlCorpAppExample;
 import com.wealth.miniloan.entity.MlCorpAppExample.Criteria;
 import com.wealth.miniloan.entity.MlNaturalCredit;
@@ -22,7 +20,7 @@ public class LoanNaturalCreditServiceImpl implements CommonServiceI<MlNaturalCre
 	private NaturalCreditDao naturalCreditDao = null;
 	private final String _ORDER_ATTRS = "appNo";
 	private final String _ORDER_FIELDS = "APP_NO";
-	
+
 	@Autowired
 	public void setNaturalCreditDao(NaturalCreditDao naturalCreditDao) {
 		this.naturalCreditDao = naturalCreditDao;
@@ -71,6 +69,10 @@ public class LoanNaturalCreditServiceImpl implements CommonServiceI<MlNaturalCre
 		return (MlNaturalCredit) this.naturalCreditDao.getById(obj.getAppNo());
 	}
 
-	
+	@Override
+	public Object getByExample(Object obj) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

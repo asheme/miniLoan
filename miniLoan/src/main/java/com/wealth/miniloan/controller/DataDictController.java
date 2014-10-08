@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping(value="/dict")
+@RequestMapping(value = "/dict")
 public class DataDictController {
 	private DataDictServiceI dictService = null;
 
@@ -33,17 +33,16 @@ public class DataDictController {
 		this.dictService = dictService;
 	}
 
-	@RequestMapping(value="dictList")
+	@RequestMapping(value = "dictList")
 	@ResponseBody
 	public DataGrid getDataDictList(Page page, MlDict dict) {
 		DataGrid result = new DataGrid();
 		PageList<MlDict> dictlist = null;
-		
+
 		try {
 			dictlist = this.dictService.getDictList(page, dict);
 			if (dictlist.getPaginator().getTotalCount() != 0) {
-				result.setTotal(Long.valueOf(dictlist.getPaginator()
-						.getTotalCount()));
+				result.setTotal(Long.valueOf(dictlist.getPaginator().getTotalCount()));
 				result.setRows(dictlist);
 			}
 		} catch (Exception e) {
@@ -52,7 +51,7 @@ public class DataDictController {
 		return result;
 	}
 
-	@RequestMapping(value="toAddDict")
+	@RequestMapping(value = "toAddDict")
 	@ResponseBody
 	public ModelAndView toAddDict() {
 		ModelAndView modelAndView = new ModelAndView();
@@ -61,7 +60,7 @@ public class DataDictController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value="toUpdateDict")
+	@RequestMapping(value = "toUpdateDict")
 	@ResponseBody
 	public ModelAndView toUpdateDict(MlDict dict) {
 		try {
@@ -77,7 +76,7 @@ public class DataDictController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value="modifyDict")
+	@RequestMapping(value = "modifyDict")
 	@ResponseBody
 	public Map<String, Object> modifyDict(MlDict dict, String flag) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -96,7 +95,7 @@ public class DataDictController {
 
 	public Map<String, Object> addDict(MlDict dict) {
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+
 		try {
 			if (dict != null) {
 				this.dictService.createDict(dict);
@@ -135,7 +134,7 @@ public class DataDictController {
 		return result;
 	}
 
-	@RequestMapping(value="deleteDict")
+	@RequestMapping(value = "deleteDict")
 	@ResponseBody
 	public Map<String, Object> deleteDept(String ids) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -157,11 +156,10 @@ public class DataDictController {
 		return result;
 	}
 
-	@RequestMapping(value="getDictItems")
+	@RequestMapping(value = "getDictItems")
 	@ResponseBody
 	public List<ComboOption> getDictItems(String dictName) {
-		DataDictionary dataDictionary = this.dictService
-				.getDictItemsByDictName(dictName);
+		DataDictionary dataDictionary = this.dictService.getDictItemsByDictName(dictName);
 		List<MlDictItem> dictItemList = dataDictionary.getDictItemList();
 		List<ComboOption> comboOptionList = new ArrayList<ComboOption>();
 		MlDictItem dictItem = null;
@@ -185,8 +183,7 @@ public class DataDictController {
 	@RequestMapping({ "getDictItem" })
 	@ResponseBody
 	public MlDictItem getDictItem(String dictName, String itemCode) {
-		DataDictionary dataDictionary = this.dictService
-				.getDictItemsByDictName(dictName);
+		DataDictionary dataDictionary = this.dictService.getDictItemsByDictName(dictName);
 		List dictItemList = dataDictionary.getDictItemList();
 
 		MlDictItem dictItem = null;

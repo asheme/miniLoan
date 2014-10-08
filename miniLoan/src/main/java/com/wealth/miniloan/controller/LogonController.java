@@ -29,8 +29,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping({ "/" })
 @SessionAttributes("user")
 public class LogonController {
-	private static final Logger logger = LoggerFactory
-			.getLogger(LogonController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LogonController.class);
 
 	private LoginServiceI loginService = null;
 
@@ -52,8 +51,7 @@ public class LogonController {
 	public ModelAndView logon(String loginId, String password) {
 		ModelAndView modelAndView = new ModelAndView();
 		Subject currUser = SecurityUtils.getSubject();
-		UsernamePasswordToken token = new UsernamePasswordToken(loginId,
-				password);
+		UsernamePasswordToken token = new UsernamePasswordToken(loginId, password);
 		token.setRememberMe(false);
 
 		try {
@@ -63,8 +61,7 @@ public class LogonController {
 			User user = this.loginService.getLoginUserPersistInfo(loginId);
 			// 获取登陆时间
 			Date date = new Date();
-			SimpleDateFormat dateFormat = new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			String dateStr = dateFormat.format(date);
 			user.setLastLogin(date);
 			user.setLastLoginDateStr(dateStr);

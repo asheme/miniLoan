@@ -14,15 +14,15 @@ public class GetAppNoService {
 	public void setCommonService(CommonService commonService) {
 		this.commonService = commonService;
 	}
-	
-	public String getAppNo(){
+
+	public String getAppNo() {
 		String date = DateUtils.getDTStr("yyyyMMdd");
 		String appNo = "";
-		synchronized (CommonService.flag){
+		synchronized (CommonService.flag) {
 			appNo = commonService.getAppNo(date);
 		}
-		
+
 		return appNo;
 	}
-	
+
 }

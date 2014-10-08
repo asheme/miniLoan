@@ -1,7 +1,11 @@
 package com.wealth.miniloan.strategy;
 
+import javax.inject.Singleton;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import com.wealth.miniloan.entity.Strategy;
 
@@ -17,7 +21,9 @@ import javassist.CtMethod;
  * @author 春国
  *
  */
-//@Component
+@Service
+@Lazy(value=false)
+@Singleton
 public class StrategyExecute {
 	private static boolean isLoaded = false;
 	private static boolean needReLoad = false;
