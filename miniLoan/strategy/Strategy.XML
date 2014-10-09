@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Strategy>
+	<InVariable>
+		<Field name="aaa" desc="测试输入变量1" type="C" defaultValue="a" />
+		<Field name="bbb" desc="测试输入变量2" type="C" defaultValue="" />
+		<Field name="ccc" desc="测试输入变量3" type="N" defaultValue="" />
+		<Field name="ddd" desc="测试输入变量4" type="N" defaultValue="0" />
+		<Field name="eee" desc="测试输入变量5" type="N" defaultValue="" />
+	</InVariable>
+	<OutVariable>
+		<Field name="fff" desc="测试输出变量1" type="C" defaultValue="b" />
+		<Field name="ggg" desc="测试输出变量2" type="C" defaultValue="" />
+		<Field name="hhh" desc="测试输出变量3" type="N" defaultValue="" />
+		<Field name="iii" desc="测试输出变量4" type="N" defaultValue="1" />
+	</OutVariable>
+	<Scores>
+		<ScoreCard name="score1" min="10" max="100">
+			<ExcludeCond>
+				<Condition var="aaa" scope="b,c" reasonCode="s0001" reason="小问题" />
+			</ExcludeCond>
+			<ScoreCal>
+				<Segment var="aaa">
+					<Item type="N" scope="a" radio="1" score="10"  />
+					<Item type="O" scope="" radio="1" score="10"  />
+				</Segment>
+				<Segment var="ddd">
+					<Item type="N" scope="0" radio="1" score="15"  />
+					<Item type="O" scope="" radio="1" score="10"  />
+				</Segment>
+			</ScoreCal>
+		</ScoreCard>
+	</Scores>
+	<DecisionTree>
+		<ExcludeCond>
+			<Condition var="ddd" scope="-1" reasonCode="t0001" reason="有问题" />
+		</ExcludeCond>
+		<Tree>
+			<Branch id="1" var="aaa" scope="c,d" type="N" isLeaf="N" parentId="" />
+			<Branch id="2" var="" scope="" type="O" isLeaf="N" parentId="" />
+			<Branch id="3" var="ccc" scope="1,2" type="N" isLeaf="Y" parentId="1">
+				<Result>
+					<Item var="fff" value="c" />
+					<Item var="ggg" value="d" />
+					<Item var="hhh" value="6" />
+				</Result>
+			</Branch>
+			<Branch id="4" var="ccc" scope="3" type="N" isLeaf="Y" parentId="1">
+				<Result>
+					<Item var="fff" value="a" />
+					<Item var="ggg" value="b" />
+					<Item var="hhh" value="3" />
+				</Result>
+			</Branch>
+			<Branch id="3" var="ddd" scope="5" type="N" isLeaf="Y" parentId="2">
+				<Result>
+					<Item var="fff" value="e" />
+					<Item var="ggg" value="f" />
+					<Item var="hhh" value="7" />
+				</Result>
+			</Branch>
+			<Branch id="4" var="" scope="" type="O" isLeaf="Y" parentId="2">
+				<Result>
+					<Item var="fff" value="n" />
+					<Item var="ggg" value="g" />
+					<Item var="hhh" value="8" />
+				</Result>
+			</Branch>
+		</Tree>
+	</DecisionTree>
+</Strategy>
