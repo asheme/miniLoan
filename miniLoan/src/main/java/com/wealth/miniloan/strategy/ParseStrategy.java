@@ -25,6 +25,7 @@ import com.wealth.miniloan.strategy.model.Result;
  */
 @Repository
 public class ParseStrategy {
+	private final String STG_FILE="F:\\source\\git\\miniLoan\\miniLoan\\strategy\\Strategy.XML";
 	private String scripts = "";
 	private List<Attribute> inVariableList = null;
 	private List<Attribute> outVariableList = null;
@@ -40,8 +41,7 @@ public class ParseStrategy {
 	 */
 	public void loadStrategy() {
 		this.strategy = new Strategy();
-		String scripts = "System.out.println(\"the first test of dynamic execute.\");";
-		scripts += "return true;";
+		this.strategy.setStgFileName(STG_FILE);
 		parseStrategy();
 		strategy.setScripts(scripts);
 	}

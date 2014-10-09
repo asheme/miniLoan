@@ -1,5 +1,6 @@
 package com.wealth.miniloan.strategy;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,10 @@ import javassist.CtMethod;
  *
  */
 @Service
-@Lazy(value=false)
+@Lazy(value = false)
 @Singleton
 public class StrategyExecute {
 	private static boolean isLoaded = false;
-	private static boolean needReLoad = false;
 	private Strategy strategy = null;
 	private ParseStrategy parseStrategy = null;
 	private static ExecuteAssistDecisionI access = null;
@@ -40,18 +40,30 @@ public class StrategyExecute {
 		this.parseStrategy = parseStrategy;
 	}
 
-	public void execute() {
+	/**
+	 * 在类初始化后，加载策略信息，并完成动态编译
+	 */
+	@PostConstruct
+	public void loadStrategy() {
 		try {
-			if (this.isLoaded == false || this.needReLoad == true) {
+			if (isLoaded == false || access == null) {
 				byte[] bytes = createExecuteClass();
 				DirectLoader s_classLoader = new DirectLoader();
-				Class clas = s_classLoader.load(
+				Class<?> clas = s_classLoader.load(
 						"com.wealth.miniloan.strategy.ExecuteAssistDecision",
 						bytes);
-				this.access=(ExecuteAssistDecisionI) clas.newInstance();
-				
-				this.needReLoad = false;
+				access = (ExecuteAssistDecisionI) clas.newInstance();
+
+				isLoaded = true;
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void execute() {
+		try {
+			loadStrategy();
 
 			if (false == access.execute(null, null)) {
 			}
@@ -60,6 +72,12 @@ public class StrategyExecute {
 		}
 	}
 
+	/**
+	 * 通过策略执行脚本动态生成策略执行类
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private byte[] createExecuteClass() throws Exception {
 		String script = null;
 		CtClass clas = null;
@@ -81,7 +99,6 @@ public class StrategyExecute {
 					clas = null;
 				}
 			}
-			isLoaded = true;
 			clas = pool
 					.makeClass("com.wealth.miniloan.strategy.ExecuteAssistDecision");
 			clas.addInterface(pool
@@ -105,8 +122,19 @@ public class StrategyExecute {
 		}
 	}
 
-	public void reloadStrategyScript() {
-		this.needReLoad = true;
+	public void reloadStrategy() {
+		try {
+			byte[] bytes = createExecuteClass();
+			DirectLoader s_classLoader = new DirectLoader();
+			Class<?> clas = s_classLoader
+					.load("com.wealth.miniloan.strategy.ExecuteAssistDecision",
+							bytes);
+			access = (ExecuteAssistDecisionI) clas.newInstance();
+
+			isLoaded = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

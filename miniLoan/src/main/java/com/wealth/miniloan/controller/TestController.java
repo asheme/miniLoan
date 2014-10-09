@@ -107,7 +107,7 @@ public class TestController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			this.strategyExecute.reloadStrategyScript();
+			this.strategyExecute.reloadStrategy();
 			this.strategyExecute.execute();
 			result.put("success", true);
 			result.put("msg", "执行成功");
