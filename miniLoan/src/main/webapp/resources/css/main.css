@@ -61,6 +61,7 @@ table.modifytable th {
 	border-color: #a9c6c9;
 	border-style: solid;
 	background-color: #E0ECFF;
+	height: 32px;	
 }
 
 table.modifytable td {
@@ -69,6 +70,7 @@ table.modifytable td {
 	border-color: #a9c6c9;
 	border-style: solid;
 	background-color: #ffffff;
+	height: 32px;
 }
 table.detailTable td{
 	text-align:right;
