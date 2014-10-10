@@ -26,6 +26,7 @@ import com.wealth.miniloan.strategy.model.Result;
 @Repository
 public class ParseStrategy {
 	private final String STG_FILE="F:\\source\\git\\miniLoan\\miniLoan\\strategy\\Strategy.XML";
+//	private final String STG_FILE="E:\\source\\miniLoan\\strategy\\Strategy.XML";
 	private String scripts = "";
 	private List<Attribute> inVariableList = null;
 	private List<Attribute> outVariableList = null;
@@ -43,6 +44,7 @@ public class ParseStrategy {
 		this.strategy = new Strategy();
 		this.strategy.setStgFileName(STG_FILE);
 		parseStrategy();
+//		scripts="System.out.println(\"測試是否可以執行\");";
 		strategy.setScripts(scripts);
 	}
 
@@ -77,7 +79,7 @@ public class ParseStrategy {
 				scoreCard = (Element) scoreCardList.get(i);
 				scripts += parseScoreCard(scoreCard);
 			}
-			scripts += "decisionResult.setScoreResultMap(scoreMap);\r";
+			scripts += "$2.setScoreResultMap(scoreMap);\r";
 
 			// 處理策略樹
 			Element decisionTree = root.element("DecisionTree");
@@ -87,8 +89,8 @@ public class ParseStrategy {
 			scripts += generateResultMap();
 
 			this.strategy.setScripts(this.scripts);
-			System.out.println("scripts: ");
-			System.out.println(scripts);
+//			System.out.println("scripts: ");
+//			System.out.println(scripts);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		}
@@ -113,10 +115,10 @@ public class ParseStrategy {
 			defaultValue = field.attributeValue("defaultValue");
 			if ("C".equals(type)) {
 				inVariablesStr += "String " + name
-						+ " = (String)inputMap.get(\"" + name + "\");\r";
+						+ " = (String)$1.get(\"" + name + "\");\r";
 			} else if ("N".equals(type)) {
-				inVariablesStr += "float " + name + " = (float)inputMap.get(\""
-						+ name + "\");\r";
+				inVariablesStr += "float " + name + " = Float.parseFloat($1.get(\""
+						+ name + "\").toString());\r";
 			}
 
 			attr = new Attribute();
@@ -127,8 +129,8 @@ public class ParseStrategy {
 			attr.setSource("I");
 			inVariableList.add(attr);
 		}
-		System.out.println("=============>>>>>>>>>>>>.");
-		System.out.println(inVariablesStr);
+//		System.out.println("=============>>>>>>>>>>>>.");
+//		System.out.println(inVariablesStr);
 
 		return inVariablesStr;
 	}
@@ -162,7 +164,7 @@ public class ParseStrategy {
 					outVariablesStr += "float " + name + " = 0F;\r";
 				} else {
 					outVariablesStr += "float " + name + " = " + defaultValue
-							+ "F;\r";
+							+ ";\r";
 				}
 			}
 
@@ -174,8 +176,8 @@ public class ParseStrategy {
 			attr.setSource("O");
 			outVariableList.add(attr);
 		}
-		System.out.println("=============>>>>>>>>>>>>.");
-		System.out.println(outVariablesStr);
+//		System.out.println("=============>>>>>>>>>>>>.");
+//		System.out.println(outVariablesStr);
 
 		return outVariablesStr;
 	}
@@ -189,7 +191,7 @@ public class ParseStrategy {
 		otherVariablesStr += "Map resultMap = null;\r";
 		otherVariablesStr += "ExcludeInfo exclude = null;\r";
 		otherVariablesStr += "ScoreResult scoreResult = null;\r";
-		otherVariablesStr += "DecisionResult decisionResult = new DecisionResult();\r";
+//		otherVariablesStr += "DecisionResult decisionResult = new DecisionResult();\r";
 
 		return otherVariablesStr;
 	}
@@ -229,8 +231,8 @@ public class ParseStrategy {
 		attr.setSource("S");
 		attr.setType("N");
 		scoreList.add(attr);
-		System.out.println("=============>>>>>>>>>>>>.");
-		System.out.println(scoreCardStr);
+//		System.out.println("=============>>>>>>>>>>>>.");
+//		System.out.println(scoreCardStr);
 
 		return scoreCardStr;
 	}
@@ -239,6 +241,8 @@ public class ParseStrategy {
 		String excludeCondStr = "";
 		String var = null;
 		String scope = null;
+		String loper=null;
+		String roper=null;
 		String reasonCode = null;
 		String reason = null;
 		Element condition = null;
@@ -249,6 +253,8 @@ public class ParseStrategy {
 			condition = (Element) iterator.next();
 			var = condition.attributeValue("var");
 			scope = condition.attributeValue("scope");
+			loper = condition.attributeValue("loper");
+			roper = condition.attributeValue("roper");
 			reasonCode = condition.attributeValue("reasonCode");
 			reason = condition.attributeValue("reason");
 			condAttr = getAttribute(var);
@@ -258,16 +264,35 @@ public class ParseStrategy {
 
 			excludeCondStr += "if(";
 			if ("C".equals(condAttr.getType())) {
-				for (int i = 0; i < scopes.length; ++i) {
-					if (i != 0)
-						excludeCondStr += " || ";
-					excludeCondStr += var + ".equals(\"" + scopes[i] + "\")";
+				for (int i = 0; i < scopes.length; ++i) {					
+					if("!=".equals(loper)){
+						if (i != 0)
+							excludeCondStr += " && ";
+						excludeCondStr += "!"+var + ".equals(\"" + scopes[i] + "\")";
+					} else{
+						if (i != 0)
+							excludeCondStr += " || ";
+						excludeCondStr += var + ".equals(\"" + scopes[i] + "\")";
+					}
 				}
 			} else if ("N".equals(condAttr.getType())) {
-				for (int i = 0; i < scopes.length; ++i) {
-					if (i != 0)
-						excludeCondStr += " || ";
-					excludeCondStr += var + " == " + scopes[i];
+				if("=".equals(loper) || "!=".equals(loper)){
+					for (int i = 0; i < scopes.length; ++i) {					
+						if("!=".equals(loper)){
+							if (i != 0)
+								excludeCondStr += " && ";
+							excludeCondStr += var + " != " + scopes[i];
+						} else{
+							if (i != 0)
+								excludeCondStr += " || ";
+							excludeCondStr += var + " == " + scopes[i];
+						}
+					}
+				}else{
+					excludeCondStr += var + " " + loper+" " + scopes[0];
+					if(scopes.length==2){
+						excludeCondStr +=" && " + var + " "+roper+" " + scopes[1];
+					}
 				}
 			}
 			excludeCondStr += "){\r";
@@ -296,6 +321,8 @@ public class ParseStrategy {
 		String var = null;
 		String type = null;
 		String scope = null;
+		String loper=null;
+		String roper=null;
 		String radio = null;
 		String score = null;
 		Attribute scoreAttr = null;
@@ -316,6 +343,8 @@ public class ParseStrategy {
 				scope = item.attributeValue("scope");
 				radio = item.attributeValue("radio");
 				score = item.attributeValue("score");
+				loper = item.attributeValue("loper");
+				roper = item.attributeValue("roper");				
 				String[] scopes = scope.split(",");
 				if (!isFirstItem)
 					singleScoreCalStr += " else ";
@@ -325,17 +354,35 @@ public class ParseStrategy {
 				} else {
 					singleScoreCalStr += "if(";
 					if ("C".equals(scoreAttr.getType())) {
-						for (int i = 0; i < scopes.length; ++i) {
-							if (i != 0)
-								singleScoreCalStr += " || ";
-							singleScoreCalStr += var + ".equals(\"" + scopes[i]
-									+ "\")";
+						for (int i = 0; i < scopes.length; ++i) {					
+							if("!=".equals(loper)){
+								if (i != 0)
+									singleScoreCalStr += " && ";
+								singleScoreCalStr += "!"+var + ".equals(\"" + scopes[i] + "\")";
+							} else{
+								if (i != 0)
+									singleScoreCalStr += " || ";
+								singleScoreCalStr += var + ".equals(\"" + scopes[i] + "\")";
+							}
 						}
 					} else if ("N".equals(scoreAttr.getType())) {
-						for (int i = 0; i < scopes.length; ++i) {
-							if (i != 0)
-								singleScoreCalStr += " || ";
-							singleScoreCalStr += var + " == " + scopes[i];
+						if("=".equals(loper) || "!=".equals(loper)){
+							for (int i = 0; i < scopes.length; ++i) {					
+								if("!=".equals(loper)){
+									if (i != 0)
+										singleScoreCalStr += " && ";
+									singleScoreCalStr += var + " != " + scopes[i];
+								} else{
+									if (i != 0)
+										singleScoreCalStr += " || ";
+									singleScoreCalStr += var + " == " + scopes[i];
+								}
+							}
+						}else{
+							singleScoreCalStr += var + " " + loper+" " + scopes[0];
+							if(scopes.length==2){
+								singleScoreCalStr +=" && " + var + " "+roper+" " + scopes[1];
+							}
 						}
 					}
 					singleScoreCalStr += "){\r";
@@ -361,11 +408,11 @@ public class ParseStrategy {
 		tree = decisionTree.element("Tree");
 		decisionTreeStr = "treeExcludes = new ArrayList();\r";
 		decisionTreeStr += parseDecisionTreeExcludeCond(excludeCond);
-		decisionTreeStr += "decisionResult.setTreeExcludeList(treeExcludes);\r";
+		decisionTreeStr += "$2.setTreeExcludeList(treeExcludes);\r";
 		decisionTreeStr += parseTree(tree);
 
-		System.out.println("=============>>>>>>>>>>>>.");
-		System.out.println(decisionTreeStr);
+//		System.out.println("=============>>>>>>>>>>>>.");
+//		System.out.println(decisionTreeStr);
 
 		return decisionTreeStr;
 	}
@@ -374,6 +421,8 @@ public class ParseStrategy {
 		String excludeCondStr = "";
 		String var = null;
 		String scope = null;
+		String loper=null;
+		String roper=null;
 		String reasonCode = null;
 		String reason = null;
 		Element condition = null;
@@ -384,6 +433,8 @@ public class ParseStrategy {
 			condition = (Element) iterator.next();
 			var = condition.attributeValue("var");
 			scope = condition.attributeValue("scope");
+			loper = condition.attributeValue("loper");
+			roper = condition.attributeValue("roper");
 			reasonCode = condition.attributeValue("reasonCode");
 			reason = condition.attributeValue("reason");
 			condAttr = getAttribute(var);
@@ -393,16 +444,35 @@ public class ParseStrategy {
 
 			excludeCondStr += "if(";
 			if ("C".equals(condAttr.getType())) {
-				for (int i = 0; i < scopes.length; ++i) {
-					if (i != 0)
-						excludeCondStr += " || ";
-					excludeCondStr += var + ".equals(\"" + scopes[i] + "\")";
+				for (int i = 0; i < scopes.length; ++i) {					
+					if("!=".equals(loper)){
+						if (i != 0)
+							excludeCondStr += " && ";
+						excludeCondStr += "!"+var + ".equals(\"" + scopes[i] + "\")";
+					} else{
+						if (i != 0)
+							excludeCondStr += " || ";
+						excludeCondStr += var + ".equals(\"" + scopes[i] + "\")";
+					}
 				}
 			} else if ("N".equals(condAttr.getType())) {
-				for (int i = 0; i < scopes.length; ++i) {
-					if (i != 0)
-						excludeCondStr += " || ";
-					excludeCondStr += var + " == " + scopes[i];
+				if("=".equals(loper) || "!=".equals(loper)){
+					for (int i = 0; i < scopes.length; ++i) {					
+						if("!=".equals(loper)){
+							if (i != 0)
+								excludeCondStr += " && ";
+							excludeCondStr += var + " != " + scopes[i];
+						} else{
+							if (i != 0)
+								excludeCondStr += " || ";
+							excludeCondStr += var + " == " + scopes[i];
+						}
+					}
+				}else{
+					excludeCondStr += var + " " + loper+" " + scopes[0];
+					if(scopes.length==2){
+						excludeCondStr +=" && " + var + " "+roper+" " + scopes[1];
+					}
 				}
 			}
 			excludeCondStr += "){\r";
@@ -426,19 +496,24 @@ public class ParseStrategy {
 
 	private String parseTree(Element tree) {
 		String treeStr = "";
+		String calFormulaStr="";
 		String id = null;
 		String var = null;
 		String type = null;
 		String scope = null;
+		String loper=null;
+		String roper=null;
 		String isLeaf = null;
 		String parentId = null;
 		String resultVar = null;
+		String resultValueType = null;
 		String resultValue = null;
 		Branch tmpBranch = null;
 		Result tmpResult = null;
 		Element branch = null;
 		Element result = null;
 		Element item = null;
+		Element resultCalElement=null;
 		List<Result> resultList = null;
 
 		List<Branch> branchList = new ArrayList<Branch>();
@@ -449,6 +524,8 @@ public class ParseStrategy {
 			var = branch.attributeValue("var");
 			type = branch.attributeValue("type");
 			scope = branch.attributeValue("scope");
+			loper = branch.attributeValue("loper");
+			roper = branch.attributeValue("roper");
 			isLeaf = branch.attributeValue("isLeaf");
 			parentId = branch.attributeValue("parentId");
 			tmpBranch = new Branch();
@@ -456,6 +533,8 @@ public class ParseStrategy {
 			tmpBranch.setVar(var);
 			tmpBranch.setType(type);
 			tmpBranch.setScope(scope);
+			tmpBranch.setLoper(loper);
+			tmpBranch.setRoper(roper);
 			tmpBranch.setIsLeaf(isLeaf);
 			tmpBranch.setParentId(parentId);
 			if ("Y".equals(isLeaf)) {
@@ -466,9 +545,15 @@ public class ParseStrategy {
 					item = (Element) itemIterator.next();
 					tmpResult = new Result();
 					resultVar = item.attributeValue("var");
+					resultValueType = item.attributeValue("valueType");
 					resultValue = item.attributeValue("value");
 					tmpResult.setVar(resultVar);
+					tmpResult.setValueType(resultValueType);
 					tmpResult.setValue(resultValue);
+					if("A".equals(resultValueType)){
+						calFormulaStr=parseResultCalFormula(item);
+						tmpResult.setCalFormula(calFormulaStr);
+					}
 					resultList.add(tmpResult);
 				}
 				tmpBranch.setResultList(resultList);
@@ -494,8 +579,13 @@ public class ParseStrategy {
 								otherBranchStr += tmpResult.getVar() + " = \""
 										+ tmpResult.getValue() + "\";\r";
 							} else if ("N".equals(resultAttr.getType())) {
-								otherBranchStr += tmpResult.getVar() + " = "
-										+ tmpResult.getValue() + ";\r";
+								if("A".equals(tmpResult.getValueType())){
+									otherBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getCalFormula() + ";\r";
+								}else{
+									otherBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getValue() + ";\r";
+								}
 							}
 						}
 					} else {
@@ -513,18 +603,35 @@ public class ParseStrategy {
 					String[] scopes = tmpBranch.getScope().split(",");
 					branchStr += "if(";
 					if ("C".equals(branchAttr.getType())) {
-						for (int j = 0; j < scopes.length; ++j) {
-							if (j != 0)
-								branchStr += " || ";
-							branchStr += tmpBranch.getVar() + ".equals(\""
-									+ scopes[j] + "\")";
+						for (int j = 0; j < scopes.length; ++j) {					
+							if("!=".equals(tmpBranch.getLoper())){
+								if (j != 0)
+									branchStr += " && ";
+								branchStr += "!"+tmpBranch.getVar() + ".equals(\"" + scopes[j] + "\")";
+							} else{
+								if (j != 0)
+									branchStr += " || ";
+								branchStr += tmpBranch.getVar() + ".equals(\"" + scopes[j] + "\")";
+							}
 						}
 					} else if ("N".equals(branchAttr.getType())) {
-						for (int j = 0; j < scopes.length; ++j) {
-							if (j != 0)
-								branchStr += " || ";
-							branchStr += tmpBranch.getVar() + " == "
-									+ scopes[j];
+						if("=".equals(tmpBranch.getLoper()) || "!=".equals(tmpBranch.getLoper())){
+							for (int j = 0; j < scopes.length; ++j) {					
+								if("!=".equals(tmpBranch.getLoper())){
+									if (j != 0)
+										branchStr += " && ";
+									branchStr += tmpBranch.getVar() + " != " + scopes[j];
+								} else{
+									if (j != 0)
+										branchStr += " || ";
+									branchStr += tmpBranch.getVar() + " == " + scopes[j];
+								}
+							}
+						}else{
+							branchStr += tmpBranch.getVar() + " " + tmpBranch.getLoper()+" " + scopes[0];
+							if(scopes.length==2){
+								branchStr +=" && " + tmpBranch.getVar() + " "+tmpBranch.getRoper()+" " + scopes[1];
+							}
 						}
 					}
 					branchStr += "){\r";
@@ -537,8 +644,13 @@ public class ParseStrategy {
 								branchStr += tmpResult.getVar() + " = \""
 										+ tmpResult.getValue() + "\";\r";
 							} else if ("N".equals(resultAttr.getType())) {
-								branchStr += tmpResult.getVar() + " = "
-										+ tmpResult.getValue() + ";\r";
+								if("A".equals(tmpResult.getValueType())){
+									branchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getCalFormula() + ";\r";
+								}else{
+									branchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getValue() + ";\r";
+								}
 							}
 						}
 					} else {
@@ -555,6 +667,34 @@ public class ParseStrategy {
 		}
 
 		return treeStr;
+	}
+	
+	/**
+	 * 解析结果变量计算公式
+	 * @param item
+	 * @return
+	 */
+	private String parseResultCalFormula(Element item){
+		String calFormulaStr="";
+		Element resultCalElement = null;
+		
+		for (Iterator calIterator = item.elementIterator(); calIterator
+				.hasNext();) {
+			resultCalElement=(Element)calIterator.next();
+			if("Attribute".equals(resultCalElement.getName())){
+				if(!"".equals(calFormulaStr))
+					calFormulaStr +=resultCalElement.attributeValue("oper");	
+				calFormulaStr +=resultCalElement.attributeValue("name");
+			}else if("Bracket".equals(resultCalElement.getName())){
+				if(!"".equals(calFormulaStr))
+					calFormulaStr +=resultCalElement.attributeValue("oper");
+				calFormulaStr+="(";
+				calFormulaStr+=parseResultCalFormula(resultCalElement);
+				calFormulaStr+=")";
+			}
+		}
+		
+		return calFormulaStr;
 	}
 
 	/**
@@ -589,8 +729,13 @@ public class ParseStrategy {
 										+ " = \"" + tmpResult.getValue()
 										+ "\";\r";
 							} else if ("N".equals(resultAttr.getType())) {
-								otherChildBranchStr += tmpResult.getVar()
-										+ " = " + tmpResult.getValue() + ";\r";
+								if("A".equals(tmpResult.getValueType())){
+									otherChildBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getCalFormula() + ";\r";
+								}else{
+									otherChildBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getValue() + ";\r";
+								}
 							}
 						}
 					} else {
@@ -608,18 +753,35 @@ public class ParseStrategy {
 					String[] scopes = tmpBranch.getScope().split(",");
 					childBranchStr += "if(";
 					if ("C".equals(branchAttr.getType())) {
-						for (int j = 0; j < scopes.length; ++j) {
-							if (j != 0)
-								childBranchStr += " || ";
-							childBranchStr += tmpBranch.getVar() + ".equals(\""
-									+ scopes[j] + "\")";
+						for (int j = 0; j < scopes.length; ++j) {					
+							if("!=".equals(tmpBranch.getLoper())){
+								if (j != 0)
+									childBranchStr += " && ";
+								childBranchStr += "!"+tmpBranch.getVar() + ".equals(\"" + scopes[j] + "\")";
+							} else{
+								if (j != 0)
+									childBranchStr += " || ";
+								childBranchStr += tmpBranch.getVar() + ".equals(\"" + scopes[j] + "\")";
+							}
 						}
 					} else if ("N".equals(branchAttr.getType())) {
-						for (int j = 0; j < scopes.length; ++j) {
-							if (j != 0)
-								childBranchStr += " || ";
-							childBranchStr += tmpBranch.getVar() + " == "
-									+ scopes[j];
+						if("=".equals(tmpBranch.getLoper()) || "!=".equals(tmpBranch.getLoper())){
+							for (int j = 0; j < scopes.length; ++j) {					
+								if("!=".equals(tmpBranch.getLoper())){
+									if (j != 0)
+										childBranchStr += " && ";
+									childBranchStr += tmpBranch.getVar() + " != " + scopes[j];
+								} else{
+									if (j != 0)
+										childBranchStr += " || ";
+									childBranchStr += tmpBranch.getVar() + " == " + scopes[j];
+								}
+							}
+						}else{
+							childBranchStr += tmpBranch.getVar() + " " + tmpBranch.getLoper()+" " + scopes[0];
+							if(scopes.length==2){
+								childBranchStr +=" && " + tmpBranch.getVar() + " "+tmpBranch.getRoper()+" " + scopes[1];
+							}
 						}
 					}
 					childBranchStr += "){\r";
@@ -632,8 +794,13 @@ public class ParseStrategy {
 								childBranchStr += tmpResult.getVar() + " = \""
 										+ tmpResult.getValue() + "\";\r";
 							} else if ("N".equals(resultAttr.getType())) {
-								childBranchStr += tmpResult.getVar() + " = "
-										+ tmpResult.getValue() + ";\r";
+								if("A".equals(tmpResult.getValueType())){
+									childBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getCalFormula() + ";\r";
+								}else{
+									childBranchStr += tmpResult.getVar() + " = "
+											+ tmpResult.getValue() + ";\r";
+								}
 							}
 						}
 					} else {
@@ -668,10 +835,15 @@ public class ParseStrategy {
 			resultStr += "resultMap = new HashMap();\r";
 			for (int i = 0; i < outVariableList.size(); ++i) {
 				outAttr = (Attribute) outVariableList.get(i);
-				resultStr += "resultMap.put(\"" + outAttr.getName() + "\","
-						+ outAttr.getName() + ");\r";
+				if("N".equals(outAttr.getType())){
+					resultStr += "resultMap.put(\"" + outAttr.getName() + "\",Float.valueOf("
+							+ outAttr.getName() + "));\r";
+				}else{
+					resultStr += "resultMap.put(\"" + outAttr.getName() + "\","
+							+ outAttr.getName() + ");\r";
+				}
 			}
-			resultStr += "decisionResult.setResultMap(resultMap);\r";
+			resultStr += "$2.setResultMap(resultMap);\r";
 		}
 
 		return resultStr;

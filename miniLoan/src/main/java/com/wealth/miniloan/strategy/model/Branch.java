@@ -6,6 +6,8 @@ public class Branch {
 	private String id;
 	private String var;
 	private String scope;
+	private String loper;
+	private String roper;
 	private String type;
 	private String isLeaf;
 	private String parentId;
@@ -33,6 +35,22 @@ public class Branch {
 
 	public void setScope(String scope) {
 		this.scope = scope;
+	}
+
+	public String getLoper() {
+		return loper;
+	}
+
+	public void setLoper(String loper) {
+		this.loper = loper;
+	}
+
+	public String getRoper() {
+		return roper;
+	}
+
+	public void setRoper(String roper) {
+		this.roper = roper;
 	}
 
 	public String getType() {

@@ -1,5 +1,7 @@
 package com.wealth.miniloan.strategy;
 
+import java.util.HashMap;
+
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.wealth.miniloan.entity.Strategy;
+import com.wealth.miniloan.strategy.model.DecisionResult;
 
 import javassist.ClassClassPath;
 import javassist.ClassPool;
@@ -61,12 +64,11 @@ public class StrategyExecute {
 		}
 	}
 
-	public void execute() {
+	public void execute(HashMap inputMap,DecisionResult decisionResult) {
 		try {
 			loadStrategy();
 
-			if (false == access.execute(null, null)) {
-			}
+			access.execute(inputMap, decisionResult);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -90,6 +92,7 @@ public class StrategyExecute {
 			pool.insertClassPath(new ClassClassPath(this.getClass()));
 			pool.importPackage("java.util");
 			pool.importPackage("com.wealth.miniloan.strategy");
+			pool.importPackage("com.wealth.miniloan.strategy.model");
 
 			if (isLoaded) {
 				clas = pool
@@ -110,9 +113,9 @@ public class StrategyExecute {
 			clas.addConstructor(cons);
 
 			// add public setTarget method
-			CtMethod meth = new CtMethod(CtClass.booleanType, "execute",
-					new CtClass[] { pool.get("java.util.List"),
-							pool.get("java.util.List") }, clas);
+			CtMethod meth = new CtMethod(CtClass.voidType, "execute",
+					new CtClass[] { pool.get("java.util.HashMap"),
+							pool.get("com.wealth.miniloan.strategy.model.DecisionResult")}, clas);
 			meth.setBody("{" + script + "}");
 			clas.addMethod(meth);
 			return clas.toBytecode();
