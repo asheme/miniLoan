@@ -25,9 +25,9 @@ import com.wealth.miniloan.strategy.model.Result;
  */
 @Repository
 public class ParseStrategy {
-	private final String STG_FILE="F:\\source\\git\\miniLoan\\miniLoan\\strategy\\Strategy.XML";
-//	private final String STG_FILE="E:\\source\\miniLoan\\strategy\\Strategy.XML";
-	private String scripts = "";
+//	private final String STG_FILE="F:\\source\\git\\miniLoan\\miniLoan\\strategy\\Strategy.XML";
+	private final String STG_FILE="E:\\source\\miniLoan\\strategy\\Strategy.XML";
+	private String scripts = null;
 	private List<Attribute> inVariableList = null;
 	private List<Attribute> outVariableList = null;
 	private List<Attribute> scoreList = null;
@@ -43,6 +43,7 @@ public class ParseStrategy {
 	public void loadStrategy() {
 		this.strategy = new Strategy();
 		this.strategy.setStgFileName(STG_FILE);
+		scripts="";
 		parseStrategy();
 //		scripts="System.out.println(\"測試是否可以執行\");";
 		strategy.setScripts(scripts);
