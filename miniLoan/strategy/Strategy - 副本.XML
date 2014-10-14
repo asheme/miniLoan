@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Strategy>
+	<InVariable>
+		<!-- 输入变量定义，type定义如下：N-数值型，C-字符型 -->
+		<Field name="age" desc="申请人年龄" type="N" defaultValue="" />
+		<Field name="annIncome" desc="申请人年收入" type="N" defaultValue="0F" />
+		<Field name="eduLvl" desc="申请人学历" type="C" defaultValue="" />
+		<Field name="isHighPosition" desc="是否高级职称" type="C" defaultValue="N" />
+		<Field name="mortageValue" desc="押品价值" type="N" defaultValue="0F" />
+	</InVariable>
+	<OutVariable>
+		<Field name="isPassed" desc="贷款审批是否通过" type="C" defaultValue="N" />
+		<Field name="loanLimit" desc="贷款批准额度" type="N" defaultValue="0F" />
+		<Field name="loanRate" desc="贷款批准利率" type="N" defaultValue="0F" />
+		<Field name="reasonCode" desc="审批原因码" type="C" defaultValue="" />
+		<Field name="reason" desc="审批原因" type="C" defaultValue="" />
+	</OutVariable>
+	<Scores>
+		<ScoreCard name="score1" min="10" max="100">
+			<ExcludeCond>
+				<Condition var="age" scope="18" loper="&lt;" roper="" reasonCode="s0001" reason="年龄不满足18岁" />
+			</ExcludeCond>
+			<ScoreCal>
+				<Segment var="annIncome">
+					<Item type="N" scope="50000" loper="&lt;=" roper="" radio="1" score="10"  />
+					<Item type="N" scope="50000,100000" loper="&gt;" roper="&lt;=" radio="1" score="40"  />
+					<Item type="N" scope="100000" loper="&gt;" roper="" radio="1" score="60"  />
+				</Segment>
+				<Segment var="isHighPosition">
+					<Item type="N" scope="Y" loper="=" roper="" radio="1" score="30"  />
+					<Item type="O" scope=""  loper="" roper="" radio="1" score="10"  />
+				</Segment>
+			</ScoreCal>
+		</ScoreCard>
+	</Scores>
+	<DecisionTree>
+		<ExcludeCond>
+			<Condition var="age" scope="18" loper="&lt;" roper="" reasonCode="t0001" reason="年龄不满足18岁" />
+			<Condition var="annIncome" scope="30000" loper="&lt;" roper="" reasonCode="t0002" reason="年收入过低" />
+		</ExcludeCond>
+		<Tree>
+			<Branch id="1" var="age" scope="18,35" type="N" loper="&gt;" roper="&lt;=" isLeaf="N" parentId="" />
+			<Branch id="2" var="age" scope="35,45" type="N" loper="&gt;" roper="&lt;=" isLeaf="N" parentId="" />
+			<Branch id="3" var="age" scope="45" type="N" loper="&gt;" roper="" isLeaf="N" parentId="" />
+			<Branch id="4" var="annIncome" scope="100000" type="N" loper="&gt;" roper="" isLeaf="N" parentId="1" />
+			<Branch id="5" var="annIncome" scope="" type="O" loper="" roper="" isLeaf="N" parentId="1" />
+			<Branch id="6" var="annIncome" scope="100000" type="N" loper="&gt;" roper="" isLeaf="N" parentId="2" />
+			<Branch id="7" var="annIncome" scope="" type="O" loper="" roper="" isLeaf="N" parentId="2" />
+			<Branch id="8" var="annIncome" scope="100000" type="N" loper="&gt;" roper="" isLeaf="N" parentId="3" />
+			<Branch id="9" var="annIncome" scope="" type="O" loper="" roper="" isLeaf="N" parentId="3" />
+			<Branch id="10" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="4">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.4F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.1F" type="C" />
+					<Item var="reasonCode" value="R0001" type="C" />
+					<Item var="reason" value="年轻，收入较高，职称较高，通过审批" type="C" />
+				</Result>			
+			</Branch>
+			<Branch id="11" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="4">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.2F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.1F" type="C" />
+					<Item var="reasonCode" value="R0002" type="C" />
+					<Item var="reason" value="年轻，收入较高，职称较低，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="12" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="5">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.3F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.15F" type="C" />
+					<Item var="reasonCode" value="R0003" type="C" />
+					<Item var="reason" value="年轻，收入较低，职称较高，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="13" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="5">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" valueType="C" value="0F" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0004" type="C" />
+					<Item var="reason" value="年轻，收入较低，职称较低，拒绝" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="14" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="6">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.4F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.1F" type="C" />
+					<Item var="reasonCode" value="R0005" type="C" />
+					<Item var="reason" value="中年，收入较高，职称较高，通过审批" type="C" />
+				</Result>	
+			</Branch>
+			<Branch id="15" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="6">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.3F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.15F" type="C" />
+					<Item var="reasonCode" value="R0006" type="C" />
+					<Item var="reason" value="中年，收入较高，职称较低，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="16" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.4F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.15F" type="C" />
+					<Item var="reasonCode" value="R0007" type="C" />
+					<Item var="reason" value="中年，收入较低，职称较高，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="17" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" valueType="C" value="0F" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0008" type="C" />
+					<Item var="reason" value="中年，收入较低，职称较低，拒绝" type="C" />
+				</Result>
+			</Branch>			
+			<Branch id="18" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="8">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.3F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.1F" type="C" />
+					<Item var="reasonCode" value="R0009" type="C" />
+					<Item var="reason" value="老年，收入较高，职称较高，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="19" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="8">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.2F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.2F" type="C" />
+					<Item var="reasonCode" value="R0010" type="C" />
+					<Item var="reason" value="老年，收入较高，职称较低，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="20" var="isHighPosition" scope="Y" type="N" loper="=" roper="" isLeaf="Y" parentId="9">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Attribute name="annIncome" oper="" type="V" />
+						<Bracket  oper="*">
+							<Attribute name="0.2F" oper="*" type="C" />
+						</Bracket>
+					</Item>
+					<Item var="loanRate" value="0.2F" type="C" />
+					<Item var="reasonCode" value="R00011" type="C" />
+					<Item var="reason" value="老年，收入较低，职称较高，通过审批" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="21" var="isHighPosition" scope="" type="O" loper="" roper="" isLeaf="Y" parentId="9">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" valueType="C" value="0F" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0012" type="C" />
+					<Item var="reason" value="老年，收入较低，职称较低，拒绝" type="C" />
+				</Result>
+			</Branch>			
+		</Tree>
+	</DecisionTree>
+</Strategy>
