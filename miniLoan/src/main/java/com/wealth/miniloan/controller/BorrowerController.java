@@ -25,15 +25,14 @@ import com.wealth.miniloan.service.BorrowerServiceI;
 public class BorrowerController {
 	private BorrowerServiceI borrowerService = null;
 
-	
 	@Autowired
 	public void setBorrowerService(BorrowerServiceI borrowerService) {
 		this.borrowerService = borrowerService;
 	}
 
-
 	/***
 	 * 分页，查询显示
+	 * 
 	 * @param page
 	 * @param borrower
 	 * @return
@@ -70,15 +69,14 @@ public class BorrowerController {
 
 	@RequestMapping(value = "modifyParam")
 	@ResponseBody
-	public Map<String, Object> addAndUpdate(MlBorrower borrower, String flag,
-			@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> addAndUpdate(MlBorrower borrower, String flag, @ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			if (flag != null && !"".equals(flag)) {
 				borrower.setLastUpdateTime(new Date());
 				this.borrowerService.update(borrower);
-				
+
 				result.put("success", true);
 				result.put("msg", "借款人信息修改成功！");
 			} else {

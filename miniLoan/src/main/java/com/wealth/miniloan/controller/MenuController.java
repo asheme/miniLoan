@@ -88,9 +88,14 @@ public class MenuController {
 		return "corpApp/corpAppList";
 	}
 
-	@RequestMapping(value = "appSummaryList")
-	public String appSummaryList() {
-		return "check/appSummaryList";
+	@RequestMapping(value = "mortgageCheckList")
+	public String mortgageCheckList() {
+		return "check/mortgageCheckList";
+	}
+
+	@RequestMapping(value = "reCheckList")
+	public String reCheckList() {
+		return "check/reCheckList";
 	}
 
 	@RequestMapping(value = "manualCheckList")
@@ -98,8 +103,28 @@ public class MenuController {
 		return "check/manualCheckList";
 	}
 
+	@RequestMapping(value = "strategyCheckList")
+	public String strategyCheckList() {
+		return "check/strategyCheckList";
+	}
+
+	@RequestMapping(value = "getWhiteNameList")
+	public String getWhiteNameList() {
+		return "nameList/whiteNameList";
+	}
+
+	@RequestMapping(value = "getBlackNameList")
+	public String getBlackNameList() {
+		return "nameList/blackNameList";
+	}
+
 	@RequestMapping(value = "fileUpload")
 	public String toFileUpload() {
 		return "system/fileUploadTest";
+	}
+	
+	@RequestMapping(value = "appFlowList")
+	public String toTaskFlowList() {
+		return "config/appFlowList";
 	}
 }

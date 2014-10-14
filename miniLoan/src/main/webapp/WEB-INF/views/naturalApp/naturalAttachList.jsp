@@ -40,12 +40,15 @@
 			},{
 				field : 'fileName',
 				title : '文件名称',
-				width : 20,
-				sortable : true
+				width : 40,
+				sortable : true,
+				formatter : function(value,row,index){
+					return '<a href="${pageContext.request.contextPath}/natural/attach/download.do?fileName='+row.fileName+'&physicalName='+row.physicalName+'">'+ value+'</a>';
+				}
 			}, {
 				field : 'fileDesc',
 				title : '文件描述',
-				width : 20,
+				width : 60,
 				sortable : true
 			}] ],
 			toolbar : '#toolbar'
@@ -100,20 +103,6 @@
 		}
 	}
 	
-	function viewObj() {
-		var rows = $('#datagrid').datagrid('getChecked');
-		if (rows.length > 0) {
-			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/attach/downloadAttach.do?fileName='
-						+ rows[0].fileName;
-			} else {
-				$.messager.alert('信息提示', "只能选择一条要查看的记录！", "info");
-			}
-		} else {
-			$.messager.alert('信息提示', "请您选择要查看的记录！", "info");
-		}
-	}
-
 	//查询
 	function search() {
 		$('#datagrid').datagrid('load', serializeObject($('#searchForm')));
@@ -148,10 +137,6 @@
 						<td>
 							<div class="datagrid-btn-separator"></div>
 						</td>
-						<td><a href="#" class="easyui-linkbutton"
-							data-options="iconCls:'icon-ui-search',plain:true"
-							onClick="javascript:viewObj();" style="float: left;">查看附件</a></td>
-						<td>
 					</tr>
 				</table>
 			</div>

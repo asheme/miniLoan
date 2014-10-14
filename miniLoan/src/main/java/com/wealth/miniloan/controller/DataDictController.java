@@ -123,7 +123,7 @@ public class DataDictController {
 				result.put("msg", "数据字典修改成功！");
 			} else {
 				result.put("success", Boolean.valueOf(false));
-				result.put("msg", "数据字典修改失败，服务器端未获得要修改的机构信息！");
+				result.put("msg", "数据字典修改失败，服务器端未获得要修改的数据字典信息！");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

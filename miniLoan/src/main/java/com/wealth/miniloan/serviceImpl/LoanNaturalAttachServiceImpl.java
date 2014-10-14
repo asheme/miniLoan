@@ -11,11 +11,11 @@ import com.wealth.miniloan.dao.NaturalAttachDao;
 import com.wealth.miniloan.entity.MlNaturalAttach;
 import com.wealth.miniloan.entity.MlNaturalAttachExample;
 import com.wealth.miniloan.entity.Page;
-import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.service.LoanNaturalAttachServiceI;
 import com.wealth.miniloan.utils.SysUtil;
 
-@Service
-public class LoanNaturalAttachServiceImpl implements CommonServiceI<MlNaturalAttach> {
+@Service(value="naturalAttachService")
+public class LoanNaturalAttachServiceImpl implements LoanNaturalAttachServiceI {
 	private NaturalAttachDao naturalAttachDao = null;
 	private final String _ORDER_ATTRS = "fileNo";
 	private final String _ORDER_FIELDS = "FILE_NO";
@@ -26,7 +26,7 @@ public class LoanNaturalAttachServiceImpl implements CommonServiceI<MlNaturalAtt
 	}
 
 	@Override
-	public PageList<MlNaturalAttach> getPageList(Page paramPage, MlNaturalAttach obj) {
+	public PageList<MlNaturalAttach> getNaturalAttachPageList(Page paramPage, MlNaturalAttach obj) {
 		MlNaturalAttachExample example = new MlNaturalAttachExample();
 		String appNo = obj.getAppNo();
 		com.wealth.miniloan.entity.MlNaturalAttachExample.Criteria criteria = example.createCriteria();
@@ -42,17 +42,17 @@ public class LoanNaturalAttachServiceImpl implements CommonServiceI<MlNaturalAtt
 	}
 
 	@Override
-	public int create(MlNaturalAttach obj) {
+	public int createNaturalAttach(MlNaturalAttach obj) {
 		return this.naturalAttachDao.save(obj);
 	}
 
 	@Override
-	public int update(MlNaturalAttach obj) {
+	public int updateNaturalAttach(MlNaturalAttach obj) {
 		return this.naturalAttachDao.update(obj);
 	}
 
 	@Override
-	public int delete(String ids) {
+	public int deleteNaturalAttach(String ids) {
 		String[] idArray = ids.split(",");
 		List<Long> list = new ArrayList<Long>();
 		for (int i = 0; i < idArray.length; i++) {
@@ -64,14 +64,19 @@ public class LoanNaturalAttachServiceImpl implements CommonServiceI<MlNaturalAtt
 	}
 
 	@Override
-	public MlNaturalAttach getByPriKey(MlNaturalAttach obj) {
+	public MlNaturalAttach getNaturalAttachByPriKey(MlNaturalAttach obj) {
 		return (MlNaturalAttach) this.naturalAttachDao.getById(obj.getFileNo());
 	}
 
 	@Override
-	public Object getByExample(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<MlNaturalAttach> getNaturalAttachListByIds(String ids){
+		String[] idArray = ids.split(",");
+		List<Long> list = new ArrayList<Long>();
+		for (int i = 0; i < idArray.length; i++) {
+			list.add(Long.valueOf(idArray[i]));
+		}
+		MlNaturalAttachExample example = new MlNaturalAttachExample();
+		example.createCriteria().andFileNoIn(list);
+		return this.naturalAttachDao.findAll(example);
 	}
-
 }

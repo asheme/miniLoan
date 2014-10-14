@@ -18,29 +18,24 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
+import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
-import com.wealth.miniloan.entity.MlCorpApp;
-import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
 @RequestMapping(value = "/recheck/app")
 @SessionAttributes("user")
 public class ReCheckAppController extends BaseController {
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
-	private CommonServiceI<MlNaturalApp> naturalAppService = null;
-	private CommonServiceI<MlCorpApp> corpAppService = null;
+	private CommonServiceI<MlAppCheckResult> checkResultService = null;
 
 	@Autowired
-	public void setCorpAppService(CommonServiceI<MlCorpApp> corpAppService) {
-		this.corpAppService = corpAppService;
-	}
-
-	@Autowired
-	public void setNaturalAppService(CommonServiceI<MlNaturalApp> naturalAppService) {
-		this.naturalAppService = naturalAppService;
+	public void setCheckResultService(CheckResultServiceImpl checkResultService) {
+		this.checkResultService = checkResultService;
 	}
 
 	@Autowired
@@ -63,7 +58,7 @@ public class ReCheckAppController extends BaseController {
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
 		PageList<MlAppSummary> appSummaryList = null;
-		appSummary.setAppType("01");
+		appSummary.setCurrStep("02");
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
 		if (appSummaryList != null) {
@@ -185,50 +180,46 @@ public class ReCheckAppController extends BaseController {
 		return result;
 	}
 
-	@RequestMapping(value = "backToPrevious")
-	@ResponseBody
-	public ModelAndView backToPrevious(String appNo) {
-		Map<String, Object> result = new HashMap<String, Object>();
-		try {
-			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);
-			obj.setAppType("01");
-			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("00");
-			as.setFinishTime(new Date());
-			this.appSummaryService.update(as);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			result.put("success", false);
-			result.put("msg", "自然人申请信息提交失败，服务器端处理异常！");
-		}
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/appSummaryList");
-		return modelAndView;
-	}
-
 	@RequestMapping(value = "goToNext")
 	@ResponseBody
-	public ModelAndView goToNext(String appNo) {
+	public Map<String, Object> goToNext(String appNo, MlAppCheckResult checkResult) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
-			obj.setAppType("01");
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("02");
+			if ("1".equals(checkResult.getCheckResult())) {
+				as.setCurrStep("03");
+			} else if ("0".equals(checkResult.getCheckResult())) {
+				as.setCurrStep("00");
+			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
-
+			if (checkResult.getCheckDesc() != null && !"".equals(checkResult.getCheckDesc())) {
+				saveCheckResult(checkResult);
+			}
+			result.put("success", true);
+			result.put("msg", "审核信息提交成功！");
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
-			result.put("msg", "自然人申请信息提交失败，服务器端处理异常！");
+			result.put("msg", "审核信息提交失败，服务器端处理异常！");
 		}
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/appSummaryList");
-		return modelAndView;
+		return result;
 	}
 
+	public void saveCheckResult(MlAppCheckResult checkResult) {
+		try {
+			MlAppCheckResult ar = new MlAppCheckResult();
+			ar.setAppNo(checkResult.getAppNo());
+			ar.setCheckType("03");
+			ar.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
+			ar.setCheckResult(checkResult.getCheckResult());
+			ar.setCheckDesc(checkResult.getCheckDesc());
+			this.checkResultService.create(ar);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -2,12 +2,12 @@ package com.wealth.miniloan.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +32,30 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlCorpAttach;
+import com.wealth.miniloan.entity.MlSysParam;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
-import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.service.LoanCorpAttachServiceI;
+import com.wealth.miniloan.service.ParamServiceI;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
 @RequestMapping(value = "/corp/attach")
 @SessionAttributes("user")
 public class CorpAttachController extends BaseController {
-	private CommonServiceI<MlCorpAttach> corpAttachService = null;
+	private LoanCorpAttachServiceI corpAttachService = null;
+	private ParamServiceI paramService = null;
 
 	@Autowired
-	public void setCorpAttachService(CommonServiceI<MlCorpAttach> corpAttachService) {
+	public void setCorpAttachService(LoanCorpAttachServiceI corpAttachService) {
 		this.corpAttachService = corpAttachService;
 	}
 
+	@Autowired
+	public void setParamService(ParamServiceI paramService){
+		this.paramService=paramService;
+	}
+	
 	/*
 	 * 表单提交日期绑定
 	 */
@@ -84,7 +92,7 @@ public class CorpAttachController extends BaseController {
 	public DataGrid getCorpAttachList(Page page, MlCorpAttach corpAttach) {
 		DataGrid resut = new DataGrid();
 		PageList<MlCorpAttach> loanCorpAttachList = null;
-		loanCorpAttachList = corpAttachService.getPageList(page, corpAttach);
+		loanCorpAttachList = corpAttachService.getCorpAttachPageList(page, corpAttach);
 
 		if (loanCorpAttachList != null) {
 			resut.setRows(loanCorpAttachList);
@@ -106,7 +114,7 @@ public class CorpAttachController extends BaseController {
 	@RequestMapping(value = "toUpdateCorpAttach")
 	public ModelAndView toUpdateCorpAttach(MlCorpAttach corpAttach) {
 		try {
-			corpAttach = this.corpAttachService.getByPriKey(corpAttach);
+			corpAttach = this.corpAttachService.getCorpAttachByPriKey(corpAttach);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -120,16 +128,23 @@ public class CorpAttachController extends BaseController {
 	@RequestMapping(value = "modifyCorpAttach", method = RequestMethod.POST)
 	@ResponseBody
 	public Map<String, Object> modifyNaturalattach(MlCorpAttach corpAttach, @RequestParam("file") MultipartFile[] file,
-			String flag, @ModelAttribute("user") MlUser user, HttpServletRequest request) {
-		boolean uploadFlag = uploadAttach(corpAttach, file, request);
+			String flag, @ModelAttribute("user") MlUser user) {
+		String fileName=file[0].getOriginalFilename();
+		String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
+		DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");		
+		String physicalFileName="CAA_"+user.getUserId()+"_"+format.format(new Date())+"."+prefix;
+		boolean uploadFlag = uploadAttach(file,physicalFileName);
 
 		if (file != null && file[0] != null) {
-			corpAttach.setFileName(file[0].getOriginalFilename());
+			corpAttach.setFileName(fileName);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		if ("ADD".equals(flag)) {
+			corpAttach.setPhysicalName(physicalFileName);
 			result = addCorpAttach(corpAttach);
 		} else if ("UPDATE".equals(flag)) {
+			deleteAttachFile(corpAttach);
+			corpAttach.setPhysicalName(physicalFileName);
 			result = updateCorpAttach(corpAttach);
 		}
 		if (uploadFlag) {
@@ -149,7 +164,7 @@ public class CorpAttachController extends BaseController {
 		try {
 			if (corpAttach != null) {
 				corpAttach.setFileNo(KeyGenerator.getNextKey("ML_CORP_ATTACH", "FILE_NO"));
-				this.corpAttachService.create(corpAttach);
+				this.corpAttachService.createCorpAttach(corpAttach);
 				result.put("success", true);
 				result.put("msg", "附件申请信息添加成功！");
 			} else {
@@ -170,7 +185,7 @@ public class CorpAttachController extends BaseController {
 
 		try {
 			if (corpAttach != null) {
-				this.corpAttachService.update(corpAttach);
+				this.corpAttachService.updateCorpAttach(corpAttach);
 				result.put("success", true);
 				result.put("msg", "附件申请信息修改成功！");
 			} else {
@@ -186,6 +201,34 @@ public class CorpAttachController extends BaseController {
 		return result;
 	}
 
+	/**
+	 * 删除已上传的附件信息
+	 * @param naturalAttach
+	 * @return
+	 */
+	private boolean deleteAttachFile(MlCorpAttach corpAttach){
+		boolean result = true;
+		String attachFolder=null;
+		
+		try {
+			if (corpAttach != null) {
+				MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+				attachFolder=param.getParamVal();
+				File file = new File(attachFolder+"/"+corpAttach.getPhysicalName());
+
+				if (file.exists()) {
+					file.delete();
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+
+		return result;
+	}
+	
 	@RequestMapping(value = "deleteCorpAttach")
 	@ResponseBody
 	public Map<String, Object> deleteCorpAttach(String ids) {
@@ -193,7 +236,11 @@ public class CorpAttachController extends BaseController {
 
 		try {
 			if ((ids != null) && (!"".equals(ids.trim()))) {
-				this.corpAttachService.delete(ids);
+				List<MlCorpAttach> attachList=this.corpAttachService.getCorpAttachListByIds(ids);
+				for(int i=0;i<attachList.size();++i){
+					this.deleteAttachFile(attachList.get(i));
+				}
+				this.corpAttachService.deleteCorpAttach(ids);
 				result.put("success", true);
 				result.put("msg", "附件申请信息删除成功！");
 			} else {
@@ -209,21 +256,21 @@ public class CorpAttachController extends BaseController {
 		return result;
 	}
 
-	public boolean uploadAttach(MlCorpAttach corpAttach, MultipartFile[] uploadFile, HttpServletRequest request) {
+	public boolean uploadAttach(MultipartFile[] uploadFile,String physicalFileName) {
 		boolean flag = true;
+		String attachFolder=null;
+
 		try {
 			if (uploadFile != null) {
-				// String path =
-				// request.getSession().getServletContext().getRealPath("./attachment");
-				String path = "D:/miniloan/./attachment";
-				File file = new File(path);
+				MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+				attachFolder=param.getParamVal();
+				File file = new File(attachFolder);
 
 				if (!file.exists() && !file.isDirectory()) {
 					file.mkdirs();
 				}
 				for (MultipartFile tmpFile : uploadFile) {
-					String newFileName = tmpFile.getOriginalFilename();
-					FileCopyUtils.copy(tmpFile.getBytes(), new File(path + "/" + newFileName));
+					FileCopyUtils.copy(tmpFile.getBytes(), new File(attachFolder + "/" + physicalFileName));
 				}
 			}
 
@@ -235,18 +282,20 @@ public class CorpAttachController extends BaseController {
 		return flag;
 	}
 
-	@RequestMapping("downloadAttach")
-	public ResponseEntity<byte[]> downloadAttach(HttpServletRequest request, String fileName) throws IOException {
+	@RequestMapping("download")
+	public ResponseEntity<byte[]> downloadAttach(String fileName,String physicalName) throws IOException {
+		String attachFolder=null;
+
 		try {
-			// String path =
-			// request.getSession().getServletContext().getRealPath("./attachment");
-			String path = "D:/miniloan/./attachment";
-			File file = new File(path + "/" + fileName);
+			MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+			attachFolder=param.getParamVal();
+			File file = new File(attachFolder + "/" + physicalName);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 			headers.setContentDispositionFormData("attachment", new String(fileName.getBytes("utf-8"), "ISO8859-1"));
 			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 

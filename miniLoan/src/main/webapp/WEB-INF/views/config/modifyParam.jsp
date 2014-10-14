@@ -59,8 +59,8 @@
 				<tr>
 					<th align="center" width="35%">参数值</th>
 					<td><input class="easyui-validatebox" name="paramVal"
-						validType="length[1,6]" value="${currentParam.paramVal}"
-						style="width: 100px" /></td>
+						validType="length[1,50]" value="${currentParam.paramVal}"
+						style="width: 300px" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="button" value="保存"

@@ -90,20 +90,20 @@ public class TestController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			HashMap inputMap= new HashMap();
+			HashMap inputMap = new HashMap();
 			inputMap.put("age", 24);
 			inputMap.put("annIncome", 80000);
 			inputMap.put("eduLvl", "G");
 			inputMap.put("isHighPosition", "Y");
 			inputMap.put("mortageValue", 10000);
 			DecisionResult decisionResult = new DecisionResult();
-			this.strategyExecute.execute(inputMap,decisionResult);
-			HashMap resultMap=(HashMap)decisionResult.getResultMap();
-			System.out.println("isPassed:"+resultMap.get("isPassed"));
-			System.out.println("loanLimit:"+resultMap.get("loanLimit"));
-			System.out.println("loanRate:"+resultMap.get("loanRate"));
-			System.out.println("reasonCode:"+resultMap.get("reasonCode"));
-			System.out.println("reason:"+resultMap.get("reason"));
+			this.strategyExecute.execute(inputMap, decisionResult);
+			HashMap resultMap = (HashMap) decisionResult.getResultMap();
+			System.out.println("isPassed:" + resultMap.get("isPassed"));
+			System.out.println("loanLimit:" + resultMap.get("loanLimit"));
+			System.out.println("loanRate:" + resultMap.get("loanRate"));
+			System.out.println("reasonCode:" + resultMap.get("reasonCode"));
+			System.out.println("reason:" + resultMap.get("reason"));
 			result.put("success", true);
 			result.put("msg", "执行成功");
 		} catch (Exception e) {
@@ -121,7 +121,7 @@ public class TestController {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
-			HashMap inputMap= new HashMap();
+			HashMap inputMap = new HashMap();
 			inputMap.put("age", 36);
 			inputMap.put("annIncome", 110000);
 			inputMap.put("eduLvl", "G");
@@ -129,13 +129,13 @@ public class TestController {
 			inputMap.put("mortageValue", 10000);
 			DecisionResult decisionResult = new DecisionResult();
 			this.strategyExecute.reloadStrategy();
-			this.strategyExecute.execute(inputMap,decisionResult);
-			HashMap resultMap=(HashMap)decisionResult.getResultMap();
-			System.out.println("isPassed:"+resultMap.get("isPassed"));
-			System.out.println("loanLimit:"+resultMap.get("loanLimit"));
-			System.out.println("loanRate:"+resultMap.get("loanRate"));
-			System.out.println("reasonCode:"+resultMap.get("reasonCode"));
-			System.out.println("reason:"+resultMap.get("reason"));
+			this.strategyExecute.execute(inputMap, decisionResult);
+			HashMap resultMap = (HashMap) decisionResult.getResultMap();
+			System.out.println("isPassed:" + resultMap.get("isPassed"));
+			System.out.println("loanLimit:" + resultMap.get("loanLimit"));
+			System.out.println("loanRate:" + resultMap.get("loanRate"));
+			System.out.println("reasonCode:" + resultMap.get("reasonCode"));
+			System.out.println("reason:" + resultMap.get("reason"));
 			result.put("success", true);
 			result.put("msg", "执行成功");
 		} catch (Exception e) {

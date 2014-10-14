@@ -14,10 +14,12 @@ public class TestStg implements ExecuteAssistDecisionI {
 	@Override
 	public void execute(HashMap inputMap, DecisionResult decisionResult) {
 		float age = Float.parseFloat(inputMap.get("age").toString());
-		float annIncome = (float) inputMap.get("annIncome");
+		float annIncome = Float
+				.parseFloat(inputMap.get("annIncome").toString());
 		String eduLvl = (String) inputMap.get("eduLvl");
 		String isHighPosition = (String) inputMap.get("isHighPosition");
-		float mortageValue = (float) inputMap.get("mortageValue");
+		float mortageValue = Float.parseFloat(inputMap.get("mortageValue")
+				.toString());
 		String isPassed = "N";
 		float loanLimit = 0F;
 		float loanRate = 0F;

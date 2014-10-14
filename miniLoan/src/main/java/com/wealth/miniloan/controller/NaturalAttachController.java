@@ -2,12 +2,13 @@ package com.wealth.miniloan.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,22 +33,30 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlNaturalAttach;
+import com.wealth.miniloan.entity.MlSysParam;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
-import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.service.LoanNaturalAttachServiceI;
+import com.wealth.miniloan.service.ParamServiceI;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
 @RequestMapping(value = "/natural/attach")
 @SessionAttributes("user")
 public class NaturalAttachController extends BaseController {
-	private CommonServiceI<MlNaturalAttach> naturalAttachService = null;
+	private LoanNaturalAttachServiceI naturalAttachService = null;
+	private ParamServiceI paramService = null;
 
 	@Autowired
-	public void setNaturalAttachService(CommonServiceI<MlNaturalAttach> naturalAttachService) {
+	public void setNaturalAttachService(LoanNaturalAttachServiceI naturalAttachService) {
 		this.naturalAttachService = naturalAttachService;
 	}
 
+	@Autowired
+	public void setParamService(ParamServiceI paramService){
+		this.paramService=paramService;
+	}
+	
 	/*
 	 * 表单提交日期绑定
 	 */
@@ -73,7 +82,7 @@ public class NaturalAttachController extends BaseController {
 	public DataGrid getNaturalAttachList(Page page, MlNaturalAttach naturalAttach) {
 		DataGrid resut = new DataGrid();
 		PageList<MlNaturalAttach> loanNaturalAttachList = null;
-		loanNaturalAttachList = naturalAttachService.getPageList(page, naturalAttach);
+		loanNaturalAttachList = naturalAttachService.getNaturalAttachPageList(page, naturalAttach);
 
 		if (loanNaturalAttachList != null) {
 			resut.setRows(loanNaturalAttachList);
@@ -106,7 +115,7 @@ public class NaturalAttachController extends BaseController {
 	@RequestMapping(value = "toUpdateNaturalAttach")
 	public ModelAndView toUpdateNaturalAttach(MlNaturalAttach naturalAttach) {
 		try {
-			naturalAttach = this.naturalAttachService.getByPriKey(naturalAttach);
+			naturalAttach = this.naturalAttachService.getNaturalAttachByPriKey(naturalAttach);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -119,19 +128,25 @@ public class NaturalAttachController extends BaseController {
 
 	@RequestMapping(value = "modifyNaturalattach", method = RequestMethod.POST)
 	@ResponseBody
-	public Map<String, Object> modifyNaturalattach(MlNaturalAttach naturalattach,
-			@RequestParam("file") MultipartFile[] file, String flag, @ModelAttribute("user") MlUser user,
-			HttpServletRequest request) {
-		boolean uploadFlag = uploadAttach(naturalattach, file, request);
+	public Map<String, Object> modifyNaturalattach(MlNaturalAttach naturalAttach,
+			@RequestParam("file") MultipartFile[] file, String flag, @ModelAttribute("user") MlUser user) {
+		String fileName=file[0].getOriginalFilename();
+		String prefix=fileName.substring(fileName.lastIndexOf(".")+1);
+		DateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");		
+		String physicalFileName="NAA_"+user.getUserId()+"_"+format.format(new Date())+"."+prefix;
+		boolean uploadFlag = uploadAttach(file,physicalFileName);
 
 		if (file != null && file[0] != null) {
-			naturalattach.setFileName(file[0].getOriginalFilename());
+			naturalAttach.setFileName(fileName);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 		if ("ADD".equals(flag)) {
-			result = addNaturalAttach(naturalattach);
+			naturalAttach.setPhysicalName(physicalFileName);
+			result = addNaturalAttach(naturalAttach);
 		} else if ("UPDATE".equals(flag)) {
-			result = updateNaturalAttach(naturalattach);
+			deleteAttachFile(naturalAttach);
+			naturalAttach.setPhysicalName(physicalFileName);
+			result = updateNaturalAttach(naturalAttach);
 		}
 
 		if (uploadFlag) {
@@ -145,13 +160,41 @@ public class NaturalAttachController extends BaseController {
 		return result;
 	}
 
+	/**
+	 * 删除已上传的附件信息
+	 * @param naturalAttach
+	 * @return
+	 */
+	private boolean deleteAttachFile(MlNaturalAttach naturalAttach){
+		boolean result = true;
+		String attachFolder=null;
+		
+		try {
+			if (naturalAttach != null) {
+				MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+				attachFolder=param.getParamVal();
+				File file = new File(attachFolder+"/"+naturalAttach.getPhysicalName());
+
+				if (file.exists()) {
+					file.delete();
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+
+		return result;
+	}
+	
 	public Map<String, Object> addNaturalAttach(MlNaturalAttach naturalAttach) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
 		try {
 			if (naturalAttach != null) {
 				naturalAttach.setFileNo(KeyGenerator.getNextKey("ML_NATURAL_ATTACH", "FILE_NO"));
-				this.naturalAttachService.create(naturalAttach);
+				this.naturalAttachService.createNaturalAttach(naturalAttach);
 				result.put("success", true);
 				result.put("msg", "附件申请信息添加成功！");
 			} else {
@@ -172,7 +215,7 @@ public class NaturalAttachController extends BaseController {
 
 		try {
 			if (naturalAttach != null) {
-				this.naturalAttachService.update(naturalAttach);
+				this.naturalAttachService.updateNaturalAttach(naturalAttach);
 				result.put("success", true);
 				result.put("msg", "附件申请信息修改成功！");
 			} else {
@@ -195,7 +238,11 @@ public class NaturalAttachController extends BaseController {
 
 		try {
 			if ((ids != null) && (!"".equals(ids.trim()))) {
-				this.naturalAttachService.delete(ids);
+				List<MlNaturalAttach> attachList=this.naturalAttachService.getNaturalAttachListByIds(ids);
+				for(int i=0;i<attachList.size();++i){
+					this.deleteAttachFile(attachList.get(i));
+				}
+				this.naturalAttachService.deleteNaturalAttach(ids);
 				result.put("success", true);
 				result.put("msg", "附件申请信息删除成功！");
 			} else {
@@ -211,21 +258,21 @@ public class NaturalAttachController extends BaseController {
 		return result;
 	}
 
-	public boolean uploadAttach(MlNaturalAttach naturalattach, MultipartFile[] uploadFile, HttpServletRequest request) {
+	public boolean uploadAttach(MultipartFile[] uploadFile,String physicalFileName) {
 		boolean flag = true;
+		String attachFolder=null;
+		
 		try {
 			if (uploadFile != null) {
-				// String path =
-				// request.getSession().getServletContext().getRealPath("./attachment");
-				String path = "D:/miniloan/./attachment";
-				File file = new File(path);
+				MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+				attachFolder=param.getParamVal();
+				File file = new File(attachFolder);
 
 				if (!file.exists() && !file.isDirectory()) {
 					file.mkdirs();
 				}
 				for (MultipartFile tmpFile : uploadFile) {
-					String newFileName = tmpFile.getOriginalFilename();
-					FileCopyUtils.copy(tmpFile.getBytes(), new File(path + "/" + newFileName));
+					FileCopyUtils.copy(tmpFile.getBytes(), new File(attachFolder + "/" + physicalFileName));
 				}
 			}
 
@@ -237,18 +284,20 @@ public class NaturalAttachController extends BaseController {
 		return flag;
 	}
 
-	@RequestMapping("downloadAttach")
-	public ResponseEntity<byte[]> downloadAttach(HttpServletRequest request, String fileName) throws IOException {
+	@RequestMapping("download")
+	public ResponseEntity<byte[]> downloadAttach(String fileName,String physicalName) throws IOException {
+		String attachFolder=null;
+
 		try {
-			// String path =
-			// request.getSession().getServletContext().getRealPath("./attachment");
-			String path = "D:/miniloan/./attachment";
-			File file = new File(path + "/" + fileName);
+			MlSysParam param=this.paramService.getParamByCode("ATTACH_SAVE_FOLDER");
+			attachFolder=param.getParamVal();
+			File file = new File(attachFolder + "/" + physicalName);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 			headers.setContentDispositionFormData("attachment", new String(fileName.getBytes("utf-8"), "ISO8859-1"));
 			return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 

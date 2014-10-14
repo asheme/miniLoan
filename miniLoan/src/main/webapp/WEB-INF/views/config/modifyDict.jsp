@@ -9,6 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>the dict modify page</title>
 <script type="text/javascript">
+<!--
 	$(function() {
 		//初始化combobox
 		initComboboxContent("dictType", "DICT_TYPE");

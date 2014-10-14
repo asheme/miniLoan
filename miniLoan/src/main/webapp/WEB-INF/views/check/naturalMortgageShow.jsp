@@ -80,10 +80,11 @@
 					<td width="25%">${naturalMortgage.oldValue}</td>
 				</tr>
 				<tr>
-					<th align="center" width="25%">现值</th>
-					<td width="25%">${naturalMortgage.currValue}</td>
 					<th align="center" width="25%">现状</th>
 					<td width="25%">${naturalMortgage.status}</td>
+					<th align="center" width="25%">现值</th>
+					<td width="25%">${naturalMortgage.currValue}</td>
+					
 				</tr>
 			</table>
 		</form>

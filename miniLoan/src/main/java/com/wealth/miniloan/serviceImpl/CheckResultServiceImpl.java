@@ -8,15 +8,17 @@ import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.dao.AppCheckResultDao;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppCheckResultExample;
+import com.wealth.miniloan.entity.MlAppCheckResultExample.Criteria;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.SysUtil;
 
 @Service
 public class CheckResultServiceImpl implements CommonServiceI<MlAppCheckResult> {
 	private AppCheckResultDao appCheckResultDao;
 
-	// private final String _ORDER_ATTRS = "appNo";
-	// private final String _ORDER_FIELDS = "APP_NO";
+	private final String _ORDER_ATTRS = "approveTime";
+	private final String _ORDER_FIELDS = "APPROVE_TIME";
 
 	@Autowired
 	public void setAppCheckResultDao(AppCheckResultDao appCheckResultDao) {
@@ -29,8 +31,17 @@ public class CheckResultServiceImpl implements CommonServiceI<MlAppCheckResult> 
 
 	@Override
 	public PageList<MlAppCheckResult> getPageList(Page paramPage, MlAppCheckResult obj) {
-		// TODO Auto-generated method stub
-		return null;
+		MlAppCheckResultExample example = new MlAppCheckResultExample();
+		String appNo = obj.getAppNo();
+		Criteria criteria = example.createCriteria();
+		if (appNo != null && !"".equals(appNo)) {
+			criteria.andAppNoEqualTo(appNo);
+		}
+		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
+		if (!order.equals("")) {
+			example.setOrderByClause(order);
+		}
+		return this.appCheckResultDao.findPage(SysUtil.convertPage(paramPage), example);
 	}
 
 	@Override

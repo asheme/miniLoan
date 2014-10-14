@@ -43,9 +43,19 @@
 					return getDictItem("APP_TYPE", value);
 				}
 			}, {
+				field : 'custId',
+				title : '证件号',
+				width : 20,
+				sortable : true
+			}, {
+				field : 'name',
+				title : '借款人',
+				width : 20,
+				sortable : true
+			}, {
 				field : 'enterTime',
 				title : '进件时间',
-				width : 10,
+				width : 20,
 				sortable : true
 			}, {
 				field : 'currStep',
@@ -55,17 +65,7 @@
 				formatter : function(value, row, index) {
 					return getDictItem("PROCESS_STEP", value);
 				}
-			},
-			{
-				field:'opt',
-				title : '操作',
-				formatter:function(value,row,index)
-				  {
-				return "<a href='${pageContext.request.contextPath}/recheck/app/backToPrevious.do?appNo="+row.appNo+"'>退回上一步审核</a> &nbsp; &nbsp;<a href='${pageContext.request.contextPath}/recheck/app/goToNext.do?appNo="+row.appNo+"'>提交下一步审核</a>";
-				  }			,
-				width : 20
-				
-			} ] ],
+			}] ],
 			toolbar : '#toolbar'
 		});
 		
@@ -75,7 +75,7 @@
 		var rows = $('#datagrid').datagrid('getChecked');
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/recheck/app/toCheckApp.do?appNo='
+				window.location.href = '${pageContext.request.contextPath}/manualcheck/app/toCheckApp.do?appNo='
 						+ rows[0].appNo + '&appType=' + rows[0].appType;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要审核的记录！", "info");
@@ -96,20 +96,7 @@
 		$('#searchForm :text').val('');
 		$('#datagrid').datagrid('load', {});
 	}
-     //查看详情
-    function Detail (){
-    	var rows = $('#datagrid').datagrid('getChecked');
-		if (rows.length > 0) {
-			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/app/toShowDetail.do?appNo='
-						+ rows[0].appNo;
-			} else {
-				$.messager.alert('信息提示', "只能选择一条要维护的记录！", "info");
-			}
-		} else {
-			$.messager.alert('信息提示', "请您选择要维护的记录！", "info");
-		}
-    }
+   
 </script>
 </head>
 <body>
@@ -122,7 +109,7 @@
 					<tr>
 						<th width="20%">申请编号</th>
 						<td width="30%"><input name="name" style="width: 280px;" /></td>
-						<th width="20%">申请类型</th>
+						<th width="20%">证件号码</th>
 						<td width="30%"><input name="name" style="width: 280px;" /></td>
 					</tr>
 					<tr>
@@ -143,6 +130,7 @@
 						<td><a href="#" class="easyui-linkbutton"
 							data-options="iconCls:'icon-ui-search',plain:true"
 							onClick="javascript:checkAppDetail();" style="float: left;">人工核查</a></td>
+						<td>
 						<td>
 							<div class="datagrid-btn-separator"></div>
 						</td>

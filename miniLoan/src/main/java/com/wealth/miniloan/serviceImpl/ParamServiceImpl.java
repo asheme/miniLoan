@@ -4,7 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.googlecode.ehcache.annotations.Cacheable;
+import com.googlecode.ehcache.annotations.TriggersRemove;
 import com.wealth.miniloan.dao.ParamDao;
+import com.wealth.miniloan.entity.DataDictionary;
+import com.wealth.miniloan.entity.MlDict;
+import com.wealth.miniloan.entity.MlDictExample;
+import com.wealth.miniloan.entity.MlDictItemExample;
 import com.wealth.miniloan.entity.MlSysParam;
 import com.wealth.miniloan.entity.MlSysParamExample;
 import com.wealth.miniloan.entity.Page;
@@ -50,8 +56,18 @@ public class ParamServiceImpl implements ParamServiceI {
 	}
 
 	@Override
+	@TriggersRemove(cacheName = { "paramCache" }, removeAll = true)
 	public int updateParam(MlSysParam param) {
 		return this.paramDao.updateSelective(param);
 	}
+	
+	@Override
+	@Cacheable(cacheName = "paramCache")
+	public MlSysParam getParamByCode(String paramCode) {
+		MlSysParamExample paramExample = new MlSysParamExample();
+		paramExample.createCriteria().andParamCodeEqualTo(paramCode);
+		MlSysParam param=this.paramDao.findOne(paramExample);
 
+		return param;
+	}
 }

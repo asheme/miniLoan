@@ -10,4 +10,6 @@ public interface ParamServiceI {
 	public MlSysParam queryParamById(MlSysParam param);
 
 	public int updateParam(MlSysParam param);
+	
+	public MlSysParam getParamByCode(String paramCode);
 }

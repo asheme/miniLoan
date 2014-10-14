@@ -33,65 +33,66 @@ public class BorrowerServiceImpl implements BorrowerServiceI {
 		this.borrowerDao = borrowerDao;
 	}
 
-//	public PageList<MlBorrower> getBorrowerList(Page page, MlBorrower borrower) {
-//		MlBorrowerExample example = new MlBorrowerExample();
-//		MlBorrowerExample.Criteria criteria = example.createCriteria();
-//		String custCode = borrower.getCustCode();
-//		if (custCode != null && !"".equals(custCode)) {
-//			criteria.andCustCodeLike("%" + custCode + "%");
-//		}
-//		String order = SysUtil.dealOrderby(page, _ORDER_ATTRS, _ORDER_FIELDS);
-//		if (!order.equals("")) {
-//			example.setOrderByClause(order);
-//		}
-//		return this.borrowerDao.findPage(SysUtil.convertPage(page), example);
-//	}
+	// public PageList<MlBorrower> getBorrowerList(Page page, MlBorrower
+	// borrower) {
+	// MlBorrowerExample example = new MlBorrowerExample();
+	// MlBorrowerExample.Criteria criteria = example.createCriteria();
+	// String custCode = borrower.getCustCode();
+	// if (custCode != null && !"".equals(custCode)) {
+	// criteria.andCustCodeLike("%" + custCode + "%");
+	// }
+	// String order = SysUtil.dealOrderby(page, _ORDER_ATTRS, _ORDER_FIELDS);
+	// if (!order.equals("")) {
+	// example.setOrderByClause(order);
+	// }
+	// return this.borrowerDao.findPage(SysUtil.convertPage(page), example);
+	// }
 
-//	@TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
-//	public int createDict(MlDict dict) {
-//		dict.setDictId(KeyGenerator.getNextKey("ML_DICT", "DICT_ID"));
-//		return this.dictDao.save(dict);
-//	}
-//
-//	@TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
-//	public int updateDict(MlDict dict) {
-//		return this.dictDao.updateSelective(dict);
-//	}
-//
-//	public MlDict queryDictById(MlDict dict) {
-//		return (MlDict) this.dictDao.getById(dict.getDictId());
-//	}
-//
-//	@TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
-//	public int deleteDict(String ids) {
-//		String[] id = ids.split(",");
-//		List idlist = new ArrayList();
-//		for (int i = 0; i < id.length; i++) {
-//			idlist.add(id[i]);
-//		}
-//
-//		MlDictExample example = new MlDictExample();
-//		example.createCriteria().andDictIdIn(idlist);
-//		return this.dictDao.deleteByExample(example);
-//	}
-//
-//	@Cacheable(cacheName = "dictCache")
-//	public DataDictionary getDictItemsByDictName(String dictName) {
-//		MlDictExample dictExample = new MlDictExample();
-//		dictExample.createCriteria().andDictTitleEqualTo(dictName);
-//		DataDictionary dataDictionary = new DataDictionary();
-//		dataDictionary.setDict((MlDict) this.dictDao.findOne(dictExample));
-//
-//		if (dataDictionary.getDict() != null) {
-//			MlDictItemExample itemExample = new MlDictItemExample();
-//			itemExample.createCriteria().andDictIdEqualTo(
-//					dataDictionary.getDict().getDictId());
-//			dataDictionary.setDictItemList(this.dictItemDao
-//					.findAll(itemExample));
-//		}
-//
-//		return dataDictionary;
-//	}
+	// @TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
+	// public int createDict(MlDict dict) {
+	// dict.setDictId(KeyGenerator.getNextKey("ML_DICT", "DICT_ID"));
+	// return this.dictDao.save(dict);
+	// }
+	//
+	// @TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
+	// public int updateDict(MlDict dict) {
+	// return this.dictDao.updateSelective(dict);
+	// }
+	//
+	// public MlDict queryDictById(MlDict dict) {
+	// return (MlDict) this.dictDao.getById(dict.getDictId());
+	// }
+	//
+	// @TriggersRemove(cacheName = { "dictCache" }, removeAll = true)
+	// public int deleteDict(String ids) {
+	// String[] id = ids.split(",");
+	// List idlist = new ArrayList();
+	// for (int i = 0; i < id.length; i++) {
+	// idlist.add(id[i]);
+	// }
+	//
+	// MlDictExample example = new MlDictExample();
+	// example.createCriteria().andDictIdIn(idlist);
+	// return this.dictDao.deleteByExample(example);
+	// }
+	//
+	// @Cacheable(cacheName = "dictCache")
+	// public DataDictionary getDictItemsByDictName(String dictName) {
+	// MlDictExample dictExample = new MlDictExample();
+	// dictExample.createCriteria().andDictTitleEqualTo(dictName);
+	// DataDictionary dataDictionary = new DataDictionary();
+	// dataDictionary.setDict((MlDict) this.dictDao.findOne(dictExample));
+	//
+	// if (dataDictionary.getDict() != null) {
+	// MlDictItemExample itemExample = new MlDictItemExample();
+	// itemExample.createCriteria().andDictIdEqualTo(
+	// dataDictionary.getDict().getDictId());
+	// dataDictionary.setDictItemList(this.dictItemDao
+	// .findAll(itemExample));
+	// }
+	//
+	// return dataDictionary;
+	// }
 
 	@Override
 	public PageList<MlBorrower> getList(Page page, MlBorrower param) {

@@ -10,9 +10,12 @@ import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.wealth.miniloan.entity.MlSysParam;
 import com.wealth.miniloan.entity.Strategy;
+import com.wealth.miniloan.service.ParamServiceI;
 import com.wealth.miniloan.strategy.model.Attribute;
 import com.wealth.miniloan.strategy.model.Branch;
 import com.wealth.miniloan.strategy.model.Result;
@@ -25,14 +28,19 @@ import com.wealth.miniloan.strategy.model.Result;
  */
 @Repository
 public class ParseStrategy {
-//	private final String STG_FILE="F:\\source\\git\\miniLoan\\miniLoan\\strategy\\Strategy.XML";
-	private final String STG_FILE="E:\\source\\miniLoan\\strategy\\Strategy.XML";
+	private String stgFile=null;
 	private String scripts = null;
 	private List<Attribute> inVariableList = null;
 	private List<Attribute> outVariableList = null;
 	private List<Attribute> scoreList = null;
 	private Strategy strategy = null;
+	private ParamServiceI paramService = null;
 
+	@Autowired
+	public void setParamService(ParamServiceI paramService){
+		this.paramService=paramService;
+	}
+	
 	public Strategy getStrategy() {
 		return strategy;
 	}
@@ -41,8 +49,11 @@ public class ParseStrategy {
 	 * 加载策略信息
 	 */
 	public void loadStrategy() {
+		MlSysParam param=this.paramService.getParamByCode("STG_FILE_PATH");
+		stgFile=param.getParamVal();
+		
 		this.strategy = new Strategy();
-		this.strategy.setStgFileName(STG_FILE);
+		this.strategy.setStgFileName(stgFile);
 		scripts="";
 		parseStrategy();
 //		scripts="System.out.println(\"測試是否可以執行\");";

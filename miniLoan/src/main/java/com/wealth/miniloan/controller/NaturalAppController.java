@@ -1,8 +1,10 @@
 package com.wealth.miniloan.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlNaturalApp;
+import com.wealth.miniloan.entity.MlNaturalMortgage;
+import com.wealth.miniloan.entity.MlNaturalMortgageExample;
+import com.wealth.miniloan.entity.MlNaturalMortgageExample.Criteria;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
@@ -30,6 +35,12 @@ import com.wealth.miniloan.service.CommonServiceI;
 public class NaturalAppController extends BaseController {
 	private CommonServiceI<MlNaturalApp> naturalAppService = null;
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
+	private CommonServiceI<MlNaturalMortgage> naturalMortgageService = null;
+
+	@Autowired
+	public void setNaturalMortgageService(CommonServiceI<MlNaturalMortgage> naturalMortgageService) {
+		this.naturalMortgageService = naturalMortgageService;
+	}
 
 	@Autowired
 	public void setNaturalAppService(CommonServiceI<MlNaturalApp> naturalAppService) {
@@ -202,6 +213,7 @@ public class NaturalAppController extends BaseController {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "submitApp")
 	@ResponseBody
 	public Map<String, Object> submitApp(String appNo) {
@@ -210,7 +222,17 @@ public class NaturalAppController extends BaseController {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("01");
+
+			MlNaturalMortgageExample example = new MlNaturalMortgageExample();
+			Criteria c = example.createCriteria();
+			c.andAppNoEqualTo(appNo);
+			List<MlNaturalMortgage> nmList = new ArrayList<MlNaturalMortgage>();
+			nmList = (List<MlNaturalMortgage>) this.naturalMortgageService.getByExample(example);
+			if (nmList != null && nmList.size() > 0) {
+				as.setCurrStep("01");// 押品审核
+			} else {
+				as.setCurrStep("02");// 复核
+			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			result.put("success", true);
@@ -237,4 +259,25 @@ public class NaturalAppController extends BaseController {
 		return modelAndView;
 	}
 
+	@RequestMapping(value = "submitToFinal")
+	@ResponseBody
+	public Map<String, Object> submitToFinal(String appNo) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			MlAppSummary obj = new MlAppSummary();
+			obj.setAppNo(appNo);
+			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as.setCurrStep("04");// 终审
+			as.setFinishTime(new Date());
+			this.appSummaryService.update(as);
+			result.put("success", true);
+			result.put("msg", "申请信息提交成功！");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("success", false);
+			result.put("msg", "自然人申请信息提交失败，服务器端处理异常！");
+		}
+		return result;
+	}
 }

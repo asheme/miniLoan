@@ -18,7 +18,6 @@ import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlCorpApp;
-import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
 
@@ -207,7 +206,7 @@ public class CorpAppController extends BaseController {
 			obj.setAppNo(appNo);
 			obj.setAppType("02");
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("01");
+			as.setCurrStep("02");
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			result.put("success", true);
@@ -232,5 +231,26 @@ public class CorpAppController extends BaseController {
 		modelAndView.setViewName("check/corpAppDetail");
 		modelAndView.addObject("checkApp", na);
 		return modelAndView;
+	}
+	@RequestMapping(value = "submitToFinal")
+	@ResponseBody
+	public Map<String, Object> submitToFinal(String appNo) {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			MlAppSummary obj = new MlAppSummary();
+			obj.setAppNo(appNo);
+			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as.setCurrStep("04");// 终审
+			as.setFinishTime(new Date());
+			this.appSummaryService.update(as);
+			result.put("success", true);
+			result.put("msg", "申请信息提交成功！");
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("success", false);
+			result.put("msg", "自然人申请信息提交失败，服务器端处理异常！");
+		}
+		return result;
 	}
 }

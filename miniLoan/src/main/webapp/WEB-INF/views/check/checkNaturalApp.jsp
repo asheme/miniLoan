@@ -19,20 +19,16 @@
 				+ appNo;
 		document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/natural/attach/naturalCheckAttach.do?appNo='
 				+ appNo;
-		document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/natural/mortgage/naturalCheckMortgage.do?appNo='
+		document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/natural/mortgage/showMortgageList.do?appNo='
 				+ appNo;
-
+		document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo='
+			+ appNo;
 	});
 
-	function beckList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/appSummaryList.do';
+	function backList() {
+		window.location.href = '${pageContext.request.contextPath}/menu/reCheckList.do';
 	}
-
-	function backToBefore() {
-		window.location.href = '${pageContext.request.contextPath}/recheck/app/backToPrevious.do?appNo='
-				+ appNo;
-	}
-
+	
 	function submitToNext() {
 		$('#submitForm')
 				.form(
@@ -46,6 +42,8 @@
 									if (r.success) {
 										$.messager.alert('信息提示', r.msg, "info",
 												backList);
+									} else {
+										$.messager.alert('信息提示', r.msg, "info");
 									}
 								} catch (e) {
 									$.messager.alert('信息提示', result);
@@ -53,6 +51,16 @@
 							}
 						});
 	}
+	
+	
+	$(function(){
+		$('input[name="checkResult"]').each(function(){
+			var t=$(this).val();
+			if(t=='${checkResult.checkResult}'){
+				$(this).attr("checked",true);
+				}
+		});
+	});
 </script>
 </head>
 <body>
@@ -72,31 +80,39 @@
 					<iframe id="attachIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
 				</div>
-				<div title="抵押人信息">
+				<div title="押品信息">
 					<iframe id="mortgageIframe" width="100%" height="100%"
+						frameborder="no" border="0"></iframe>
+				</div>
+				<div title="审核记录">
+					<iframe id="checkResultIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
 				</div>
 			</div>
 		</div>
 		<div data-options="region:'south',border : false,collapsible:false"
-			style="overflow: hidden; padding: 1px; height: 150px;">
+			style="overflow: hidden; padding: 1px; height: 200px;">
 			<div class="easyui-panel" data-options="border:false,fit:true"
 				title="复核结果"
 				style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 				<form id="submitForm" method="post">
 					<table class="modifytable" width="100%" height="100%">
 						<tr>
-						<tr>
-							<th align="center" width="30%">审核建议</th>
-							<td><textarea rows="3" cols="100"
-									name="checkDesc">${checkResult.checkDesc}</textarea></td>
+							<th align="center" width="30%">审核结果</th>
+							<td width="35%"><label>通过</label><input type="radio"
+								name="checkResult" value="1" checked="checked"></input></td>
+							<td width="35%"><label>不通过</label><input type="radio"
+								name="checkResult" value="0"></input></td>
 						</tr>
 						<tr>
-							<td colspan="2" align="center"><input type="button"
-								value="提交下一步" class="btn" onclick="submitToNext();" /> <input
-								type="button" value="退回" class="btn" onclick="backToBefore();" />
-								<input type="button" value="返回列表" class="btn"
-								onclick="backList();" />
+							<th align="center" width="30%">审核建议</th>
+							<td colspan="2"><textarea rows="3" cols="100"
+									name="checkDesc"></textarea></td>
+						</tr>
+						<tr>
+							<td colspan="4" align="center"><input type="button"
+								value="提交" class="btn" onclick="submitToNext();" /> <input
+								type="button" value="返回列表" class="btn" onclick="backList();" />
 						</tr>
 					</table>
 				</form>

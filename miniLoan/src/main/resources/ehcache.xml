@@ -13,6 +13,10 @@
 		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
 		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" />
 		
+	<cache name="paramCache" eternal="false" maxElementsInMemory="100000"
+		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" memoryStoreEvictionPolicy="LFU" />
+		
 	<cache name="shiroCache" eternal="false" maxElementsInMemory="1000"
 		overflowToDisk="false" diskPersistent="false" timeToIdleSeconds="0"
 		timeToLiveSeconds="600" memoryStoreEvictionPolicy="LFU" />

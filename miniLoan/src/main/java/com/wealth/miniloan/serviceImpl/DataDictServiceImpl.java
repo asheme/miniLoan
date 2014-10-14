@@ -72,6 +72,7 @@ public class DataDictServiceImpl implements DataDictServiceI {
 		return this.dictDao.updateSelective(dict);
 	}
 
+	@Override
 	public MlDict queryDictById(MlDict dict) {
 		return (MlDict) this.dictDao.getById(dict.getDictId());
 	}

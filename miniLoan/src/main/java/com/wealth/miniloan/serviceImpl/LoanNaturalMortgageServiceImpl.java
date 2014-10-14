@@ -70,8 +70,7 @@ public class LoanNaturalMortgageServiceImpl implements CommonServiceI<MlNaturalM
 
 	@Override
 	public Object getByExample(Object obj) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.naturalMortgageDao.findAll(obj);
 	}
 
 }

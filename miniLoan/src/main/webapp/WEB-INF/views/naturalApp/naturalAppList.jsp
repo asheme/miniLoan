@@ -80,7 +80,7 @@
 					return "退回";
 				}
 				
-			} ] ],
+			}] ],
 			toolbar : '#toolbar'
 		});
 		

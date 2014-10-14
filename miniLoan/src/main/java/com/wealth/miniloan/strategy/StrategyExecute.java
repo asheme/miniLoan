@@ -93,7 +93,7 @@ public class StrategyExecute {
 			pool.importPackage("java.util");
 			pool.importPackage("com.wealth.miniloan.strategy");
 			pool.importPackage("com.wealth.miniloan.strategy.model");
-
+			
 			if (isLoaded) {
 				clas = pool
 						.get("com.wealth.miniloan.strategy.ExecuteAssistDecision");

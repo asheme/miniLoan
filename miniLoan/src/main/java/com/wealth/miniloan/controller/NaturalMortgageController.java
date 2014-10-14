@@ -54,17 +54,7 @@ public class NaturalMortgageController extends BaseController {
 		modelAndView.addObject("appNo", appNo);
 		return modelAndView;
 	}
-
-	@RequestMapping("naturalCheckMortgage")
-	@ResponseBody
-	public ModelAndView naturalCheckMortgage(String appNo) {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/naturalMortgageDetail");
-		modelAndView.addObject("flag", "CHECK");
-		modelAndView.addObject("appNo", appNo);
-		return modelAndView;
-	}
-
+	
 	@RequestMapping(value = "naturalMortgageList")
 	@ResponseBody
 	public DataGrid getNaturalMortgageList(Page page, MlNaturalMortgage naturalMortgage) {
@@ -76,30 +66,24 @@ public class NaturalMortgageController extends BaseController {
 			resut.setRows(loanNaturalMortgageList);
 			resut.setTotal(Long.valueOf(loanNaturalMortgageList.getPaginator().getTotalCount()));
 		}
-
 		return resut;
 	}
 
+	@RequestMapping("naturalCheckMortgage")
+	@ResponseBody
+	public ModelAndView naturalCheckMortgage(String appNo) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("check/checkMortgage");
+		modelAndView.addObject("flag", "CHECK");
+		modelAndView.addObject("appNo", appNo);
+		return modelAndView;
+	}
+	
 	@RequestMapping(value = "toAddNaturalMortgage")
 	public ModelAndView toAddNaturalMortgage(MlNaturalMortgage naturalMortgage) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("naturalApp/modifyNaturalMortgage");
 		modelAndView.addObject("flag", "ADD");
-		modelAndView.addObject("naturalMortgage", naturalMortgage);
-		return modelAndView;
-	}
-
-	@RequestMapping(value = "naturalMortgageShow")
-	@ResponseBody
-	public ModelAndView naturalMortgageShow(MlNaturalMortgage naturalMortgage) {
-		try {
-			naturalMortgage = this.naturalMortgageService.getByPriKey(naturalMortgage);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/naturalMortgageShow");
-		modelAndView.addObject("flag", "DETAIL");
 		modelAndView.addObject("naturalMortgage", naturalMortgage);
 		return modelAndView;
 	}
@@ -117,7 +101,58 @@ public class NaturalMortgageController extends BaseController {
 		modelAndView.addObject("naturalMortgage", naturalMortgage);
 		return modelAndView;
 	}
+	
+	@RequestMapping("revalueMortgage")
+	@ResponseBody
+	public ModelAndView revalueMortgage(String appNo) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("check/revalueMortgageList");
+		modelAndView.addObject("flag", "CHECK");
+		modelAndView.addObject("appNo", appNo);
+		return modelAndView;
+	}
 
+	
+	@RequestMapping(value = "toRevalueNaturalMortgage")
+	public ModelAndView toRevalueNaturalMortgage(MlNaturalMortgage naturalMortgage) {
+		try {
+			naturalMortgage = this.naturalMortgageService.getByPriKey(naturalMortgage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("check/revalueMortgage");
+		modelAndView.addObject("flag", "UPDATE");
+		modelAndView.addObject("naturalMortgage", naturalMortgage);
+		return modelAndView;
+	}
+
+	@RequestMapping("showMortgageList")
+	@ResponseBody
+	public ModelAndView showMortgageList(String appNo) {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("check/showMortgageList");
+		modelAndView.addObject("flag", "CHECK");
+		modelAndView.addObject("appNo", appNo);
+		return modelAndView;
+	}
+
+	
+	@RequestMapping(value = "naturalMortgageShow")
+	@ResponseBody
+	public ModelAndView naturalMortgageShow(MlNaturalMortgage naturalMortgage) {
+		try {
+			naturalMortgage = this.naturalMortgageService.getByPriKey(naturalMortgage);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("check/naturalMortgageShow");
+		modelAndView.addObject("flag", "DETAIL");
+		modelAndView.addObject("naturalMortgage", naturalMortgage);
+		return modelAndView;
+	}
+	
 	@RequestMapping(value = "modifyNaturalMortgage")
 	@ResponseBody
 	public Map<String, Object> modifyNaturalMortgage(MlNaturalMortgage naturalMortgage, String flag,

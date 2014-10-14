@@ -24,8 +24,10 @@
 		}
 		document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/corp/attach/toCorpAttachList.do?appNo='
 				+ appNo;
-		document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo='
+		document.getElementById("shareHolderIframe").src = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo='
 				+ appNo;
+		document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo='
+			+ appNo;
 		$("#tabs")
 				.tabs(
 						{
@@ -66,6 +68,28 @@
 							}
 						});
 	}
+	
+	function submitToFinal() {
+
+		$('#submitForm')
+				.form(
+						'submit',
+						{
+							url : '${pageContext.request.contextPath}/corp/app/submitToFinal.do?appNo='
+									+ appNo,
+							success : function(result) {
+								try {
+									var r = $.parseJSON(result);
+									if (r.success) {
+										$.messager.alert('信息提示', r.msg, "info",
+												backList);
+									}
+								} catch (e) {
+									$.messager.alert('信息提示', result);
+								}
+							}
+						});
+	}
 </script>
 </head>
 <body>
@@ -86,7 +110,11 @@
 						frameborder="no" border="0"></iframe>
 				</div>
 				<div title="企业股东信息">
-					<iframe id="mortgageIframe" width="100%" height="100%"
+					<iframe id="shareHolderIframe" width="100%" height="100%"
+						frameborder="no" border="0"></iframe>
+				</div>
+				<div title="审核记录">
+					<iframe id="checkResultIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
 				</div>
 			</div>
@@ -96,7 +124,8 @@
 			<form id="submitForm" method="post">
 				<table width="100%">
 					<tr>
-						<td align="center"><input type="button" value="提交审核"
+						<td align="center"><input type="button" value="直接终审"
+							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交审核"
 							class="btn" onclick="submitToNext();" /> <input type="button"
 							value="返回列表" class="btn" onclick="backList();" /></td>
 					</tr>

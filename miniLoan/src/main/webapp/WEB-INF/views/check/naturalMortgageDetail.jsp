@@ -68,42 +68,80 @@
 		
 	});
 	 
-	function addNew() {
-		window.location.href = '${pageContext.request.contextPath}/natural/mortgage/toAddNaturalMortgage.do?appNo=${appNo}';
-		if (navigator.userAgent.indexOf("MSIE") > 0) {// IE特有回收内存方法
-			try {
-				CollectGarbage();
-			} catch (e) {
-			}
-		}
 
+	function backList() {
+		window.location.href = '${pageContext.request.contextPath}/menu/mortgageCheckList.do';
 	}
 
-	function updateObj() {
-		var rows = $('#datagrid').datagrid('getChecked');
-		
-		if (rows.length > 0) {
-			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/mortgage/toUpdateNaturalMortgage.do?mortgageId='
-						+ rows[0].mortgageId;
-			} else {
-				$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");
-			}
-		} else {
-			$.messager.alert('信息提示', "请您选择要修改的记录！", "info");
-		}
+	function submitToNext() {
+		$('#submitForm')
+				.form(
+						'submit',
+						{
+							url : '${pageContext.request.contextPath}/mortgage/check/goToNext.do?appNo=${appNo}',
+							success : function(result) {
+								try {
+									var r = $.parseJSON(result);
+									if (r.success) {
+										$.messager.alert('信息提示', r.msg, "info",
+												backList);
+									} else {
+										$.messager.alert('信息提示', r.msg, "info");
+									}
+								} catch (e) {
+									$.messager.alert('信息提示', result);
+								}
+							}
+						});
 	}
-
-
-  
+	
+	
+	$(function(){
+		$('input[name="checkResult"]').each(function(){
+			var t=$(this).val();
+			if(t=='${checkResult.checkResult}'){
+				$(this).attr("checked",true);
+				}
+		});
+	});
 </script>
 </head>
 <body>
-	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'center',border:false"
-			style="padding-top: 0px;">
-			<table id="datagrid"></table>
+	<div style="height: 65%">
+		<div class="easyui-layout" data-options="fit : true,border : false">
+			<div data-options="region:'center',border:false"
+				style="padding-top: 0px;">
+				<table id="datagrid"></table>
 
+			</div>
+		</div>
+	</div>
+	<div data-options="region:'south',border : false,collapsible:false"
+		style="overflow: hidden; padding: 1px; height: 150px;">
+		<div class="easyui-panel" data-options="border:false,fit:true"
+			title="复核结果"
+			style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
+			<form id="submitForm" method="post">
+				<table class="modifytable" width="100%" height="100%">
+					<tr>
+						<th align="center" width="30%">审核结果</th>
+						<td width="35%"><label>通过</label><input type="radio"
+							name="checkResult" value="1" checked="checked"></input></td>
+						<td width="35%"><label>不通过</label><input type="radio"
+							name="checkResult" value="0"></input></td>
+					</tr>
+					<tr>
+						<th align="center" width="30%">审核建议</th>
+						<td colspan="2"><textarea rows="3" cols="100"
+								name="checkDesc"></textarea></td>
+					</tr>
+					<tr>
+						<td colspan="4" align="center"><input type="button"
+							value="提交" class="btn" onclick="submitToNext();" /> <input
+							type="button" value="返回列表" class="btn" onclick="backList();" />
+					</tr>
+				</table>
+			</form>
 		</div>
 	</div>
 </body>

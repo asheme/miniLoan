@@ -41,7 +41,7 @@ public class AppSummaryServiceImpl implements CommonServiceI<MlAppSummary> {
 		// if (idNo != null && !"".equals(idNo)) {
 		// criteria.andIdNoLike("%" + idNo + "%");
 		// }
-		criteria.andCurrStepEqualTo(obj.getAppType());// 录入申请待审核
+		criteria.andCurrStepEqualTo(obj.getCurrStep());
 
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {

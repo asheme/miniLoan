@@ -44,7 +44,8 @@ function backList() {
 </script>
 </head>
 <body>
-	<div id="updatePanel" class="easyui-panel" data-options="border:false,fit:true"
+	<div id="updatePanel" class="easyui-panel"
+		data-options="border:false,fit:true"
 		style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 		<form id="modifyForm" method="post">
 			<table class="modifytable" width="100%">

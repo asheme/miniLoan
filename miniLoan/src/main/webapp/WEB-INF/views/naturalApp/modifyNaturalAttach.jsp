@@ -53,15 +53,16 @@
 		style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 		<form id="modifyForm" enctype="multipart/form-data" method="post">
 			<table class="modifytable" width="100%">
-				<tr>					
+				<tr>
 					<th align="center" width="30%">文件描述</th>
-					<td width="70%"><input class="easyui-validatebox" name="fileDesc" value="${naturalAttach.fileDesc}"
+					<td width="70%"><input class="easyui-validatebox"
+						name="fileDesc" value="${naturalAttach.fileDesc}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 300px;" id="fileDesc" /></td>
 				</tr>
 				<tr>
 					<th align="center" width="30%">选择文件</th>
-					<td width="70%"><input type="file" name="file" id="file" /></td>					
+					<td width="70%"><input type="file" name="file" id="file" /></td>
 				</tr>
 				<tr>
 					<td colspan="2" align="center"><input type="button" value="保存"
