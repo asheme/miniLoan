@@ -40,6 +40,14 @@
 				title : '角色描述',
 				width : 160
 			}, {
+				field : 'limitMin',
+				title : '审批额度下限',
+				width : 60
+			}, {
+				field : 'limitMax',
+				title : '审批额度上限',
+				width : 60
+			}, {
 				field : 'status',
 				title : '状态',
 				width : 50,

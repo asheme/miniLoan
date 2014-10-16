@@ -44,26 +44,15 @@
 		}
 	});
 	
-	//返回列表页
-	function backList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/corpAppList.do';
-	}
-	
-	function getDate(date){
-		
-		return date;
-	}
-
 	//保存信息
 	function saveCorpCredit() {
 		$('#modifyForm').form('submit', {
-			url : '${pageContext.request.contextPath}/corp/credit/modifyCorpCredit.do?appNo='+window.parent.appNo+'&flag='+window.parent.creditflag,
+			url : '${pageContext.request.contextPath}/corp/credit/modifyCorpCredit.do',
 			success : function(result) {
 				try {
 					var r = $.parseJSON(result);
 					if (r.success) {
-						window.parent.creditflag='UPDATE';
-						$.messager.alert('信息提示', r.msg, "info");
+						$.messager.alert('信息提示', r.msg, "info",reloadPage);
 					} else {
 						$.messager.alert('信息提示', r.msg, "info");
 					}
@@ -72,6 +61,11 @@
 				}
 			}
 		});
+	}
+	
+	function reloadPage(){
+		var appNo=$("input[name='appNo']").val();	
+		window.location.href="${pageContext.request.contextPath}/corp/credit/toModifyCorpCredit.do?appNo="+appNo;
 	}
 
 	//检查输入是否有效
@@ -181,15 +175,14 @@
 						name="badLoansAmount" value="${corpCredit.badLoansAmount}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="badLoansAmount" /></td>
-
+					<th align="center" width="25%">&nbsp;</th>
+					<td width="25%">&nbsp;</td>
 				</tr>
-
 				<td colspan="4" align="center"><input type="button" value="保存"
 					class="btn" onclick="saveCorpCredit();" /> <input type="button"
-					value="清空" class="btn" onclick="clearCorpCredit();" /> <%-- <input type="hidden" name="appNo" value="${corpCredit.appNo}" /> 
-					<input type="hidden" name="flag" value="${flag}"></td> --%>
+					value="清空" class="btn" onclick="clearCorpCredit();" /> <input type="hidden" name="appNo" value="${corpCredit.appNo}" /> 
+					<input type="hidden" name="flag" value="${flag}"></td>
 				</tr>
-
 			</table>
 		</form>
 	</div>

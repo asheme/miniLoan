@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wealth.miniloan.entity.MlCorpCredit;
+import com.wealth.miniloan.entity.MlNaturalCredit;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.service.CommonServiceI;
 
@@ -81,32 +82,26 @@ public class CorpCreditController extends BaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "toAddCorpCredit")
+	@RequestMapping(value = "toModifyCorpCredit")
 	@ResponseBody
-	public ModelAndView toAddCorpCredit(String appNo) {
+	public ModelAndView toModifyCorpCredit(MlCorpCredit corpCredit){
 		ModelAndView modelAndView = new ModelAndView();
-		MlCorpCredit corpCredit = new MlCorpCredit();
-		corpCredit.setAppNo(appNo);
-		modelAndView.addObject("corpCredit", corpCredit);
+		
+		String appNo=corpCredit.getAppNo();
 		modelAndView.setViewName("corpApp/modifyCorpCredit");
-		modelAndView.addObject("flag", "ADD");
-		return modelAndView;
-	}
-
-	@RequestMapping(value = "toUpdateCorpCredit")
-	public ModelAndView toUpdateCorpCredit(MlCorpCredit corpCredit) {
-		try {
-			corpCredit = this.corpCreditService.getByPriKey(corpCredit);
-		} catch (Exception e) {
-			e.printStackTrace();
+		corpCredit = this.corpCreditService.getByPriKey(corpCredit);
+		if(corpCredit!=null){
+			modelAndView.addObject("flag", "UPDATE");
+		}else{
+			corpCredit=new MlCorpCredit();
+			corpCredit.setAppNo(appNo);
+			modelAndView.addObject("flag", "ADD");
 		}
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("corpApp/modifyCorpCredit");
-		modelAndView.addObject("flag", "UPDATE");
 		modelAndView.addObject("corpCredit", corpCredit);
+		
 		return modelAndView;
 	}
-
+	
 	@RequestMapping(value = "modifyCorpCredit")
 	@ResponseBody
 	public Map<String, Object> modifyCorpCredit(MlCorpCredit corpCredit, String flag,
@@ -116,12 +111,7 @@ public class CorpCreditController extends BaseController {
 		if ("ADD".equals(flag)) {
 			result = addCorpCredit(corpCredit);
 		} else if ("UPDATE".equals(flag)) {
-			MlCorpCredit recordInDb = this.corpCreditService.getByPriKey(corpCredit);
-			if (recordInDb == null) {
-				result = addCorpCredit(corpCredit);
-			} else {
-				result = updateCorpCredit(corpCredit);
-			}
+			result = updateCorpCredit(corpCredit);
 		} else {
 			result.put("success", false);
 			result.put("msg", "征信信息添加异常，服务器端无法正常获取请求数据！");
@@ -135,7 +125,6 @@ public class CorpCreditController extends BaseController {
 
 		try {
 			if (CorpCredit != null) {
-				/* corpCredit.setAppNo(super.getAppNo()); */
 				this.corpCreditService.create(CorpCredit);
 				result.put("success", true);
 				result.put("msg", "征信征信申添加成功！");

@@ -71,7 +71,6 @@
 				width:20,
 				formatter:function(value,row,index){
 					return "退回";
-					/* return "<a href='#'>审核建议</a>"; */
 				}
 				
 			}] ],
@@ -80,7 +79,7 @@
 	});
 
 	function addNew() {
-		window.location.href = '${pageContext.request.contextPath}/corp/app/corpApp.do';
+		window.location.href = '${pageContext.request.contextPath}/corp/app/corpApp.do?flag=ADD';
 		if (navigator.userAgent.indexOf("MSIE") > 0) {// IE特有回收内存方法
 			try {
 				CollectGarbage();
@@ -94,7 +93,7 @@
 		var rows = $('#datagrid').datagrid('getChecked');
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/corp/app/corpApp.do?appNo='
+				window.location.href = '${pageContext.request.contextPath}/corp/app/corpApp.do?flag=UPDATE&appNo='
 					+ rows[0].appNo;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");

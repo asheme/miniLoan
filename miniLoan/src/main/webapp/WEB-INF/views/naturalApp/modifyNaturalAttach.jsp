@@ -17,7 +17,6 @@
 	}
 	
 	function getDate(date){
-		
 		return date;
 	}
 

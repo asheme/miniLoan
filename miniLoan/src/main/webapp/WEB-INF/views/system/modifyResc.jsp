@@ -38,7 +38,7 @@
 						$.messager.alert('信息提示', r.msg, "info", backList);
 					}
 				} catch (e) {
-					$.messager.alert('信息提示', result);
+					$.messager.alert('信息提示', r.msg, 'error');
 				}
 			}
 		});

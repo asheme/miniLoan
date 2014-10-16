@@ -79,7 +79,6 @@
 				formatter:function(value,row,index){
 					return "退回";
 				}
-				
 			}] ],
 			toolbar : '#toolbar'
 		});
@@ -87,7 +86,7 @@
 	});
 	 
    function addNew() {
-		window.location.href = '${pageContext.request.contextPath}/natural/app/naturalApp.do?appNo=';
+		window.location.href = '${pageContext.request.contextPath}/natural/app/naturalApp.do?flag=ADD';
 		if (navigator.userAgent.indexOf("MSIE") > 0) {// IE特有回收内存方法
 			try {
 				CollectGarbage();
@@ -97,13 +96,12 @@
 
 	} 
 
-	
 	function updateObj() {
 		var rows = $('#datagrid').datagrid('getChecked');
 		
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/app/naturalApp.do?appNo='
+				window.location.href = '${pageContext.request.contextPath}/natural/app/naturalApp.do?flag=UPDATE&appNo='
 						+ rows[0].appNo;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");
@@ -179,7 +177,7 @@
 		var rows = $('#datagrid').datagrid('getChecked');
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/mortgage/toMortgageList.do?appNo='
+				window.location.href = '${pageContext.request.contextPath}/mortgage/toMortgageList.do?appNo='
 						+ rows[0].appNo;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要维护的记录！", "info");

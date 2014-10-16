@@ -16,6 +16,7 @@ import com.wealth.miniloan.entity.MlCorpAppExample;
 import com.wealth.miniloan.entity.MlCorpAppExample.Criteria;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.SysUtil;
 
 @Service
@@ -37,12 +38,11 @@ public class LoanCorpAppServiceImpl implements CommonServiceI<MlCorpApp> {
 
 	@Override
 	public PageList<MlCorpApp> getPageList(Page paramPage, MlCorpApp obj) {
-
 		List<String> appNoList = new ArrayList<String>();
 		MlAppSummaryExample asExample = new MlAppSummaryExample();
 		com.wealth.miniloan.entity.MlAppSummaryExample.Criteria c = asExample.createCriteria();
-		c.andAppTypeEqualTo("02");
-		c.andCurrStepEqualTo("00");
+		c.andAppTypeEqualTo(Constant.APP_TYPE_CORP);
+		c.andCurrStepEqualTo(Constant.STEP_LOAN_APP);
 		List<MlAppSummary> asList = this.appSummaryDao.findAll(asExample);
 
 		for (MlAppSummary as : asList) {
@@ -50,10 +50,6 @@ public class LoanCorpAppServiceImpl implements CommonServiceI<MlCorpApp> {
 		}
 		MlCorpAppExample example = new MlCorpAppExample();
 		Criteria criteria = example.createCriteria();
-		// String name = obj.getCompName();
-		// if (name != null && !"".equals(name)) {
-		// criteria.andCompNameLike("%" + name + "%");
-		// }
 		if (appNoList.size() != 0) {
 			criteria.andAppNoIn(appNoList);
 		} else {

@@ -7,33 +7,20 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>Natural app info maintainance</title>
 <script type="text/javascript">
-	var appNo = "${appNo}";
-	var flag = "${flag}";
-	var creditflag = "${flag}";//如果只添加了基本信息没有添加征信信息，则由问题
+<!--
 	$(function() {
-		if (flag == "UPDATE") {
-			document.getElementById("appIframe").src = '${pageContext.request.contextPath}/natural/app/toUpdateNaturalApp.do?appNo='
-					+ appNo;
-			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/natural/credit/toUpdateNaturalCredit.do?appNo='
-					+ appNo;
-		} else {
-			document.getElementById("appIframe").src = '${pageContext.request.contextPath}/natural/app/toAddNaturalApp.do';
-			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/natural/credit/toAddNaturalCredit.do';
+		if($("input[name='flag']").val() == "UPDATE"){
+			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/natural/credit/toModifyNaturalCredit.do?appNo=${appNo}';
+			document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/natural/attach/toNaturalAttachList.do?appNo=${appNo}';
+			document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/mortgage/toMortgageList.do?appNo=${appNo}';
+			document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo=${appNo}';
 		}
-		document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/natural/attach/toNaturalAttachList.do?appNo='
-				+ appNo;
-		document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/natural/mortgage/toMortgageList.do?appNo='
-				+ appNo;
-		document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo='
-			+ appNo;
-		$("#tabs")
-				.tabs(
-						{
-							onSelect : function(title) {
-								if ((title == "征信信息" || title == "附件信息" || title == "抵押物信息")
-										&& appNo == "") {
+			
+		$("#tabs").tabs({
+							onSelect : function(title,index) {
+								if ($("input[name='flag']").val() == "ADD" && index!=0) {
 									$.messager
 											.alert('信息提示', "请先保存基本信息", "info");
 									$("#tabs").tabs("select", 0);
@@ -48,13 +35,11 @@
 	}
 
 	function submitToNext() {
-
 		$('#submitForm')
 				.form(
 						'submit',
 						{
-							url : '${pageContext.request.contextPath}/natural/app/submitApp.do?appNo='
-									+ appNo,
+							url : '${pageContext.request.contextPath}/natural/app/submitApp.do',
 							success : function(result) {
 								try {
 									var r = $.parseJSON(result);
@@ -70,13 +55,11 @@
 	}
 	
 	function submitToFinal() {
-
 		$('#submitForm')
 				.form(
 						'submit',
 						{
-							url : '${pageContext.request.contextPath}/natural/app/submitToFinal.do?appNo='
-									+ appNo,
+							url : '${pageContext.request.contextPath}/natural/app/submitToFinal.do',
 							success : function(result) {
 								try {
 									var r = $.parseJSON(result);
@@ -90,6 +73,7 @@
 							}
 						});
 	}
+//-->
 </script>
 </head>
 <body>
@@ -99,18 +83,18 @@
 				data-options="fit : true,border : false">
 				<div title="基本信息">
 					<iframe id="appIframe" width="100%" height="100%" frameborder="no"
-						border="0"></iframe>
+						border="0" src="${pageContext.request.contextPath}/natural/app/toModifyNaturalApp.do?flag=${flag}&appNo=${appNo}"></iframe>
 				</div>
 				<div title="征信信息">
 					<iframe id="creditIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
+				</div>				
+				<div title="押品信息">
+					<iframe id="mortgageIframe" width="100%" height="100%"
+						frameborder="no" border="0"></iframe>
 				</div>
 				<div title="附件信息">
 					<iframe id="attachIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
-				<div title="押品信息">
-					<iframe id="mortgageIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
 				</div>
 				<div title="审核记录">
@@ -127,7 +111,10 @@
 						<td align="center"><input type="button" value="直接终审"
 							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交审核"
 							class="btn" onclick="submitToNext();" /> <input type="button"
-							value="返回列表" class="btn" onclick="backList();" /></td>
+							value="返回列表" class="btn" onclick="backList();" /> <input name="flag" type="hidden"
+							value="${flag}" /> <input name="appNo" type="hidden"
+							value="${appNo}" />
+						</td>
 					</tr>
 				</table>
 			</form>

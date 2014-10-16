@@ -2,6 +2,7 @@ package com.wealth.miniloan.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlNaturalAppExample;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.SysUtil;
 
 @Service
@@ -43,8 +45,8 @@ public class LoanNaturalAppServiceImpl implements CommonServiceI<MlNaturalApp> {
 		List<String> appNoList = new ArrayList<String>();
 		MlAppSummaryExample asExample = new MlAppSummaryExample();
 		Criteria c = asExample.createCriteria();
-		c.andAppTypeEqualTo("01");
-		c.andCurrStepEqualTo("00");
+		c.andAppTypeEqualTo(Constant.APP_TYPE_NATURAL);
+		c.andCurrStepEqualTo(Constant.STEP_LOAN_APP);
 		List<MlAppSummary> asList = this.appSummaryDao.findAll(asExample);
 
 		for (MlAppSummary as : asList) {
@@ -52,14 +54,6 @@ public class LoanNaturalAppServiceImpl implements CommonServiceI<MlNaturalApp> {
 		}
 		MlNaturalAppExample example = new MlNaturalAppExample();
 		MlNaturalAppExample.Criteria criteria = example.createCriteria();
-		// String name = obj.getName();
-		// String idNo = obj.getIdNo();
-		// if (name != null && !"".equals(name)) {
-		// criteria.andNameLike("%" + name + "%");
-		// }
-		// if (idNo != null && !"".equals(idNo)) {
-		// criteria.andIdNoLike("%" + idNo + "%");
-		// }
 
 		if (appNoList.size() != 0) {
 			criteria.andAppNoIn(appNoList);

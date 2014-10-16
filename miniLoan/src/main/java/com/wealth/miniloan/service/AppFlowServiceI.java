@@ -10,4 +10,7 @@ public interface AppFlowServiceI {
 	public abstract int createAppFlow(MlApproveTaskCfg appTask);
 	public abstract int updateAppFlow(MlApproveTaskCfg appTask);
 	public abstract int deleteAppFlow(String ids);
+	public abstract String getFirstStep();
+	public abstract String getNextStep(String currStep);
+	public abstract String getEndStep();
 }

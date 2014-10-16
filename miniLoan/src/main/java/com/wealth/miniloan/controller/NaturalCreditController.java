@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wealth.miniloan.entity.MlCorpCredit;
+import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlNaturalCredit;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.service.CommonServiceI;
@@ -96,33 +97,26 @@ public class NaturalCreditController extends BaseController {
 		}
 	}
 
-	@RequestMapping(value = "toAddNaturalCredit")
-	@ResponseBody
-	public ModelAndView toAddNaturalCredit(String appNo) {
+	@RequestMapping(value = "toModifyNaturalCredit")
+	public ModelAndView toModifyNaturalApp(MlNaturalCredit naturalCredit){
 		ModelAndView modelAndView = new ModelAndView();
-		MlNaturalCredit naturalCredit = new MlNaturalCredit();
-		naturalCredit.setAppNo(appNo);
+		
+		String appNo=naturalCredit.getAppNo();
 		modelAndView.setViewName("naturalApp/modifyNaturalCredit");
-		modelAndView.addObject("naturalCredit", naturalCredit);
-		modelAndView.addObject("flag", "ADD");
-		return modelAndView;
-	}
-
-	@RequestMapping(value = "toUpdateNaturalCredit")
-	public ModelAndView toUpdateNaturalCredit(MlNaturalCredit naturalCredit) {
-		try {
-			naturalCredit = this.naturalCreditService.getByPriKey(naturalCredit);
-		} catch (Exception e) {
-			e.printStackTrace();
+		naturalCredit = this.naturalCreditService.getByPriKey(naturalCredit);
+		if(naturalCredit!=null){
+			modelAndView.addObject("flag", "UPDATE");
+		}else{
+			naturalCredit=new MlNaturalCredit();
+			naturalCredit.setAppNo(appNo);
+			modelAndView.addObject("flag", "ADD");
 		}
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("naturalApp/modifyNaturalCredit");
-		modelAndView.addObject("flag", "UPDATE");
 		modelAndView.addObject("naturalCredit", naturalCredit);
+		
 		return modelAndView;
 	}
-
-	@RequestMapping(value = "modifynaturalCredit")
+	
+	@RequestMapping(value = "modifyNaturalCredit")
 	@ResponseBody
 	public Map<String, Object> modifynaturalCredit(MlNaturalCredit naturalCredit, String flag,
 			@ModelAttribute("user") MlUser user) {
@@ -131,12 +125,7 @@ public class NaturalCreditController extends BaseController {
 		if ("ADD".equals(flag)) {
 			result = addNaturalCredit(naturalCredit);
 		} else if ("UPDATE".equals(flag)) {
-			MlNaturalCredit recordInDb = this.naturalCreditService.getByPriKey(naturalCredit);
-			if (recordInDb == null) {
-				result = addNaturalCredit(naturalCredit);
-			} else {
-				result = updateNaturalCredit(naturalCredit);
-			}
+			result = updateNaturalCredit(naturalCredit);
 		} else {
 			result.put("success", false);
 			result.put("msg", "征信信息添加异常，服务器端无法正常获取请求数据！");
@@ -150,7 +139,6 @@ public class NaturalCreditController extends BaseController {
 
 		try {
 			if (naturalCredit != null) {
-				/* naturalCredit.setAppNo(super.getAppNo()); */
 				this.naturalCreditService.create(naturalCredit);
 				result.put("success", true);
 				result.put("msg", "征信申添加成功！");

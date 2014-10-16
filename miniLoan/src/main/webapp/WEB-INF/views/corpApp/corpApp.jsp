@@ -9,31 +9,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <script type="text/javascript">
-	var appNo = "${appNo}";
-	var flag = "${flag}";
-	var creditflag = "${flag}";//如果只添加了基本信息没有添加征信信息，则由问题
-	$(function() {
-		if (flag == "UPDATE") {
-			document.getElementById("appIframe").src = '${pageContext.request.contextPath}/corp/app/toUpdateCorpApp.do?appNo='
-					+ appNo;
-			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/corp/credit/toUpdateCorpCredit.do?appNo='
-					+ appNo;
-		} else {
-			document.getElementById("appIframe").src = '${pageContext.request.contextPath}/corp/app/toAddCorpApp.do';
-			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/corp/credit/toAddCorpCredit.do';
+<!--
+ 	$(function() {
+		if($("input[name='flag']").val() == "UPDATE"){
+			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/corp/credit/toModifyCorpCredit.do?appNo=${appNo}';
+			document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/corp/attach/toCorpAttachList.do?appNo=${appNo}';
+			document.getElementById("shareHolderIframe").src = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo=${appNo}';
+			document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/mortgage/toMortgageList.do?appNo=${appNo}';
+			document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo=${appNo}';
 		}
-		document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/corp/attach/toCorpAttachList.do?appNo='
-				+ appNo;
-		document.getElementById("shareHolderIframe").src = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo='
-				+ appNo;
-		document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo='
-			+ appNo;
-		$("#tabs")
-				.tabs(
+		$("#tabs").tabs(
 						{
-							onSelect : function(title) {
-								if ((title == "征信信息" || title == "附件信息" || title == "企业股东信息")
-										&& appNo == "") {
+							onSelect : function(title,index) {
+								if ($("input[name='flag']").val() == "ADD" && index!=0) {
 									$.messager
 											.alert('信息提示', "请先保存基本信息", "info");
 									$("#tabs").tabs("select", 0);
@@ -48,7 +36,6 @@
 	}
 
 	function submitToNext() {
-
 		$('#submitForm')
 				.form(
 						'submit',
@@ -70,7 +57,6 @@
 	}
 	
 	function submitToFinal() {
-
 		$('#submitForm')
 				.form(
 						'submit',
@@ -90,6 +76,7 @@
 							}
 						});
 	}
+//-->
 </script>
 </head>
 <body>
@@ -99,20 +86,24 @@
 				data-options="fit : true,border : false">
 				<div title="基本信息">
 					<iframe id="appIframe" width="100%" height="100%" frameborder="no"
-						border="0"></iframe>
+						border="0" src="${pageContext.request.contextPath}/corp/app/toModifyCorpApp.do?flag=${flag}&appNo=${appNo}"></iframe>
 				</div>
 				<div title="征信信息">
 					<iframe id="creditIframe" width="100%" height="100%"
+						frameborder="no" border="0"></iframe>
+				</div>				
+				<div title="企业股东信息">
+					<iframe id="shareHolderIframe" width="100%" height="100%"
+						frameborder="no" border="0"></iframe>
+				</div>
+				<div title="押品信息">
+					<iframe id="mortgageIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
 				</div>
 				<div title="附件信息">
 					<iframe id="attachIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
-				</div>
-				<div title="企业股东信息">
-					<iframe id="shareHolderIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
+				</div>				
 				<div title="审核记录">
 					<iframe id="checkResultIframe" width="100%" height="100%"
 						frameborder="no" border="0"></iframe>
@@ -127,7 +118,11 @@
 						<td align="center"><input type="button" value="直接终审"
 							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交审核"
 							class="btn" onclick="submitToNext();" /> <input type="button"
-							value="返回列表" class="btn" onclick="backList();" /></td>
+							value="返回列表" class="btn" onclick="backList();" />
+							<input name="flag" type="hidden"
+							value="${flag}" /> <input name="appNo" type="hidden"
+							value="${appNo}" />
+						</td>
 					</tr>
 				</table>
 			</form>

@@ -12,7 +12,7 @@
 <script type="text/javascript">
 	//返回列表页
 	function backList() {
-		window.location.href = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo=${naturalAttach.appNo}';
+		window.location.href = '${pageContext.request.contextPath}/corp/shareholder/toShareholderList.do?appNo=${shareholder.appNo}';
 	}
 	
 	function getDate(date){

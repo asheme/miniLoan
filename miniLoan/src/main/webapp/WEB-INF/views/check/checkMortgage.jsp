@@ -3,29 +3,27 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ include file="/WEB-INF/views/common.jsp"%>
+<%@ page import="com.wealth.miniloan.utils.Constant" %>
+<%
+	pageContext.setAttribute("naturalType", Constant.APP_TYPE_NATURAL);
+	pageContext.setAttribute("corpType", Constant.APP_TYPE_CORP);
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>natural application check</title>
 <script type="text/javascript">
-	var appNo = "${appNo}";
-	var flag = "${flag}";
-	var creditflag = "${flag}";//如果只添加了基本信息没有添加征信信息，则由问题
-	$(function() {
-		document.getElementById("appIframe").src = '${pageContext.request.contextPath}/natural/app/recheckNaturalApp.do?appNo='
-				+ appNo;
-		document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/natural/credit/naturalCreditCheck.do?appNo='
-				+ appNo;
-		document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/natural/attach/naturalCheckAttach.do?appNo='
-				+ appNo;
-		document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/natural/mortgage/revalueMortgage.do?appNo='
-				+ appNo;
-		document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo='
-			+ appNo;
-
+<!--
+	$(function(){
+		$('input[name="checkResult"]').each(function(){
+			var t=$(this).val();
+			if(t=='${checkResult.checkResult}'){
+				$(this).attr("checked",true);
+				}
+		});
 	});
-
+	
 	function backList() {
 		window.location.href = '${pageContext.request.contextPath}/menu/mortgageCheckList.do';
 	}
@@ -52,43 +50,60 @@
 							}
 						});
 	}
-	
-	
-	$(function(){
-		$('input[name="checkResult"]').each(function(){
-			var t=$(this).val();
-			if(t=='${checkResult.checkResult}'){
-				$(this).attr("checked",true);
-				}
-		});
-	});
+//-->
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
 		<div data-options="region:'center',border : false">
 			<div id="tabs" class="easyui-tabs"
-				data-options="fit:true,border:false">
-				<div title="基本信息">
-					<iframe id="appIframe" width="100%" height="100%" frameborder="no"
-						border="0"></iframe>
-				</div>
-				<div title="征信信息">
-					<iframe id="creditIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
-				<div title="附件信息">
-					<iframe id="attachIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
-				<div title="押品信息">
-					<iframe id="mortgageIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
-				<div title="审核记录">
-					<iframe id="checkResultIframe" width="100%" height="100%"
-						frameborder="no" border="0"></iframe>
-				</div>
+				data-options="fit:true,border:false">				
+				<c:choose>
+					<c:when test="${appType eq naturalType}">
+						<div title="基本信息">
+							<iframe id="appIframe" width="100%" height="100%" frameborder="no"
+								border="0" src="${pageContext.request.contextPath}/natural/app/recheckNaturalApp.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="征信信息">
+							<iframe id="creditIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/credit/naturalCreditCheck.do?appNo=${appNo}"></iframe>
+						</div>					
+						<div title="押品信息">
+							<iframe id="mortgageIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/mortgage/revalueMortgage.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="附件信息">
+							<iframe id="attachIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/attach/naturalCheckAttach.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="审核记录">
+							<iframe id="checkResultIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo=${appNo}"></iframe>
+						</div>
+					</c:when>
+					<c:when test="${appType eq corpType}">
+						<div title="基本信息">1
+							<iframe id="appIframe" width="100%" height="100%" frameborder="no"
+								border="0" src="${pageContext.request.contextPath}/natural/app/recheckNaturalApp.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="征信信息">
+							<iframe id="creditIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/credit/naturalCreditCheck.do?appNo=${appNo}"></iframe>
+						</div>					
+						<div title="押品信息">
+							<iframe id="mortgageIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/mortgage/revalueMortgage.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="附件信息">
+							<iframe id="attachIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/attach/naturalCheckAttach.do?appNo=${appNo}"></iframe>
+						</div>
+						<div title="审核记录">
+							<iframe id="checkResultIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo=${appNo}"></iframe>
+						</div>
+					</c:when>
+				</c:choose>
 			</div>
 		</div>
 		<div data-options="region:'south',border : false,collapsible:false"
@@ -114,6 +129,10 @@
 							<td colspan="4" align="center"><input type="button"
 								value="提交" class="btn" onclick="submitToNext();" /> <input
 								type="button" value="返回列表" class="btn" onclick="backList();" />
+								<input type="hidden" name="appNo" value="${appNo}" /> 
+								<input type="hidden" name="appType" value="${appType}" />
+								<input type="hidden" name="flag" value="${flag}">
+							</td>
 						</tr>
 					</table>
 				</form>

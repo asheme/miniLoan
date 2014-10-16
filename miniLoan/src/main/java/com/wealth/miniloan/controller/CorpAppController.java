@@ -1,8 +1,10 @@
 package com.wealth.miniloan.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,20 @@ import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlCorpApp;
+import com.wealth.miniloan.entity.MlMortgageInfo;
+import com.wealth.miniloan.entity.MlMortgageInfoExample;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.Constant;
 
 @Controller
 @RequestMapping(value = "/corp/app")
 public class CorpAppController extends BaseController {
 	private CommonServiceI<MlCorpApp> corpAppService = null;
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
+	private CommonServiceI<MlMortgageInfo> mortgageInfoService = null;
+	private AppFlowServiceI appFlowService=null;
 
 	@Autowired
 	public void setAppSummaryService(CommonServiceI<MlAppSummary> appSummaryService) {
@@ -35,6 +43,17 @@ public class CorpAppController extends BaseController {
 	@Autowired
 	public void setCorpAppService(CommonServiceI<MlCorpApp> corpAppService) {
 		this.corpAppService = corpAppService;
+	}
+	
+	@Autowired
+	public void setMortgageInfoService(
+			CommonServiceI<MlMortgageInfo> mortgageInfoService) {
+		this.mortgageInfoService = mortgageInfoService;
+	}
+
+	@Autowired
+	public void setAppFlowService(AppFlowServiceI appFlowService) {
+		this.appFlowService = appFlowService;
 	}
 
 	@RequestMapping(value = "corpAppList")
@@ -62,41 +81,31 @@ public class CorpAppController extends BaseController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 	}
 
-	@RequestMapping(value = "toAddCorpApp")
-	public ModelAndView toAddCorpApp() {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("corpApp/modifyCorpApp");
-		modelAndView.addObject("flag", "ADD");
-		return modelAndView;
-	}
-
 	@RequestMapping(value = "corpApp")
-	public ModelAndView addCropApp(String appNo) {
+	public ModelAndView addCropApp(String flag,String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("corpApp/corpApp");
-		modelAndView.addObject("appNo", appNo);
-		if (appNo == null) {
-			modelAndView.addObject("flag", "ADD");
-		} else {
-			modelAndView.addObject("flag", "UPDATE");
+		modelAndView.addObject("flag", flag);
+		if ("UPDATE".equals(flag)) {
+			modelAndView.addObject("appNo", appNo);
 		}
 		return modelAndView;
 	}
-
-	@RequestMapping(value = "toUpdateCorpApp")
-	public ModelAndView toUpdateCorpApp(MlCorpApp corpApp) {
-		try {
-			corpApp = this.corpAppService.getByPriKey(corpApp);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	
+	@RequestMapping(value = "toModifyCorpApp")
+	public ModelAndView toModifyCorpApp(String flag,MlCorpApp corpApp) {
 		ModelAndView modelAndView = new ModelAndView();
+
 		modelAndView.setViewName("corpApp/modifyCorpApp");
-		modelAndView.addObject("flag", "UPDATE");
-		modelAndView.addObject("corpApp", corpApp);
+		modelAndView.addObject("flag", flag);
+		if("UPDATE".equals(flag)){
+			corpApp = this.corpAppService.getByPriKey(corpApp);
+			modelAndView.addObject("corpApp", corpApp);
+		}
+		
 		return modelAndView;
 	}
-
+	
 	@RequestMapping(value = "toShowDetail")
 	public ModelAndView toShowDetail(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -123,17 +132,20 @@ public class CorpAppController extends BaseController {
 
 	public Map<String, Object> addCorpApp(MlCorpApp corpApp) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
 
 		try {
 			if (corpApp != null) {
 				corpApp.setAppNo(super.getAppNo());
 				this.corpAppService.create(corpApp);
-
+				currStep=this.appFlowService.getFirstStep();
+				
 				// 保存概要信息
 				MlAppSummary as = new MlAppSummary();
 				as.setAppNo(corpApp.getAppNo());
-				as.setAppType("02");
-				as.setCurrStep("00");
+				as.setAppType(Constant.APP_TYPE_CORP);
+				as.setCurrStep(currStep);
+				as.setStatus(Constant.APP_STATUS_PROCESS);
 				as.setEnterTime(new Date());
 				this.appSummaryService.create(as);
 				result.put("success", true);
@@ -197,16 +209,35 @@ public class CorpAppController extends BaseController {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "submitApp")
 	@ResponseBody
 	public Map<String, Object> submitApp(String appNo) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+		
 		try {
 			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);
-			obj.setAppType("02");
+			obj.setAppNo(appNo);			
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("02");
+			
+			MlMortgageInfoExample example = new MlMortgageInfoExample();
+			MlMortgageInfoExample.Criteria c = example.createCriteria();
+			c.andAppNoEqualTo(appNo);
+			List<MlMortgageInfo> nmList = new ArrayList<MlMortgageInfo>();
+			nmList = (List<MlMortgageInfo>) this.mortgageInfoService.getByExample(example);
+			if (nmList != null && nmList.size() > 0) {
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 押品审核
+				as.setStatus(Constant.APP_STATUS_PROCESS);
+			}else{
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				currStep=this.appFlowService.getNextStep(currStep);
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep); //进入押品审核步骤
+				as.setStatus(Constant.APP_STATUS_PROCESS);
+			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			result.put("success", true);
@@ -232,15 +263,21 @@ public class CorpAppController extends BaseController {
 		modelAndView.addObject("checkApp", na);
 		return modelAndView;
 	}
+	
 	@RequestMapping(value = "submitToFinal")
 	@ResponseBody
 	public Map<String, Object> submitToFinal(String appNo) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("04");// 终审
+			currStep=this.appFlowService.getEndStep();
+			as.setPreviousStep(as.getCurrStep());
+			as.setCurrStep(currStep);// 终审
+			as.setStatus(Constant.APP_STATUS_PROCESS);
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			result.put("success", true);

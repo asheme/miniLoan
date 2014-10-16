@@ -9,6 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>create or modify company loan application</title>
 <script type="text/javascript">
+<!--
 	$(function() {
 		$("#birthday").datebox();
 		$("input[dateFormat='date']").each(function(){				
@@ -30,29 +31,19 @@
 		//initComboboxContent("isLeaf", "YES_OR_NO");
 	});
 
-	//返回列表页
-	function backList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/corpAppList.do';
-	}
-
 	//保存信息
 	function saveObjCorp() {
-		/* if (!validate()) {
-			return;
-		} */
-
 		$('#modifyForm').form('submit', {
-			url : '${pageContext.request.contextPath}/corp/app/modifyCorpApp.do?flag='+window.parent.flag+'&appNo='+window.parent.appNo,
+			url : '${pageContext.request.contextPath}/corp/app/modifyCorpApp.do',
 			success : function(result) {
 				try {
 					var r = $.parseJSON(result);
 					if (r.success) {
-						window.parent.appNo=r.appNo;
-						window.parent.flag="UPDATE";
-						parent.document.getElementById("attachIframe").src='${pageContext.request.contextPath}/natural/attach/toNaturalAttachList.do?appNo='+window.parent.appNo;
-						document.frames('attachIframe').location.reload();	
-						parent.document.getElementById("mortgageIframe").src='${pageContext.request.contextPath}/natural/mortgage/toMortgageList.do?appNo='+window.parent.appNo;
-						document.frames('mortgageIframe').location.reload();
+						if($("input[name='appNo']").val()==""){
+							$("input[name='appNo']").val(r.appNo);
+						}
+						$.messager.alert('信息提示', r.msg, "info",reloadPage);
+					} else {
 						$.messager.alert('信息提示', r.msg, "info");
 					}
 				} catch (e) {
@@ -62,6 +53,16 @@
 		});
 	}
 
+	function reloadPage(){
+		var appNo=$("input[name='appNo']").val();
+		var flag=$("input[name='flag']").val();
+		if(flag=="ADD"){
+			window.parent.location.href="${pageContext.request.contextPath}/corp/app/corpApp.do?flag=UPDATE&appNo="+appNo;
+		}else{
+			window.location.href="${pageContext.request.contextPath}/corp/app/toModifyCorpApp.do?flag="+flag+"&appNo="+appNo;
+ 		}
+	}
+	
 	//检查输入是否有效
 	function validate() {
 		return true;
@@ -69,13 +70,14 @@
 
 	function clearCorpApp() {
 		$.messager.confirm('信息提示', '您确认要清空所有录入？', function(r) {
-		if(r){
-			$("input[type!='button']").each(function() {
-			$(this).val("");
-		});
-		}
+			if(r){
+				$("input[type!='button']").each(function() {
+					$(this).val("");
+				});
+			}
 		});
 	}
+//-->
 </script>
 </head>
 <body>
@@ -434,9 +436,9 @@
 				<tr>
 					<td colspan="4" align="center"><input type="button" value="保存"
 						class="btn" onclick="saveObjCorp();" /> <input type="button"
-						value="清空" class="btn" onclick="clearCorpApp();" /> <%-- <input type="hidden"
+						value="清空" class="btn" onclick="clearCorpApp();" />  <input type="hidden"
 						name="appNo" value="${corpApp.appNo}" /> <input type="hidden"
-						name="flag" value="${flag}"></td> --%>
+						name="flag" value="${flag}"></td> 
 				</tr>
 
 			</table>

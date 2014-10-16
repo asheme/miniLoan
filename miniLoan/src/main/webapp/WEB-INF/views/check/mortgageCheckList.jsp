@@ -75,7 +75,7 @@
 		var rows = $('#datagrid').datagrid('getChecked');
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/mortgage/naturalCheckMortgage.do?appNo='
+				window.location.href = '${pageContext.request.contextPath}/mortgage/checkMortgage.do?appNo='
 						+ rows[0].appNo + '&appType=' + rows[0].appType;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要审核的记录！", "info");

@@ -58,6 +58,18 @@ function saveObj(){
 						style="width: 400px" /></td>
 				</tr>
 				<tr>
+					<th align="center" width="35%">审批额度下限</th>
+					<td><input type="text" class="easyui-numberbox" name="limitMin"
+						value="${role.limitMin}" data-options="precision:2"
+						style="width: 400px" /></td>
+				</tr>
+				<tr>
+					<th align="center" width="35%">审批额度上限</th>
+					<td><input type="text" class="easyui-numberbox" name="limitMax"
+						value="${role.limitMax}" data-options="precision:2"
+						style="width: 400px" /></td>
+				</tr>
+				<tr>
 					<th align="center" width="35%">角色状态</th>
 					<td><input name="status" id="status"
 						data-options="required:true,validType:'emptyString[\'#status\']'"

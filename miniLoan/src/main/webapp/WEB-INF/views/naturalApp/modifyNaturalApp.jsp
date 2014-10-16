@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>create or modify natural loan application</title>
 <script type="text/javascript">
-
+<!--
 	$(function() {
 		$("#idSignDate").datebox();
 		$("#idExpireDate").datebox();
@@ -33,49 +33,37 @@
 			var time=dateToStr($(this).val());
 			$(this).datebox('setValue',time);
 		});
-		
-		/* if ($("input[name='flag']").val() == "ADD") {
-			$('#updatePanel').panel({
-				title : '添加申请信息'
-			});
-		} else {
-			$('#updatePanel').panel({
-				title : '修改申请信息'
-			});
-		} */
 	});
 	
-	//返回列表页
-	/* function backList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/naturalAppList.do';
-	} */
-	
-	function getDate(date){
-		
-		return date;
-	}
 	function saveObjApp() {
 		$('#modifyForm').form('submit', {
-			url : '${pageContext.request.contextPath}/natural/app/modifyNaturalApp.do?flag='+window.parent.flag+'&appNo='+window.parent.appNo,
+			url : '${pageContext.request.contextPath}/natural/app/modifyNaturalApp.do',
 			success : function(result)  {
 				try {
 					var r = $.parseJSON(result);
 					if (r.success) {
-						window.parent.appNo=r.appNo;
-						window.parent.flag="UPDATE";
-						parent.document.getElementById("attachIframe").src='${pageContext.request.contextPath}/natural/attach/toNaturalAttachList.do?appNo='+window.parent.appNo;
-						document.frames('attachIframe').location.reload();
-						parent.document.getElementById("mortgageIframe").src='${pageContext.request.contextPath}/natural/mortgage/toMortgageList.do?appNo='+window.parent.appNo;
-						document.frames('mortgageIframe').location.reload();
-						$.messager.alert('信息提示', r.msg, "info");
+						if($("input[name='appNo']").val()==""){
+							$("input[name='appNo']").val(r.appNo);
+						}
+						$.messager.alert('信息提示', r.msg, "info",reloadPage);
 					} else {
 						$.messager.alert('信息提示', r.msg, "info");
 					}
 				} catch (e) {
-					$.messager.alert('信息提示', result);
+					$.messager.alert('错误提示', e,'error');
 				}
 			}
 		});
+	}
+	
+	function reloadPage(){
+		var appNo=$("input[name='appNo']").val();
+		var flag=$("input[name='flag']").val();
+		if(flag=="ADD"){
+			window.parent.location.href="${pageContext.request.contextPath}/natural/app/naturalApp.do?flag=UPDATE&appNo="+appNo;
+		}else{
+			window.location.href="${pageContext.request.contextPath}/natural/app/toModifyNaturalApp.do?flag="+flag+"&appNo="+appNo;
+ 		}
 	}
 	
 	//检查输入是否有效
@@ -85,13 +73,14 @@
 
 	function clearNaturalApp() {
 		$.messager.confirm('信息提示', '您确认要清空所有录入？', function(r) {
-		if(r){
-			$("input[type!='button']").each(function() {
-			$(this).val("");
-		});
-		}
+			if(r){
+				$("input[type!='button']").each(function() {
+					$(this).val("");
+				});
+			}
 		});
 	}
+//-->
 </script>
 </head>
 <body>
@@ -617,8 +606,8 @@
 				<tr>
 					<td colspan="4" align="center"><input type="button" value="保存"
 						class="btn" onclick="saveObjApp();" /> <input type="button"
-						value="清空" class="btn" onclick="clearNaturalApp();" /> <%-- <input type="hidden" name="appNo" value="${naturalApp.appNo}" />  --%>
-						<%-- 		<input type="hidden" name="flag" value="${flag}"></td> --%>
+						value="清空" class="btn" onclick="clearNaturalApp();" /> <input type="hidden" name="appNo" value="${naturalApp.appNo}" />
+						<input type="hidden" name="flag" value="${flag}"></td>
 				</tr>
 
 			</table>

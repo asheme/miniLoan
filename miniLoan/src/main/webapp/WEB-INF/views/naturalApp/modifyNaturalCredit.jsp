@@ -10,7 +10,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>create or modify natural credit application</title>
 <script type="text/javascript">
-
+<!--
 	$(function() {
 		$("#idSignDate").datebox();
 		$("#idExpireDate").datebox();
@@ -34,37 +34,17 @@
 			$(this).datebox('setValue',time);
 		});
 		
-	/* 	if ($("input[name='flag']").val() == "Add") {
-			$('#updatePanel').panel({
-				title : '添加申请信息'
-			});
-		} else {
-			$('#updatePanel').panel({
-				title : '修改申请信息'
-			});
-		} */
 	});
 	
-	//返回列表页
-	function backList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/naturalAppList.do';
-	}
-	
-	function getDate(date){
-		
-		return date;
-	}
-
 	//保存信息
 	function saveObjCredit() {
 		$('#modifyForm').form('submit', {
-			url : '${pageContext.request.contextPath}/natural/credit/modifynaturalCredit.do?appNo='+window.parent.appNo+'&flag='+window.parent.creditflag,
+			url : '${pageContext.request.contextPath}/natural/credit/modifyNaturalCredit.do',
 			success : function(result) {
 				try {
 					var r = $.parseJSON(result);
 					if (r.success) {
-						window.parent.creditflag='UPDATE';
-						$.messager.alert('信息提示', r.msg, "info");
+						$.messager.alert('信息提示', r.msg, "info",reloadPage);
 					} else {
 						$.messager.alert('信息提示', r.msg, "info");
 					}
@@ -75,6 +55,11 @@
 		});
 	}
 
+	function reloadPage(){
+		var appNo=$("input[name='appNo']").val();	
+		window.location.href="${pageContext.request.contextPath}/natural/credit/toModifyNaturalCredit.do?appNo="+appNo;
+	}
+	
 	//检查输入是否有效
 	function validate() {
 		return true;
@@ -82,13 +67,14 @@
 	
 	function clearNaturalCredit() {
 		$.messager.confirm('信息提示', '您确认要清空所有录入？', function(r) {
-		if(r){
-			$("input[type!='button']").each(function() {
-			$(this).val("");
-		});
-		}
+			if(r){
+				$("input[type!='button']").each(function() {
+					$(this).val("");
+				});
+			}
 		});
 	}
+//-->
 </script>
 </head>
 <body>
@@ -207,11 +193,13 @@
 						value="${naturalCredit.ctransOrLoanIn6mth}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="ctransOrLoanIn6mth" /></td>
+					<th align="center" width="25%">&nbsp;</th>
+					<td width="25%">&nbsp;</td>
 				<tr>
 					<td colspan="4" align="center"><input type="button" value="保存"
 						class="btn" onclick="saveObjCredit();" /> <input type="button"
-						value="清空" class="btn" onclick="clearNaturalCredit();" /> <%-- 	<input type="hidden" name="appNo" value="${naturalCredit.appNo}" />  --%>
-						<%-- <input type="hidden" name="flag" value="${flag}"></td> --%>
+						value="清空" class="btn" onclick="clearNaturalCredit();" /> <input type="hidden" name="appNo" value="${naturalCredit.appNo}" />  
+						<input type="hidden" name="flag" value="${flag}"></td>
 				</tr>
 
 			</table>

@@ -21,13 +21,14 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlMortgageInfo;
+import com.wealth.miniloan.entity.MlMortgageInfoExample;
 import com.wealth.miniloan.entity.MlNaturalApp;
-import com.wealth.miniloan.entity.MlNaturalMortgage;
-import com.wealth.miniloan.entity.MlNaturalMortgageExample;
-import com.wealth.miniloan.entity.MlNaturalMortgageExample.Criteria;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.Constant;
 
 @Controller
 @RequestMapping(value = "/natural/app")
@@ -35,11 +36,12 @@ import com.wealth.miniloan.service.CommonServiceI;
 public class NaturalAppController extends BaseController {
 	private CommonServiceI<MlNaturalApp> naturalAppService = null;
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
-	private CommonServiceI<MlNaturalMortgage> naturalMortgageService = null;
+	private CommonServiceI<MlMortgageInfo> mortgageInfoService = null;
+	private AppFlowServiceI appFlowService=null;
 
 	@Autowired
-	public void setNaturalMortgageService(CommonServiceI<MlNaturalMortgage> naturalMortgageService) {
-		this.naturalMortgageService = naturalMortgageService;
+	public void setMortgageInfoService(CommonServiceI<MlMortgageInfo> mortgageInfoService) {
+		this.mortgageInfoService = mortgageInfoService;
 	}
 
 	@Autowired
@@ -50,6 +52,11 @@ public class NaturalAppController extends BaseController {
 	@Autowired
 	public void setAppSummaryService(CommonServiceI<MlAppSummary> appSummaryService) {
 		this.appSummaryService = appSummaryService;
+	}
+
+	@Autowired
+	public void setAppFlowService(AppFlowServiceI appFlowService) {
+		this.appFlowService = appFlowService;
 	}
 
 	/*
@@ -77,41 +84,31 @@ public class NaturalAppController extends BaseController {
 		return resut;
 	}
 
-	@RequestMapping(value = "toAddNaturalApp")
-	public ModelAndView toAddNaturalApp() {
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("naturalApp/modifyNaturalApp");
-		modelAndView.addObject("flag", "ADD");
-		return modelAndView;
-	}
-
 	@RequestMapping(value = "naturalApp")
-	public ModelAndView addNaturalApp(String appNo) {
+	public ModelAndView naturalApp(String flag,String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("naturalApp/naturalApp");
-		modelAndView.addObject("appNo", appNo);
-		if (appNo == null) {
-			modelAndView.addObject("flag", "ADD");
-		} else {
-			modelAndView.addObject("flag", "UPDATE");
+		modelAndView.addObject("flag", flag);
+		if ("UPDATE".equals(flag)) {
+			modelAndView.addObject("appNo", appNo);
 		}
 		return modelAndView;
 	}
-
-	@RequestMapping(value = "toUpdateNaturalApp")
-	public ModelAndView toUpdateNaturalApp(MlNaturalApp naturalApp) {
-		try {
-			naturalApp = this.naturalAppService.getByPriKey(naturalApp);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	
+	@RequestMapping(value = "toModifyNaturalApp")
+	public ModelAndView toModifyNaturalApp(String flag,MlNaturalApp naturalApp){
 		ModelAndView modelAndView = new ModelAndView();
+
 		modelAndView.setViewName("naturalApp/modifyNaturalApp");
-		modelAndView.addObject("flag", "UPDATE");
-		modelAndView.addObject("naturalApp", naturalApp);
+		modelAndView.addObject("flag", flag);
+		if("UPDATE".equals(flag)){
+			naturalApp = this.naturalAppService.getByPriKey(naturalApp);
+			modelAndView.addObject("naturalApp", naturalApp);
+		}
+		
 		return modelAndView;
 	}
-
+	
 	@RequestMapping(value = "toShowDetail")
 	public ModelAndView toShowDetail(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
@@ -121,7 +118,7 @@ public class NaturalAppController extends BaseController {
 
 	@RequestMapping(value = "modifyNaturalApp")
 	@ResponseBody
-	public Map<String, Object> modifyNaturalApp(MlNaturalApp naturalApp, String flag,
+	public Map<String, Object> modifyNaturalApp(String flag,MlNaturalApp naturalApp, 
 			@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 
@@ -139,24 +136,27 @@ public class NaturalAppController extends BaseController {
 
 	public Map<String, Object> addNaturalApp(MlNaturalApp naturalApp) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
 
 		try {
 			if (naturalApp != null) {
 				naturalApp.setAppNo(super.getAppNo());
 				this.naturalAppService.create(naturalApp);
-
+				currStep=this.appFlowService.getFirstStep();
+				
 				// 保存概要信息
 				MlAppSummary as = new MlAppSummary();
 				as.setAppNo(naturalApp.getAppNo());
-				as.setAppType("01");
-				as.setCurrStep("00");
+				as.setAppType(Constant.APP_TYPE_NATURAL);
+				as.setCurrStep(currStep);
+				as.setStatus(Constant.APP_STATUS_PROCESS);
 				as.setEnterTime(new Date());
 				this.appSummaryService.create(as);
 				result.put("success", true);
 				result.put("appNo", naturalApp.getAppNo());
 				result.put("msg", "自然人申请信息添加成功！");
 			} else {
-				result.put("success", true);
+				result.put("success", false);
 				result.put("msg", "自然人申请信息添加失败！");
 			}
 		} catch (Exception e) {
@@ -175,11 +175,10 @@ public class NaturalAppController extends BaseController {
 			if (naturalApp != null) {
 				this.naturalAppService.update(naturalApp);
 				result.put("success", true);
-				result.put("appNo", naturalApp.getAppNo());
 				result.put("msg", "自然人申请信息修改成功！");
 			} else {
 				result.put("success", false);
-				result.put("msg", "自然人申请信息修改失败，服务器端未获得要修改的机构信息！");
+				result.put("msg", "自然人申请信息修改失败，服务器端未获得要修改的申请信息！");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -218,20 +217,29 @@ public class NaturalAppController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> submitApp(String appNo) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+		
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
 
-			MlNaturalMortgageExample example = new MlNaturalMortgageExample();
-			Criteria c = example.createCriteria();
+			MlMortgageInfoExample example = new MlMortgageInfoExample();
+			MlMortgageInfoExample.Criteria c = example.createCriteria();
 			c.andAppNoEqualTo(appNo);
-			List<MlNaturalMortgage> nmList = new ArrayList<MlNaturalMortgage>();
-			nmList = (List<MlNaturalMortgage>) this.naturalMortgageService.getByExample(example);
+			List<MlMortgageInfo> nmList = new ArrayList<MlMortgageInfo>();
+			nmList = (List<MlMortgageInfo>) this.mortgageInfoService.getByExample(example);
 			if (nmList != null && nmList.size() > 0) {
-				as.setCurrStep("01");// 押品审核
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 押品审核
+				as.setStatus(Constant.APP_STATUS_PROCESS);
 			} else {
-				as.setCurrStep("02");// 复核
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				currStep=this.appFlowService.getNextStep(currStep);
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep); //进入押品审核步骤
+				as.setStatus(Constant.APP_STATUS_PROCESS);
 			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
@@ -263,21 +271,26 @@ public class NaturalAppController extends BaseController {
 	@ResponseBody
 	public Map<String, Object> submitToFinal(String appNo) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+		
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			as.setCurrStep("04");// 终审
+			currStep=this.appFlowService.getEndStep();
+			as.setPreviousStep(as.getCurrStep());
+			as.setCurrStep(currStep);// 终审
+			as.setStatus(Constant.APP_STATUS_PROCESS);
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			result.put("success", true);
 			result.put("msg", "申请信息提交成功！");
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
 			result.put("msg", "自然人申请信息提交失败，服务器端处理异常！");
 		}
+		
 		return result;
 	}
 }

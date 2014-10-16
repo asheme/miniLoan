@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
@@ -20,6 +21,7 @@ import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
@@ -54,7 +56,7 @@ public class MortgageCheckController extends BaseController {
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
 		PageList<MlAppSummary> appSummaryList = null;
-		appSummary.setCurrStep("01");
+		appSummary.setCurrStep(Constant.STEP_MORT_ESTI);
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
 		if (appSummaryList != null) {

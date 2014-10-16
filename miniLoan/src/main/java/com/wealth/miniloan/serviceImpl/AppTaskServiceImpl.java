@@ -75,4 +75,44 @@ public class AppTaskServiceImpl implements AppFlowServiceI {
 		return this.appFlowDao.deleteByExample(example);
 	}
 
+	@Override
+	public String getFirstStep() {
+		MlApproveTaskCfgExample example = new MlApproveTaskCfgExample();
+		example.createCriteria().andTaskTypeEqualTo("B").andStatusEqualTo("1");
+		MlApproveTaskCfg appTask = this.appFlowDao.findOne(example);
+		
+		String firstStep=null;
+		if(appTask!=null){
+			firstStep= appTask.getTaskNo();
+		}
+
+		return firstStep;
+	}
+
+	@Override
+	public String getNextStep(String currStep) {
+		MlApproveTaskCfg appTask = this.appFlowDao.getNextStep(currStep);
+		
+		String nextStep=null;
+		if(appTask!=null){
+			nextStep= appTask.getTaskNo();
+		}
+
+		return nextStep;
+	}
+
+	@Override
+	public String getEndStep() {
+		MlApproveTaskCfgExample example = new MlApproveTaskCfgExample();
+		example.createCriteria().andTaskTypeEqualTo("E").andStatusEqualTo("1");
+		MlApproveTaskCfg appTask = this.appFlowDao.findOne(example);
+		
+		String endStep=null;
+		if(appTask!=null){
+			endStep= appTask.getTaskNo();
+		}
+
+		return endStep;
+	}
+
 }
