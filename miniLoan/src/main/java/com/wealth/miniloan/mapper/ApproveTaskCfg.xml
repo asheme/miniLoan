@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wealth.miniloan.dao.MlApproveTaskCfgMapper">
+	<select id="getNextStep" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		<![CDATA[
+			from ML_APPROVE_TASK_CFG
+			where TASK_SEQ = (select min(TASK_SEQ) from ML_APPROVE_TASK_CFG where TASK_SEQ > (select TASK_SEQ from ML_APPROVE_TASK_CFG where TASK_NO = #{taskNo,jdbcType=VARCHAR}))
+		]]> 
+	</select>
+</mapper>
