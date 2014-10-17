@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
+import com.wealth.miniloan.entity.MlMortgageInfo;
 import com.wealth.miniloan.entity.MlShareholder;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
@@ -55,13 +56,24 @@ public class CorpShareholderController extends BaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "corpCheckShareholder")
-	@ResponseBody
-	public ModelAndView corpCheckShareholder(MlShareholder natural) {
-		String appNo = natural.getAppNo();
+	@RequestMapping(value = "showShareholderList")
+	public ModelAndView showShareholderList(MlShareholder shareholder) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/shareholderDetail");
-		modelAndView.addObject("appNo", appNo);
+		modelAndView.setViewName("corpApp/showShareholderList");
+		modelAndView.addObject("appNo", shareholder.getAppNo());
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "shareholderShow")
+	public ModelAndView shareholderShow(MlShareholder shareholder) {
+		try {
+			shareholder = this.shareholderService.getByPriKey(shareholder);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("corpApp/shareholderShow");
+		modelAndView.addObject("shareholder", shareholder);
 		return modelAndView;
 	}
 

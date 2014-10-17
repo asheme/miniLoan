@@ -9,6 +9,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>loan app check list</title>
 <script type="text/javascript">
+<!--
 	$(function() {
 		$('#datagrid').datagrid({
 			url : '${pageContext.request.contextPath}/recheck/app/recheckAppList.do',
@@ -72,64 +73,9 @@
 			alert("333");
 			alert($(this).attr("abc"));
 		});
-		/* $("#checkDialogue").window('close');
-		 */
 		
 	});
 	 
-	/* function showCheck(appNo){
-		$('#datagridcheck').datagrid({
-			url : '${pageContext.request.contextPath}/app/checkresult/checkResultList.do?appNo='+appNo,
-			fit : true,
-			fitColumns : true,
-			striped : true,
-			border : false,
-			pagination : true,
-			idField : 'checkId',
-			pageSize : 10,
-			pageList : [ 10, 20, 30, 40, 50 ],
-			sortName : 'checkId',
-			sortOrder : 'ASC',
-			checkOnSelect : false,
-			selectOnCheck : false,
-			rownumbers : true,
-			nowrap : false,
-			columns : [ [ {
-				field : 'checkId',
-				title : '审批编号',
-				width : 20,
-				checkbox : true
-			}, {
-				field : 'appNo',
-				title : '申请编号',
-				width : 20,
-				sortable : true
-			}, {
-				field : 'checkType',
-				title : '审核步骤',
-				width : 20,
-				sortable : true
-			}, {
-				field : 'checkResult',
-				title : '审核结果',
-				width : 20,
-				sortable : true
-			}, {
-				field : 'checkDesc',
-				title : '审核描述',
-				width : 20,
-				sortable : true
-			}, {
-				field : 'approveTime',
-				title : '审核时间',
-				width : 20,
-				sortable : true
-			}]]
-		}); 
-		 $("#checkDialogue").dialog('open'); 
-		}
-	 */
-	
 	function checkAppDetail() {
 		var rows = $('#datagrid').datagrid('getChecked');
 		if (rows.length > 0) {
@@ -155,7 +101,7 @@
 		$('#searchForm :text').val('');
 		$('#datagrid').datagrid('load', {});
 	}
-   
+//-->
 </script>
 </head>
 <body>
@@ -195,15 +141,6 @@
 						</td>
 					</tr>
 				</table>
-			</div>
-		</div>
-	</div>
-	<div id="checkDialogue" title="审核意见"
-		style="width: 800px; height: 450px;">
-		<div class="easyui-layout" data-options="fit : true,border : false">
-			<div data-options="region:'center',border:false"
-				style="padding-top: 0px;">
-				<table id="datagridcheck"></table>
 			</div>
 		</div>
 	</div>

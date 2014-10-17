@@ -8,67 +8,21 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>create or modify corp credit application</title>
+<title>view corp credit info</title>
 <script type="text/javascript">
-
+<!--
 	$(function() {
-		$("#idSignDate").datebox();
-		$("#idExpireDate").datebox();
-		$("#birthday").datebox();
-		$("#currJobStDate").datebox();
-		$("#liveStartTime").datebox();
-		$("#carBuyDate").datebox();
-		$("#spouseIdSignDate").datebox();
-		$("#spouseIdExpireDate").datebox();
-		$("#linkmanIdSignDate").datebox();
-		$("#linkmanIdExpireDate").datebox();
-		$("#guarCompOpenDate").datebox();
 		
-		initComboboxContent("gender", "GENDER");
-		initComboboxContent("idType", "ID_TYPE");
-		initComboboxContent("spouseIdType", "ID_TYPE");
-		initComboboxContent("linkmanIdType", "ID_TYPE");
-		
-		$("input[dateFormat='date']").each(function(){				
-			var time=dateToStr($(this).val());
-			$(this).datebox('setValue',time);
-		});
-		
-		if ($("input[name='flag']").val() == "Add") {
-			$('#updatePanel').panel({
-				title : '添加申请信息'
-			});
-		} else {
-			$('#updatePanel').panel({
-				title : '修改申请信息'
-			});
-		}
 	});
-	
-	//返回列表页
-	function backList() {
-		window.location.href = '${pageContext.request.contextPath}/menu/corpAppList.do';
-	}
-	
-	function getDate(date){
-		
-		return date;
-	}
-function EditObj()
-{
-	window.location.href='${pageContext.request.contextPath}/corp/credit/toUpdateCorpCredit.do?appNo=${corpCredit.appNo}';
-}
-
-
+//-->	
 </script>
 </head>
 <body>
-	<div id="updatePanel" class="easyui-panel" title="数据信息"
+	<div id="updatePanel" class="easyui-panel"
 		data-options="border:false,fit:true"
 		style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 		<form id="modifyForm" method="post">
 			<table class="modifytable" width="100%">
-
 				<tr>
 					<th align="center" width="25%">注册资金</th>
 					<td width="25%">${corpCredit.regCapital}</td>
@@ -109,14 +63,8 @@ function EditObj()
 				<tr>
 					<th align="center" width="25%">不良类贷款余额</th>
 					<td width="25%">${corpCredit.badLoansAmount}</td>
-
-				</tr>
-
-				<td colspan="4" align="center"><input type="button" value="编辑"
-					class="btn" onclick="EditObj();" /> <input type="button"
-					value="返回" class="btn" onclick="javascript:backList();" /> <input
-					type="hidden" name="appNo" value="${corpCredit.appNo}" /> <input
-					type="hidden" name="flag" value="${flag}"></td>
+					<th align="center" width="25%">&nbsp;</th>
+					<td width="25%">&nbsp;</td>
 				</tr>
 
 			</table>

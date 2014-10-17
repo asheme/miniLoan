@@ -66,19 +66,17 @@ public class CorpCreditController extends BaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "corpCreditCheck")
+	@RequestMapping(value = "viewCorpCredit")
 	@ResponseBody
-	public ModelAndView corpCreditCheck(MlCorpCredit natural) {
-		String appNo = natural.getAppNo();
+	public ModelAndView corpCreditCheck(MlCorpCredit corpCredit) {
 		try {
-			natural = this.corpCreditService.getByPriKey(natural);
+			corpCredit = this.corpCreditService.getByPriKey(corpCredit);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/corpCreditDetail");
-		modelAndView.addObject("flag", "DETAIL");
-		modelAndView.addObject("corpCredit", natural);
+		modelAndView.setViewName("corpApp/corpCreditDetail");
+		modelAndView.addObject("corpCredit", corpCredit);
 		return modelAndView;
 	}
 

@@ -22,8 +22,10 @@ import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
@@ -32,6 +34,7 @@ import com.wealth.miniloan.utils.key.KeyGenerator;
 public class ReCheckAppController extends BaseController {
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
 	private CommonServiceI<MlAppCheckResult> checkResultService = null;
+	private AppFlowServiceI appFlowService=null;
 
 	@Autowired
 	public void setCheckResultService(CheckResultServiceImpl checkResultService) {
@@ -41,6 +44,11 @@ public class ReCheckAppController extends BaseController {
 	@Autowired
 	public void setAppSummaryService(CommonServiceI<MlAppSummary> appSummaryService) {
 		this.appSummaryService = appSummaryService;
+	}
+
+	@Autowired
+	public void setAppFlowService(AppFlowServiceI appFlowService) {
+		this.appFlowService = appFlowService;
 	}
 
 	/*
@@ -58,7 +66,7 @@ public class ReCheckAppController extends BaseController {
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
 		PageList<MlAppSummary> appSummaryList = null;
-		appSummary.setCurrStep("02");
+		appSummary.setCurrStep(Constant.STEP_APP_CHECK);
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
 		if (appSummaryList != null) {
@@ -73,11 +81,8 @@ public class ReCheckAppController extends BaseController {
 	public ModelAndView toCheckApp(String appNo, String appType) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("appNo", appNo);
-		if ("01".equals(appType)) {
-			modelAndView.setViewName("check/checkNaturalApp");
-		} else {
-			modelAndView.setViewName("check/checkCorpApp");
-		}
+		modelAndView.addObject("appType", appType);
+		modelAndView.setViewName("check/checkLoanApp");
 		return modelAndView;
 	}
 
@@ -180,18 +185,26 @@ public class ReCheckAppController extends BaseController {
 		return result;
 	}
 
-	@RequestMapping(value = "goToNext")
+	@RequestMapping(value = "submitToInspect")
 	@ResponseBody
-	public Map<String, Object> goToNext(String appNo, MlAppCheckResult checkResult) {
+	public Map<String, Object> submitToInspect(String appNo, MlAppCheckResult checkResult) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
 			if ("1".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("03");
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 复核阶段
+				as.setStatus(Constant.APP_STATUS_PROCESS);			
 			} else if ("0".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("00");
+				currStep=this.appFlowService.getFirstStep();
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 复核阶段
+				as.setStatus(Constant.APP_STATUS_PROCESS);				
 			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
@@ -199,7 +212,7 @@ public class ReCheckAppController extends BaseController {
 				saveCheckResult(checkResult);
 			}
 			result.put("success", true);
-			result.put("msg", "审核信息提交成功！");
+			result.put("msg", "申请信息复合完成，提交成功！");
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);

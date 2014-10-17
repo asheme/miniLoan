@@ -92,12 +92,11 @@ public class NaturalAttachController extends BaseController {
 		return resut;
 	}
 
-	@RequestMapping("naturalCheckAttach")
+	@RequestMapping("viewNaturalAttach")
 	@ResponseBody
-	public ModelAndView naturalCheckAttach(String appNo) {
+	public ModelAndView viewNaturalAttach(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/naturalAttachDetail");
-		modelAndView.addObject("flag", "CHECK");
+		modelAndView.setViewName("naturalApp/naturalAttachDetail");
 		modelAndView.addObject("appNo", appNo);
 		return modelAndView;
 

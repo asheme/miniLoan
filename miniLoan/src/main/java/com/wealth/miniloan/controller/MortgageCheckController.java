@@ -19,6 +19,7 @@ import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
 import com.wealth.miniloan.utils.Constant;
@@ -30,6 +31,7 @@ import com.wealth.miniloan.utils.key.KeyGenerator;
 public class MortgageCheckController extends BaseController {
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
 	private CommonServiceI<MlAppCheckResult> checkResultService = null;
+	private AppFlowServiceI appFlowService=null;
 
 	@Autowired
 	public void setCheckResultService(CheckResultServiceImpl checkResultService) {
@@ -39,6 +41,11 @@ public class MortgageCheckController extends BaseController {
 	@Autowired
 	public void setAppSummaryService(CommonServiceI<MlAppSummary> appSummaryService) {
 		this.appSummaryService = appSummaryService;
+	}
+
+	@Autowired
+	public void setAppFlowService(AppFlowServiceI appFlowService) {
+		this.appFlowService = appFlowService;
 	}
 
 	/*
@@ -67,30 +74,27 @@ public class MortgageCheckController extends BaseController {
 		return resut;
 	}
 
-	@RequestMapping(value = "goToNext")
+	@RequestMapping(value = "submitMortgageRevalue")
 	@ResponseBody
-	public Map<String, Object> goToNext(String appNo, MlAppCheckResult checkResult) {
+	public Map<String, Object> submitMortgageRevalue(String appNo, String appType) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			if ("1".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("02");
-			} else if ("0".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("00");
-			}
-			as.setFinishTime(new Date());
+			currStep=this.appFlowService.getNextStep(as.getCurrStep());
+			as.setPreviousStep(as.getCurrStep());
+			as.setCurrStep(currStep);// 复核阶段
+			as.setStatus(Constant.APP_STATUS_PROCESS);
 			this.appSummaryService.update(as);
-			if (checkResult.getCheckDesc() != null && !"".equals(checkResult.getCheckDesc())) {
-				saveCheckResult(checkResult);
-			}
 			result.put("success", true);
-			result.put("msg", "审核信息提交成功！");
+			result.put("msg", "押品评估信息已成功提交！");
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);
-			result.put("msg", "审核信息提交失败，服务器端处理异常！");
+			result.put("msg", "押品评估信息提交失败，服务器端处理异常！");
 		}
 		return result;
 	}

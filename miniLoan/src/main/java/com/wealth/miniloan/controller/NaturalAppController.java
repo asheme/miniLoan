@@ -254,16 +254,14 @@ public class NaturalAppController extends BaseController {
 		return result;
 	}
 
-	@RequestMapping(value = "recheckNaturalApp")
+	@RequestMapping(value = "viewNaturalApp")
 	@ResponseBody
-	public ModelAndView recheckNaturalApp(String appNo) {
+	public ModelAndView viewNaturalApp(MlNaturalApp naturalApp) {
 		ModelAndView modelAndView = new ModelAndView();
-		MlNaturalApp app = new MlNaturalApp();
-		app.setAppNo(appNo);
-		MlNaturalApp na = this.naturalAppService.getByPriKey(app);
-		modelAndView.addObject("appNo", appNo);
-		modelAndView.setViewName("check/naturalAppDetail");
-		modelAndView.addObject("checkApp", na);
+		naturalApp = this.naturalAppService.getByPriKey(naturalApp);
+		modelAndView.addObject("appNo", naturalApp.getAppNo());
+		modelAndView.setViewName("naturalApp/naturalAppDetail");
+		modelAndView.addObject("naturalApp", naturalApp);
 		return modelAndView;
 	}
 

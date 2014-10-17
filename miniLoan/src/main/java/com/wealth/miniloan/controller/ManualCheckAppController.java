@@ -20,8 +20,10 @@ import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
@@ -30,7 +32,8 @@ import com.wealth.miniloan.utils.key.KeyGenerator;
 public class ManualCheckAppController extends BaseController {
 	private CommonServiceI<MlAppSummary> appSummaryService = null;
 	private CommonServiceI<MlAppCheckResult> checkResultService = null;
-
+	private AppFlowServiceI appFlowService=null;
+	
 	@Autowired
 	public void setCheckResultService(CheckResultServiceImpl checkResultService) {
 		this.checkResultService = checkResultService;
@@ -41,6 +44,11 @@ public class ManualCheckAppController extends BaseController {
 		this.appSummaryService = appSummaryService;
 	}
 
+	@Autowired
+	public void setAppFlowService(AppFlowServiceI appFlowService) {
+		this.appFlowService = appFlowService;
+	}
+	
 	/*
 	 * 表单提交日期绑定
 	 */
@@ -56,7 +64,7 @@ public class ManualCheckAppController extends BaseController {
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
 		PageList<MlAppSummary> appSummaryList = null;
-		appSummary.setCurrStep("03");
+		appSummary.setCurrStep(Constant.STEP_MANU_INSP);
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
 		if (appSummaryList != null) {
@@ -71,11 +79,8 @@ public class ManualCheckAppController extends BaseController {
 	public ModelAndView toCheckApp(String appNo, String appType) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("appNo", appNo);
-		if ("01".equals(appType)) {
-			modelAndView.setViewName("check/manualCheckNaturalApp");
-		} else {
-			modelAndView.setViewName("check/manualCheckCorpApp");
-		}
+		modelAndView.addObject("appType", appType);
+		modelAndView.setViewName("check/manualCheckApp");
 		return modelAndView;
 	}
 
@@ -87,18 +92,26 @@ public class ManualCheckAppController extends BaseController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value = "goToNext")
+	@RequestMapping(value = "submitToApprove")
 	@ResponseBody
 	public Map<String, Object> goToNext(String appNo, MlAppCheckResult checkResult) {
 		Map<String, Object> result = new HashMap<String, Object>();
+		String currStep=null;
+
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
 			if ("1".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("04");
+				currStep=this.appFlowService.getNextStep(as.getCurrStep());
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 复核阶段
+				as.setStatus(Constant.APP_STATUS_PROCESS);			
 			} else if ("0".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("00");
+				currStep=this.appFlowService.getFirstStep();
+				as.setPreviousStep(as.getCurrStep());
+				as.setCurrStep(currStep);// 复核阶段
+				as.setStatus(Constant.APP_STATUS_PROCESS);				
 			}
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);

@@ -76,12 +76,11 @@ public class CorpAttachController extends BaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping("corpCheckAttach")
+	@RequestMapping("viewCorpAttach")
 	@ResponseBody
 	public ModelAndView corpCheckAttach(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/corpAttachDetail");
-		modelAndView.addObject("flag", "CHECK");
+		modelAndView.setViewName("corpApp/corpAttachDetail");
 		modelAndView.addObject("appNo", appNo);
 		return modelAndView;
 

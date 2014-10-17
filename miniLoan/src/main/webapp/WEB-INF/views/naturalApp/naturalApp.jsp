@@ -15,7 +15,7 @@
 			document.getElementById("creditIframe").src = '${pageContext.request.contextPath}/natural/credit/toModifyNaturalCredit.do?appNo=${appNo}';
 			document.getElementById("attachIframe").src = '${pageContext.request.contextPath}/natural/attach/toNaturalAttachList.do?appNo=${appNo}';
 			document.getElementById("mortgageIframe").src = '${pageContext.request.contextPath}/mortgage/toMortgageList.do?appNo=${appNo}';
-			document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/toCheckResultList.do?appNo=${appNo}';
+			document.getElementById("checkResultIframe").src = '${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}';
 		}
 			
 		$("#tabs").tabs({
@@ -104,9 +104,9 @@
 			</div>
 		</div>
 		<div data-options="region:'south',border : false,collapsible:false"
-			style="overflow: hidden; padding: 1px; height: 36px;">
+			style="overflow: hidden; padding: 1px; height: 40px;">
 			<form id="submitForm" method="post">
-				<table width="100%">
+				<table class="modifytable" width="100%" height="100%">
 					<tr>
 						<td align="center"><input type="button" value="直接终审"
 							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交审核"

@@ -7,11 +7,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>loan natural attach list</title>
+<title>view mortgate info</title>
 <script type="text/javascript">
+<!--
 	$(function() {
 		$('#datagrid').datagrid({
-			url : '${pageContext.request.contextPath}/natural/mortgage/naturalMortgageList.do?appNo=${appNo}',
+			url : '${pageContext.request.contextPath}/mortgage/mortgageList.do?appNo=${appNo}',
 			fit : true,
 			fitColumns : true,
 			striped : true,
@@ -30,7 +31,7 @@
 				field : 'mortgageId',
 				title : '抵押编号',
 				width : 20,
-				sortable : true
+				checkbox : true
 			},
 			{
 				field:'appNo',
@@ -53,29 +54,47 @@
 				title : '购置日期',
 				sortable : true,
 				width : 20
-			},
-			{
-				field:'detail',
-				title:'详情',
-				formatter : function(value, row, index)
-				{
-				return "<a href=${pageContext.request.contextPath}/natural/mortgage/naturalMortgageShow.do?mortgageId="+row.mortgageId+">详情</a>";
-				}
 			}
-			] ]
-			
-		});
-		
+			] ],
+			toolbar : '#toolbar'
+		});		
 	});
-	 
+	
+	function viewObj() {
+		var rows = $('#datagrid').datagrid('getChecked');
+		
+		if (rows.length > 0) {
+			if (rows.length == 1) {
+				window.location.href = '${pageContext.request.contextPath}/mortgage/mortgageShow.do?mortgageId='
+						+ rows[0].mortgageId;
+			} else {
+				$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");
+			}
+		} else {
+			$.messager.alert('信息提示', "请您选择要修改的记录！", "info");
+		}
+	}
+//-->
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-
 		<div data-options="region:'center',border:false"
 			style="padding-top: 0px;">
 			<table id="datagrid"></table>
+			<div id="toolbar"
+				style="height: auto !important; height: 28px; min-height: 28px;">
+				<table cellspacing="0" cellpadding="0">
+					<tr>
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-edit',plain:true"
+							onClick="javascript:viewObj();" style="float: left;">查看</a></td>
+						<td>
+							<div class="datagrid-btn-separator"></div>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
 	</div>
 </body>

@@ -40,7 +40,10 @@
 				field : 'fileName',
 				title : '文件名称',
 				width : 20,
-				sortable : true
+				sortable : true,
+				formatter : function(value,row,index){
+					return '<a href="${pageContext.request.contextPath}/natural/attach/download.do?fileName='+row.fileName+'&physicalName='+row.physicalName+'">'+ value+'</a>';
+				}
 			}, {
 				field : 'fileDesc',
 				title : '文件描述',

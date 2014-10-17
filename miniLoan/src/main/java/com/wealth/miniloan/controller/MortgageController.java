@@ -47,7 +47,7 @@ public class MortgageController extends BaseController {
 
 	@RequestMapping(value = "toMortgageList")
 	@ResponseBody
-	public ModelAndView MortgageList(MlMortgageInfo mortgageInfo) {
+	public ModelAndView toMortgageList(MlMortgageInfo mortgageInfo) {
 		String appNo = mortgageInfo.getAppNo();
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("mortgage/mortgageList");
@@ -57,7 +57,7 @@ public class MortgageController extends BaseController {
 	
 	@RequestMapping(value = "mortgageList")
 	@ResponseBody
-	public DataGrid getMortgageList(Page page, MlMortgageInfo mortgageInfo) {
+	public DataGrid mortgageList(Page page, MlMortgageInfo mortgageInfo) {
 		DataGrid resut = new DataGrid();
 		PageList<MlMortgageInfo> mortgageInfoList = null;
 		mortgageInfoList = mortgageInfoService.getPageList(page, mortgageInfo);
@@ -103,16 +103,29 @@ public class MortgageController extends BaseController {
 		return modelAndView;
 	}
 	
-	@RequestMapping("revalueMortgage")
+	@RequestMapping("toRevalueMortgageList")
 	@ResponseBody
-	public ModelAndView revalueMortgage(String appNo) {
+	public ModelAndView toRevalueMortgageList(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("check/revalueMortgageList");
 		modelAndView.addObject("flag", "CHECK");
 		modelAndView.addObject("appNo", appNo);
 		return modelAndView;
 	}
+	
+	@RequestMapping(value = "revalueMortgageList")
+	@ResponseBody
+	public DataGrid revalueMortgageList(Page page, MlMortgageInfo mortgageInfo) {
+		DataGrid resut = new DataGrid();
+		PageList<MlMortgageInfo> mortgageInfoList = null;
+		mortgageInfoList = mortgageInfoService.getPageList(page, mortgageInfo);
 
+		if (mortgageInfoList != null) {
+			resut.setRows(mortgageInfoList);
+			resut.setTotal(Long.valueOf(mortgageInfoList.getPaginator().getTotalCount()));
+		}
+		return resut;
+	}
 	
 	@RequestMapping(value = "toRevalueMortgage")
 	public ModelAndView toRevalueMortgage(MlMortgageInfo mortgageInfo) {
@@ -127,20 +140,41 @@ public class MortgageController extends BaseController {
 		modelAndView.addObject("mortgageInfo", mortgageInfo);
 		return modelAndView;
 	}
+	
+	@RequestMapping(value = "revalueMortgage")
+	@ResponseBody
+	public Map<String, Object> revalueMortgage(MlMortgageInfo mortgageInfo) {
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		try {
+			if (mortgageInfo != null) {
+				this.mortgageInfoService.update(mortgageInfo);
+				result.put("success", true);
+				result.put("msg", "押品信息评估成功！");
+			} else {
+				result.put("success", false);
+				result.put("msg", "押品信息评估失败，服务器端未获得要要评估的押品信息！");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			result.put("success", false);
+			result.put("msg", "押品信息评估失败，服务器端处理异常！");
+		}
+
+		return result;
+	}
 
 	@RequestMapping("showMortgageList")
 	@ResponseBody
 	public ModelAndView showMortgageList(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/showMortgageList");
-		modelAndView.addObject("flag", "CHECK");
+		modelAndView.setViewName("mortgage/showMortgageList");
 		modelAndView.addObject("appNo", appNo);
 		return modelAndView;
 	}
 
 	
 	@RequestMapping(value = "mortgageShow")
-	@ResponseBody
 	public ModelAndView mortgageShow(MlMortgageInfo mortgageInfo) {
 		try {
 			mortgageInfo = this.mortgageInfoService.getByPriKey(mortgageInfo);
@@ -148,8 +182,7 @@ public class MortgageController extends BaseController {
 			e.printStackTrace();
 		}
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/mortgageShow");
-		modelAndView.addObject("flag", "DETAIL");
+		modelAndView.setViewName("mortgage/mortgageShow");
 		modelAndView.addObject("mortgageInfo", mortgageInfo);
 		return modelAndView;
 	}

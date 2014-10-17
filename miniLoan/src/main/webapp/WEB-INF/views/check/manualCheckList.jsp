@@ -7,8 +7,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>loan app list</title>
+<title>manual loan app list</title>
 <script type="text/javascript">
+<!--
 	$(function() {
 		$('#datagrid').datagrid({
 			url : '${pageContext.request.contextPath}/manualcheck/app/manualcheckAppList.do',
@@ -96,7 +97,7 @@
 		$('#searchForm :text').val('');
 		$('#datagrid').datagrid('load', {});
 	}
-   
+//-->
 </script>
 </head>
 <body>

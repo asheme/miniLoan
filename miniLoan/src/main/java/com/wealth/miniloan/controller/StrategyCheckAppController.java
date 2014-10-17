@@ -20,8 +20,10 @@ import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
@@ -56,7 +58,7 @@ public class StrategyCheckAppController extends BaseController {
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
 		PageList<MlAppSummary> appSummaryList = null;
-		appSummary.setCurrStep("04");
+		appSummary.setCurrStep(Constant.STEP_APP_APPR);
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
 		if (appSummaryList != null) {
@@ -71,11 +73,8 @@ public class StrategyCheckAppController extends BaseController {
 	public ModelAndView toCheckApp(String appNo, String appType) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("appNo", appNo);
-		if ("01".equals(appType)) {
-			modelAndView.setViewName("check/strategyCheckNaturalApp");
-		} else {
-			modelAndView.setViewName("check/strategyCheckCorpApp");
-		}
+		modelAndView.addObject("appType", appType);
+		modelAndView.setViewName("check/strategyCheckApp");
 		return modelAndView;
 	}
 
@@ -87,19 +86,20 @@ public class StrategyCheckAppController extends BaseController {
 		return modelAndView;
 	}
 	
-	@RequestMapping(value = "goToNext")
+	@RequestMapping(value = "appApprove")
 	@ResponseBody
-	public Map<String, Object> goToNext(String appNo, MlAppCheckResult checkResult) {
+	public Map<String, Object> appApprove(String appNo, MlAppCheckResult checkResult) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
 			if ("1".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("05");
+				as.setStatus(Constant.APP_STATUS_END);
 			} else if ("0".equals(checkResult.getCheckResult())) {
-				as.setCurrStep("00");
+				as.setStatus(Constant.APP_STATUS_END);
 			}
+			as.setStatus(Constant.APP_STATUS_END);
 			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
 			if (checkResult.getCheckDesc() != null && !"".equals(checkResult.getCheckDesc())) {

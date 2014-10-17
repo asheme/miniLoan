@@ -27,8 +27,6 @@
 						<th align="center" width="10%">2</th>
 						<td width="90%">身份证性别与申请信息填写性别不符！</td>
 					</tr>
-					<tr>
-					</tr>
 				</table>
 			</div>
 		</div>

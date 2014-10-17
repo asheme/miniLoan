@@ -8,26 +8,17 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>create or modify natural attach</title>
+<title>revalue mortgage</title>
 <script type="text/javascript">
-
-$(function() {
-	$("#buyDate").datebox();
-	$("input[dateFormat='date']").each(function(){				
-		var time=dateToStr($(this).val());
-		$(this).datebox('setValue',time);
-	});
-	
-});
-
+<!--
 //返回列表页
 function backList() {
-	window.location.href = '${pageContext.request.contextPath}/natural/mortgage/revalueMortgage.do?appNo=${naturalMortgage.appNo}';
+	window.location.href = '${pageContext.request.contextPath}/mortgage/toRevalueMortgageList.do?appNo=${mortgageInfo.appNo}';
 }
 
 //保存信息
 function saveObj() {
-	var url='${pageContext.request.contextPath}/natural/mortgage/modifyNaturalMortgage.do';
+	var url='${pageContext.request.contextPath}/mortgage/revalueMortgage.do';
 	$('#modifyForm').form('submit', {
 		url : url,
 		success : function(result) {
@@ -44,12 +35,7 @@ function saveObj() {
 		}
 	});
 }
-
-//检查输入是否有效
-function validate() {
-	return true;
-}
-
+//-->
 </script>
 </head>
 <body>
@@ -60,46 +46,46 @@ function validate() {
 			<table class="modifytable" width="100%">
 				<rr>
 				<th align="center" width="25%">抵押人</th>
-				<td width="25%">${naturalMortgage.mortgagor}</td>
+				<td width="25%">${mortgageInfo.mortgagor}</td>
 				<th align="center" width="25%">抵押人证件类型</th>
-				<td width="25%">${naturalMortgage.mortgagorIdType}</td>
+				<td width="25%">${mortgageInfo.mortgagorIdType}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">抵押人证件号码</th>
-					<td width="25%">${naturalMortgage.mortgagorIdNo}</td>
+					<td width="25%">${mortgageInfo.mortgagorIdNo}</td>
 					<th align="center" width="25%">抵押人联系电话</th>
-					<td width="25%">${naturalMortgage.mortgagorPhone}</td>
+					<td width="25%">${mortgageInfo.mortgagorPhone}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">法定代表人</th>
-					<td width="25%">${naturalMortgage.legalPerson}</td>
+					<td width="25%">${mortgageInfo.legalPerson}</td>
 					<th align="center" width="25%">地址</th>
-					<td width="25%">${naturalMortgage.mortgageAddr}</td>
+					<td width="25%">${mortgageInfo.mortgageAddr}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">抵押物名称</th>
-					<td width="25%">${naturalMortgage.mortgageName}</td>
+					<td width="25%">${mortgageInfo.mortgageName}</td>
 					<th align="center" width="25%">产权证编号</th>
-					<td width="25%">${naturalMortgage.certificationNo}</td>
+					<td width="25%">${mortgageInfo.certificationNo}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">抵押物位置</th>
-					<td width="25%">${naturalMortgage.mortgageLocation}</td>
+					<td width="25%">${mortgageInfo.mortgageLocation}</td>
 					<th align="center" width="25%">面积、数量</th>
-					<td width="25%">${naturalMortgage.mortgageArea}</td>
+					<td width="25%">${mortgageInfo.mortgageArea}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">购置日期</th>
-					<td width="25%">${naturalMortgage.buyDate}</td>
+					<td width="25%">${mortgageInfo.buyDate}</td>
 					<th align="center" width="25%">原值</th>
-					<td width="25%">${naturalMortgage.oldValue}</td>
+					<td width="25%">${mortgageInfo.oldValue}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">现状</th>
-					<td width="25%">${naturalMortgage.status}</td>
+					<td width="25%">${mortgageInfo.status}</td>
 					<th align="center" width="25%">现值</th>
 					<td width="25%"><input class="easyui-validatebox"
-						name="currValue" value="${naturalMortgage.currValue}"
+						name="currValue" value="${mortgageInfo.currValue}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="currValue" /></td>
 				</tr>
@@ -107,9 +93,9 @@ function validate() {
 					<td colspan="4" align="center"><input type="button" value="保存"
 						class="btn" onclick="saveObj();" /> <input type="button"
 						value="返回" class="btn" onclick="javascript:backList();" /> <input
-						type="hidden" name="appNo" value="${naturalMortgage.appNo}" /> <input
+						type="hidden" name="appNo" value="${mortgageInfo.appNo}" /> <input
 						type="hidden" name="mortgageId"
-						value="${naturalMortgage.mortgageId}" /> <input type="hidden"
+						value="${mortgageInfo.mortgageId}" /> <input type="hidden"
 						name="flag" value="${flag}"></td>
 				</tr>
 			</table>

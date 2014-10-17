@@ -251,16 +251,13 @@ public class CorpAppController extends BaseController {
 		return result;
 	}
 
-	@RequestMapping(value = "recheckCorpApp")
+	@RequestMapping(value = "viewCorpApp")
 	@ResponseBody
-	public ModelAndView recheckCorpApp(String appNo) {
+	public ModelAndView recheckCorpApp(MlCorpApp corpApp) {
 		ModelAndView modelAndView = new ModelAndView();
-		MlCorpApp app = new MlCorpApp();
-		app.setAppNo(appNo);
-		MlCorpApp na = this.corpAppService.getByPriKey(app);
-		modelAndView.addObject("appNo", appNo);
-		modelAndView.setViewName("check/corpAppDetail");
-		modelAndView.addObject("checkApp", na);
+		corpApp = this.corpAppService.getByPriKey(corpApp);
+		modelAndView.setViewName("corpApp/corpAppDetail");
+		modelAndView.addObject("corpApp", corpApp);
 		return modelAndView;
 	}
 	

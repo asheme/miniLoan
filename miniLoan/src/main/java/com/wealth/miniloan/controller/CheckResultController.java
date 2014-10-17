@@ -42,9 +42,9 @@ public class CheckResultController extends BaseController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
 	}
 
-	@RequestMapping(value = "toCheckResultList")
+	@RequestMapping(value = "viewCheckResultList")
 	@ResponseBody
-	public ModelAndView AttachList(String appNo) {
+	public ModelAndView viewCheckResultList(String appNo) {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("check/checkResultDetail");
 		modelAndView.addObject("appNo", appNo);

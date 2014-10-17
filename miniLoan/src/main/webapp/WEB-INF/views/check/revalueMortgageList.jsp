@@ -7,11 +7,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>loan natural attach list</title>
+<title>revalue mortgate list</title>
 <script type="text/javascript">
 	$(function() {
 		$('#datagrid').datagrid({
-			url : '${pageContext.request.contextPath}/natural/mortgage/naturalMortgageList.do?appNo=${appNo}',
+			url : '${pageContext.request.contextPath}/mortgage/revalueMortgageList.do?appNo=${appNo}',
 			fit : true,
 			fitColumns : true,
 			striped : true,
@@ -53,18 +53,9 @@
 				title : '购置日期',
 				sortable : true,
 				width : 20
-			},
-			{
-				field:'detail',
-				title:'详情',
-				formatter : function(value, row, index)
-				{
-				return "<a href=${pageContext.request.contextPath}/natural/mortgage/naturalMortgageShow.do?mortgageId="+row.mortgageId+">详情</a>";
-				}
 			}
 			] ],
 			toolbar : '#toolbar'
-			
 		});
 		
 	});
@@ -75,7 +66,7 @@
 		
 		if (rows.length > 0) {
 			if (rows.length == 1) {
-				window.location.href = '${pageContext.request.contextPath}/natural/mortgage/toRevalueNaturalMortgage.do?mortgageId='
+				window.location.href = '${pageContext.request.contextPath}/mortgage/toRevalueMortgage.do?mortgageId='
 						+ rows[0].mortgageId;
 			} else {
 				$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");
@@ -88,7 +79,6 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
-
 		<div data-options="region:'center',border:false"
 			style="padding-top: 0px;">
 			<table id="datagrid"></table>

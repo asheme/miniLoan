@@ -2,6 +2,7 @@ package com.wealth.miniloan.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlAppSummaryExample;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.SysUtil;
 
 @Service
@@ -35,13 +37,7 @@ public class AppSummaryServiceImpl implements CommonServiceI<MlAppSummary> {
 	public PageList<MlAppSummary> getPageList(Page paramPage, MlAppSummary obj) {
 		MlAppSummaryExample example = new MlAppSummaryExample();
 		MlAppSummaryExample.Criteria criteria = example.createCriteria();
-		// if (name != null && !"".equals(name)) {
-		// criteria.andNameLike("%" + name + "%");
-		// }
-		// if (idNo != null && !"".equals(idNo)) {
-		// criteria.andIdNoLike("%" + idNo + "%");
-		// }
-		criteria.andCurrStepEqualTo(obj.getCurrStep());
+		criteria.andCurrStepEqualTo(obj.getCurrStep()).andStatusNotEqualTo(Constant.APP_STATUS_END);
 
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {

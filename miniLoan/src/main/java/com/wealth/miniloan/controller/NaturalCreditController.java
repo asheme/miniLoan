@@ -66,19 +66,17 @@ public class NaturalCreditController extends BaseController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value = "naturalCreditCheck")
+	@RequestMapping(value = "viewNaturalCredit")
 	@ResponseBody
-	public ModelAndView naturalCreditCheck(MlNaturalCredit natural) {
-		String appNo = natural.getAppNo();
+	public ModelAndView viewNaturalCredit(MlNaturalCredit naturalCredit) {
 		try {
-			natural = this.naturalCreditService.getByPriKey(natural);
+			naturalCredit = this.naturalCreditService.getByPriKey(naturalCredit);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("check/naturalCreditDetail");
-		modelAndView.addObject("flag", "DETAIL");
-		modelAndView.addObject("naturalCredit", natural);
+		modelAndView.setViewName("naturalApp/naturalCreditDetail");
+		modelAndView.addObject("naturalCredit", naturalCredit);
 		return modelAndView;
 	}
 
