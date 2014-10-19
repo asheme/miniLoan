@@ -38,40 +38,53 @@
 			}, {
 				field : 'borrower',
 				title : '借款人',
-				width : 15
+				width : 15,
+				formatter:function(value,rec){
+					return rec.corpApp.borrower;
+				}
 				
 			}, {
 				field : 'compName',
 				title : '企业名称',
 				width : 15,
-				sortable : true
+				formatter:function(value,rec){
+					return rec.corpApp.compName;
+				}
 			}, {
 				field : 'legalPerson',
 				title : '法人代表',
-				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.corpApp.legalPerson;
+				}
 			}, {
 				field : 'lpIdNo',
 				title : '法人证件号',
-				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.corpApp.lpIdNo;
+				}
 			}, {
 				field : 'loanAmount',
 				title : '借款金额',
-				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.corpApp.loanAmount;
+				}
 			}, {
 				field : 'loanPeriod',
 				title : '借款期限',
 				width : 20,
-				sortable : true
+				formatter:function(value,rec){
+					return rec.corpApp.loanPeriod;
+				}
 			}, {
 				field:'status',
 				title:'当前状态',
 				width:20,
-				formatter:function(value,row,index){
-					return "退回";
-				}
+				formatter:function(value){
+					return getDictItem("APP_STATUS", value);
+					}
 				
 			}] ],
 			toolbar : '#toolbar'

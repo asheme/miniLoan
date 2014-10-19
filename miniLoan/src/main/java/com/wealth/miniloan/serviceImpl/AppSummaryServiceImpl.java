@@ -9,15 +9,16 @@ import org.springframework.stereotype.Service;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.dao.AppCheckResultDao;
 import com.wealth.miniloan.dao.AppSummaryDao;
+import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlAppSummaryExample;
 import com.wealth.miniloan.entity.Page;
-import com.wealth.miniloan.service.CommonServiceI;
+import com.wealth.miniloan.service.AppSummaryServiceI;
 import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.SysUtil;
 
 @Service
-public class AppSummaryServiceImpl implements CommonServiceI<MlAppSummary> {
+public class AppSummaryServiceImpl implements AppSummaryServiceI {
 	private AppSummaryDao appSummaryDao;
 	private AppCheckResultDao appCheckResultDao;
 	private final String _ORDER_ATTRS = "appNo";
@@ -34,16 +35,19 @@ public class AppSummaryServiceImpl implements CommonServiceI<MlAppSummary> {
 	}
 
 	@Override
-	public PageList<MlAppSummary> getPageList(Page paramPage, MlAppSummary obj) {
+	public PageList<AppSummaryExtend> getPageList(Page paramPage, MlAppSummary obj) {
 		MlAppSummaryExample example = new MlAppSummaryExample();
 		MlAppSummaryExample.Criteria criteria = example.createCriteria();
-		criteria.andCurrStepEqualTo(obj.getCurrStep()).andStatusNotEqualTo(Constant.APP_STATUS_END);
+		List<String> endStatusList=new ArrayList<String>();
+		endStatusList.add(Constant.APP_STATUS_REJECT);
+		endStatusList.add(Constant.APP_STATUS_APPROVE);
+		criteria.andCurrStepEqualTo(obj.getCurrStep()).andStatusNotIn(endStatusList);
 
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {
 			example.setOrderByClause(order);
 		}
-		return this.appSummaryDao.findPage(SysUtil.convertPage(paramPage), example);
+		return this.appSummaryDao.getPageList(SysUtil.convertPage(paramPage), example);
 	}
 
 	@Override
@@ -76,5 +80,21 @@ public class AppSummaryServiceImpl implements CommonServiceI<MlAppSummary> {
 	@Override
 	public Object getByExample(Object obj) {
 		return this.appCheckResultDao.findOne(obj);
+	}
+
+	@Override
+	public PageList<AppSummaryExtend> getAllPageList(Page paramPage, MlAppSummary obj) {
+		MlAppSummaryExample example = new MlAppSummaryExample();
+//		MlAppSummaryExample.Criteria criteria = example.createCriteria();
+//		List<String> endStatusList=new ArrayList<String>();
+//		endStatusList.add(Constant.APP_STATUS_REJECT);
+//		endStatusList.add(Constant.APP_STATUS_APPROVE);
+//		criteria.andCurrStepEqualTo(obj.getCurrStep()).andStatusNotIn(endStatusList);
+
+		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
+		if (!order.equals("")) {
+			example.setOrderByClause(order);
+		}
+		return this.appSummaryDao.getPageList(SysUtil.convertPage(paramPage), example);
 	}
 }

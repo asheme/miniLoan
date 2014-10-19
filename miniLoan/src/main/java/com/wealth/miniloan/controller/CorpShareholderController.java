@@ -18,7 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
-import com.wealth.miniloan.entity.MlMortgageInfo;
 import com.wealth.miniloan.entity.MlShareholder;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;

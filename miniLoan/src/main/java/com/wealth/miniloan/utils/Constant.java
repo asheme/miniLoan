@@ -1,6 +1,5 @@
 package com.wealth.miniloan.utils;
 
-import org.springframework.stereotype.Component;
 
 public class Constant {
 	//申请类别
@@ -10,13 +9,16 @@ public class Constant {
 	//申请件状态
 	public static final String APP_STATUS_PROCESS="P"; //处理过程中
 	public static final String APP_STATUS_BACK="B"; //打回
-	public static final String APP_STATUS_END="E"; //处理结束
+	public static final String APP_STATUS_REJECT="R"; //拒绝
+	public static final String APP_STATUS_APPROVE="A"; //批准
 	
 	//处理步骤状态
 	public static final String STEP_STATUS_PROCESS="P"; //处理过程中
 	public static final String STEP_STATUS_BACK="B"; //打回
-	public static final String STEP_STATUS_END="E"; //处理结束
-	
+	public static final String STEP_STATUS_REJECT="R"; //拒绝
+	public static final String STEP_STATUS_APPROVE="A"; //批准
+	public static final String STEP_STATUS_END="E"; //批准
+
 	//步骤信息
 	public static final String STEP_LOAN_APP="LOAN_APP"; //申请录入
 	public static final String STEP_MORT_ESTI="MORT_ESTI"; //押品评估

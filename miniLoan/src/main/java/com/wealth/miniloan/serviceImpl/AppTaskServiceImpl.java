@@ -115,4 +115,9 @@ public class AppTaskServiceImpl implements AppFlowServiceI {
 		return endStep;
 	}
 
+	@Override
+	public MlApproveTaskCfg getByExample(MlApproveTaskCfgExample example) {
+		return this.appFlowDao.findOne(example);
+	}
+
 }

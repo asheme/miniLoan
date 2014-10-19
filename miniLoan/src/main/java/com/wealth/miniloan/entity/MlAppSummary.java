@@ -99,6 +99,26 @@ public class MlAppSummary {
      *
      * @mbggenerated Wed Oct 15 14:13:02 CST 2014
      */
+    
+    private MlNaturalApp naturalApp;
+    private MlCorpApp corpApp;
+
+    public MlNaturalApp getNaturalApp() {
+		return naturalApp;
+	}
+
+	public void setNaturalApp(MlNaturalApp naturalApp) {
+		this.naturalApp = naturalApp;
+	}
+
+	public MlCorpApp getCorpApp() {
+		return corpApp;
+	}
+
+	public void setCorpApp(MlCorpApp corpApp) {
+		this.corpApp = corpApp;
+	}
+	
     public String getAppNo() {
         return appNo;
     }

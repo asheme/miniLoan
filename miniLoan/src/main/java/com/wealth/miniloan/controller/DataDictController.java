@@ -1,7 +1,6 @@
 package com.wealth.miniloan.controller;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
-import com.github.miemiedev.mybatis.paginator.domain.Paginator;
 import com.wealth.miniloan.entity.ComboOption;
 import com.wealth.miniloan.entity.DataDictionary;
 import com.wealth.miniloan.entity.DataGrid;

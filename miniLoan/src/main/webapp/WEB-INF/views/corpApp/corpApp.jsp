@@ -37,6 +37,8 @@
 	}
 
 	function submitToNext() {
+		$.messager.confirm("信息提示","您确定要提交吗?",function(data){
+			if(data){
 		$('#submitForm')
 				.form(
 						'submit',
@@ -54,9 +56,12 @@
 								}
 							}
 						});
+			}});
 	}
 	
 	function submitToFinal() {
+		$.messager.confirm("信息提示","您确定要提交吗?",function(data){
+			if(data){
 		$('#submitForm')
 				.form(
 						'submit',
@@ -75,6 +80,7 @@
 								}
 							}
 						});
+			}});
 	}
 //-->
 </script>
@@ -115,8 +121,8 @@
 			<form id="submitForm" method="post">
 				<table class="modifytable" width="100%" height="100%">
 					<tr>
-						<td align="center"><input type="button" value="直接终审"
-							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交审核"
+						<td colspan="2" align="center"><input type="button" value="直接终审"
+							class="btn" onclick="submitToFinal();" /> <input type="button" value="提交"
 							class="btn" onclick="submitToNext();" /> <input type="button"
 							value="返回列表" class="btn" onclick="backList();" />
 							<input name="flag" type="hidden"

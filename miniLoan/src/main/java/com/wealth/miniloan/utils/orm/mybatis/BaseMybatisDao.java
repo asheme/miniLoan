@@ -15,6 +15,7 @@ import org.springframework.util.Assert;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.utils.orm.EntityDao;
 
 public abstract class BaseMybatisDao<E, PK extends Serializable> extends
@@ -214,5 +215,10 @@ public abstract class BaseMybatisDao<E, PK extends Serializable> extends
 
 	public void flush() {
 		// ignore
+	}
+	
+	@SuppressWarnings("unchecked")
+	public PageList<E> findPageExtend(String statement, String countStatement, PageBounds pq, Object param) {
+		return (PageList<E>) MybatisPageQueryUtils.pageQuery(getSqlSession(), statement, countStatement, param, pq);
 	}
 }

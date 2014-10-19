@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ include file="/WEB-INF/views/common.jsp"%>
-<%@ page import="com.wealth.miniloan.utils.Constant" %>
+<%@ page import="com.wealth.miniloan.utils.Constant"%>
 <%
 	pageContext.setAttribute("naturalType", Constant.APP_TYPE_NATURAL);
 	pageContext.setAttribute("corpType", Constant.APP_TYPE_CORP);
@@ -15,155 +15,182 @@
 <title>strategy check page</title>
 <script type="text/javascript">
 <!--
-$(function(){
-	$('input[name="checkResult"]').each(function(){
-		var t=$(this).val();
-		if(t=='${checkResult.checkResult}'){
-			$(this).attr("checked",true);
-			}
+	$(function() {
+		initComboboxContent("status", "FINAL_CHECK_STATUS");
 	});
-});
 
-function backList() {
-	window.location.href = '${pageContext.request.contextPath}/menu/strategyCheckList.do';
-}
+	function backList() {
+		window.location.href = '${pageContext.request.contextPath}/menu/strategyCheckList.do';
+	}
 
-function appApprove() {
-	$('#submitForm')
-			.form(
-					'submit',
-					{
-						url : '${pageContext.request.contextPath}/strategycheck/app/appApprove.do',
-						success : function(result) {
-							try {
-								var r = $.parseJSON(result);
-								if (r.success) {
-									$.messager.alert('信息提示', r.msg, "info",
-											backList);
-								} else {
-									$.messager.alert('信息提示', r.msg, "info");
-								}
-							} catch (e) {
-								$.messager.alert('信息提示', result);
+	function appApprove() {
+		$.messager
+				.confirm(
+						"信息提示",
+						"您确定要提交吗?",
+						function(data) {
+							if (data) {
+								$('#submitForm')
+										.form(
+												'submit',
+												{
+													url : '${pageContext.request.contextPath}/strategycheck/app/appApprove.do',
+													success : function(result) {
+														try {
+															var r = $
+																	.parseJSON(result);
+															if (r.success) {
+																$.messager
+																		.alert(
+																				'信息提示',
+																				r.msg,
+																				"info",
+																				backList);
+															} else {
+																$.messager
+																		.alert(
+																				'信息提示',
+																				r.msg,
+																				"info");
+															}
+														} catch (e) {
+															$.messager.alert(
+																	'信息提示',
+																	result);
+														}
+													}
+												});
 							}
-						}
-					});
-}
+						});
+	}
 //-->
 </script>
 </head>
 <body>
-<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'center',border : false" style="overflow: hidden; padding: 1px; height: 700px;">
+	<div class="easyui-layout" data-options="fit : true,border : false">
+		<div data-options="region:'center',border : false"
+			style="overflow: hidden; padding: 1px; height: 700px;">
 			<div id="tabs" class="easyui-tabs"
 				data-options="fit:true,border:false">
 				<c:choose>
 					<c:when test="${appType eq naturalType}">
 						<div title="基本信息">
-							<iframe id="appIframe" width="100%" height="100%" frameborder="no"
-								border="0" src="${pageContext.request.contextPath}/natural/app/viewNaturalApp.do?appNo=${appNo}"></iframe>
+							<iframe id="appIframe" width="100%" height="100%"
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/natural/app/viewNaturalApp.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="征信信息">
 							<iframe id="creditIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/credit/viewNaturalCredit.do?appNo=${appNo}"></iframe>
-						</div>					
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/natural/credit/viewNaturalCredit.do?appNo=${appNo}"></iframe>
+						</div>
 						<div title="押品信息">
 							<iframe id="mortgageIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/mortgage/showMortgageList.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/mortgage/showMortgageList.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="附件信息">
 							<iframe id="attachIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/attach/viewNaturalAttach.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/natural/attach/viewNaturalAttach.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="策略结果">
 							<iframe id="strategyCheckIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="审核记录">
 							<iframe id="checkResultIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}"></iframe>
 						</div>
 					</c:when>
 					<c:when test="${appType eq corpType}">
 						<div title="基本信息">
-							<iframe id="appIframe" width="100%" height="100%" frameborder="no"
-								border="0" src="${pageContext.request.contextPath}/corp/app/viewCorpApp.do?appNo=${appNo}"></iframe>
+							<iframe id="appIframe" width="100%" height="100%"
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/corp/app/viewCorpApp.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="征信信息">
 							<iframe id="creditIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/corp/credit/viewCorpCredit.do?appNo=${appNo}"></iframe>
-						</div>					
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/corp/credit/viewCorpCredit.do?appNo=${appNo}"></iframe>
+						</div>
 						<div title="企业股东信息">
 							<iframe id="shareHolderIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/corp/shareholder/showShareholderList.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/corp/shareholder/showShareholderList.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="押品信息">
 							<iframe id="mortgageIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/mortgage/showMortgageList.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/mortgage/showMortgageList.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="附件信息">
 							<iframe id="attachIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/corp/attach/viewCorpAttach.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/corp/attach/viewCorpAttach.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="策略结果">
 							<iframe id="strategyCheckIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="审核记录">
 							<iframe id="checkResultIframe" width="100%" height="100%"
-								frameborder="no" border="0" src="${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}"></iframe>
+								frameborder="no" border="0"
+								src="${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}"></iframe>
 						</div>
 					</c:when>
 				</c:choose>
 			</div>
 		</div>
 		<div data-options="region:'south',border : false,collapsible:false"
-			style="overflow: hidden; padding: 1px; height: 145px;">
+			style="overflow: hidden; padding: 1px; height: 180px;">
 			<div class="easyui-panel" data-options="border:false,fit:true"
-				title="人工审核结果"
+				title="最终审核结果"
 				style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 				<form id="submitForm" method="post">
 					<table class="modifytable" width="100%">
 						<tr>
-							<th align="center" width="25%">最终结果</th>
+							<th align="center" width="30%">核查结果</th>
 							<td width="25%"><input class="easyui-validatebox"
-								name="lastYearProfit" value=""
+								name="status" value="${checkResult.status}"
 								data-options="required:false,validType:'length[0,30]'"
-								style="width: 250px;" id="lastYearProfit" /></td>
-							<th align="center" width="25%">最终额度</th>
+								style="width: 250px;" id="status" /></td>
+							<th align="center" width="25%">审批额度</th>
 							<td width="25%"><input class="easyui-validatebox"
 								name="lastYearPayTax" value=""
 								data-options="required:false,validType:'length[0,30]'"
 								style="width: 250px;" id="lastYearPayTax" /></td>
 						</tr>
+
 						<tr>
-							<th align="center" width="25%">最终产品</th>
+							<th align="center" width="25%">审批产品</th>
 							<td width="25%"><input class="easyui-validatebox"
 								name="lastYearProfit" value=""
 								data-options="required:false,validType:'length[0,30]'"
 								style="width: 250px;" id="lastYearProfit" /></td>
-							<th align="center" width="25%">最终建议</th>
-							<td width="25%"><input class="easyui-validatebox"
-								name="lastYearPayTax" value=""
-								data-options="required:false,validType:'length[0,30]'"
-								style="width: 250px;" id="lastYearPayTax" /></td>
+							<th align="center" width="25%">审批建议</th>
+							<td><textarea rows="3" cols="60" name="checkDesc"></textarea></td>
 						</tr>
 						<tr>
 							<td colspan="4" align="center"><input type="button"
 								value="提交" class="btn" onclick="appApprove();" /> <input
 								type="button" value="返回列表" class="btn" onclick="backList();" />
-								<input type="hidden" name="appNo" value="${appNo}" /> 
-								<input type="hidden" name="appType" value="${appType}" />
-								<input type="hidden" name="flag" value="${flag}" />
-							</td>
+								<input type="hidden" name="appNo" value="${appNo}" /> <input
+								type="hidden" name="appType" value="${appType}" /> <input
+								type="hidden" name="flag" value="${flag}" /></td>
 						</tr>
 					</table>
 				</form>

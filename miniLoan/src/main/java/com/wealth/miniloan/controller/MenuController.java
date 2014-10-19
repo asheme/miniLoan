@@ -127,4 +127,9 @@ public class MenuController {
 	public String toTaskFlowList() {
 		return "config/appFlowList";
 	}
+	
+	@RequestMapping(value = "queryAppList")
+	public String queryAppList() {
+		return "query/queryAppList";
+	}
 }

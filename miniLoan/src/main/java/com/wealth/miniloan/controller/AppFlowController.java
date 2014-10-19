@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlApproveTaskCfg;
-import com.wealth.miniloan.entity.MlDict;
+import com.wealth.miniloan.entity.MlApproveTaskCfgExample;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.AppFlowServiceI;
 
@@ -147,5 +147,19 @@ public class AppFlowController {
 		}
 
 		return result;
+	}
+	
+	@RequestMapping({ "getStepDesc" })
+	@ResponseBody
+	public MlApproveTaskCfg getDictItem(String taskNo) {
+		if(taskNo == null || "".equals(taskNo)){
+			return null;
+		} else{
+			MlApproveTaskCfgExample example = new MlApproveTaskCfgExample();
+			example.createCriteria().andTaskNoEqualTo(taskNo);
+			MlApproveTaskCfg cfg = this.appFlowService.getByExample(example);
+			return cfg;
+		}
+		
 	}
 }

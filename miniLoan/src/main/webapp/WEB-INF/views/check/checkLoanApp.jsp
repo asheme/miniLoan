@@ -16,12 +16,7 @@
 <script type="text/javascript">
 <!--
 	$(function(){
-		$('input[name="checkResult"]').each(function(){
-			var t=$(this).val();
-			if(t=='${checkResult.checkResult}'){
-				$(this).attr("checked",true);
-				}
-		});
+		initComboboxContent("status", "RECHECK_STATUS");
 	});
 
 	function backList() {
@@ -29,6 +24,8 @@
 	}
 	
 	function submitToInspect() {
+		$.messager.confirm("信息提示","您确定要提交吗?",function(data){
+			if(data){
 		$('#submitForm')
 				.form(
 						'submit',
@@ -48,6 +45,7 @@
 								}
 							}
 						});
+			}});
 	}
 //-->
 </script>
@@ -110,26 +108,26 @@
 			</div>
 		</div>
 		<div data-options="region:'south',border : false,collapsible:false"
-			style="overflow: hidden; padding: 1px; height: 200px;">
+			style="overflow: hidden; padding: 1px; height: 180px;">
 			<div class="easyui-panel" data-options="border:false,fit:true"
 				title="复核结果"
 				style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 				<form id="submitForm" method="post">
 					<table class="modifytable" width="100%" height="100%">
 						<tr>
-							<th align="center" width="30%">核查结果</th>
-							<td width="35%"><label>通过</label><input type="radio"
-								name="checkResult" value="1" checked="checked"></input></td>
-							<td width="35%"><label>不通过</label><input type="radio"
-								name="checkResult" value="0"></input></td>
+						<th align="center" width="30%">核查结果</th>
+						<td width="25%"><input class="easyui-validatebox"
+						name="status" value="${checkResult.status}"
+						data-options="required:false,validType:'length[0,30]'"
+						style="width: 250px;" id="status" /></td>
 						</tr>
 						<tr>
-							<th align="center" width="30%">审核建议</th>
+							<th align="center" width="25%">审核建议</th>
 							<td colspan="2"><textarea rows="3" cols="100"
 									name="checkDesc"></textarea></td>
 						</tr>
 						<tr>
-							<td colspan="4" align="center"><input type="button"
+							<td colspan="2" align="center"><input type="button"
 								value="提交" class="btn" onclick="submitToInspect();" /> <input
 								type="button" value="返回列表" class="btn" onclick="backList();" />
 								<input type="hidden" name="appNo" value="${appNo}" /> 

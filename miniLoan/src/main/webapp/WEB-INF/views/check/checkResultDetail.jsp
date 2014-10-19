@@ -28,8 +28,8 @@
 			nowrap : false,
 			columns : [ [ {
 				field : 'checkId',
-				title : '审批编号',
-				width : 20,
+				title : '编号',
+				width : 10,
 				sortable : true
 			}, {
 				field : 'appNo',
@@ -37,28 +37,47 @@
 				width : 20,
 				sortable : true
 			}, {
-				field : 'checkType',
-				title : '审核步骤',
+				field : 'previousStep',
+				title : '上一步骤',
+				width : 20,
+				sortable : true,
+				formatter:function(value){
+					return getStepDesc(value);
+					}
+			}, {
+				field : 'currStep',
+				title : '当前步骤',
+				width : 20,
+				sortable : true,
+				formatter:function(value){
+					return getStepDesc(value);
+					} 
+			}, {
+				field : 'finishTime',
+				title : '提交时间',
 				width : 20,
 				sortable : true
 			}, {
-				field : 'checkResult',
-				title : '审核结果',
+				field : 'status',
+				title : '状态',
+				width : 20,
+				sortable : true,
+				formatter:function(value){
+					return getDictItem("STEP_STATUS", value);
+					}
+			}, {
+				field : 'handler',
+				title : '操作员',
 				width : 20,
 				sortable : true
 			}, {
 				field : 'checkDesc',
-				title : '审核描述',
+				title : '情况说明',
 				width : 20,
 				sortable : true
-			}, {
-				field : 'approveTime',
-				title : '审核时间',
-				width : 20,
-				sortable : true
-			}]]
+			}
+			]]
 		});
-		
 	});
 </script>
 </head>

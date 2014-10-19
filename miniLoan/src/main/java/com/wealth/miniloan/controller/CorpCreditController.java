@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.wealth.miniloan.entity.MlCorpCredit;
-import com.wealth.miniloan.entity.MlNaturalCredit;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.service.CommonServiceI;
 

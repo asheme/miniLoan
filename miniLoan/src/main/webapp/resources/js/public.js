@@ -25,6 +25,31 @@ function getDictItem(dictName, itemCode) {
 }
 
 /**
+ * 通过步骤编码获取步骤描述
+ */
+function getStepDesc(taskNo) {
+	var result = "";
+
+	$.ajax({
+		url : path + '/appFlow/getStepDesc.do',
+		data : {
+			taskNo : taskNo
+		},
+		dataType : 'json',
+		async : false,
+		success : function(data) {
+			if (data != null && data.taskName != null)
+				result = data.taskName;
+			else
+				result = taskNo;
+
+		}
+	});
+
+	return result;
+}
+
+/**
  * 通过字典项名称填充下拉框
  * 
  * @param comboboxId

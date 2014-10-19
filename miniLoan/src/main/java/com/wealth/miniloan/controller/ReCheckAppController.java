@@ -17,14 +17,15 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.AppFlowServiceI;
-import com.wealth.miniloan.service.CommonServiceI;
-import com.wealth.miniloan.serviceImpl.CheckResultServiceImpl;
+import com.wealth.miniloan.service.AppSummaryServiceI;
+import com.wealth.miniloan.service.CheckResultServiceI;
 import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
@@ -32,17 +33,17 @@ import com.wealth.miniloan.utils.key.KeyGenerator;
 @RequestMapping(value = "/recheck/app")
 @SessionAttributes("user")
 public class ReCheckAppController extends BaseController {
-	private CommonServiceI<MlAppSummary> appSummaryService = null;
-	private CommonServiceI<MlAppCheckResult> checkResultService = null;
+	private AppSummaryServiceI appSummaryService = null;
+	private CheckResultServiceI checkResultService = null;
 	private AppFlowServiceI appFlowService=null;
 
 	@Autowired
-	public void setCheckResultService(CheckResultServiceImpl checkResultService) {
+	public void setCheckResultService(CheckResultServiceI checkResultService) {
 		this.checkResultService = checkResultService;
 	}
 
 	@Autowired
-	public void setAppSummaryService(CommonServiceI<MlAppSummary> appSummaryService) {
+	public void setAppSummaryService(AppSummaryServiceI appSummaryService) {
 		this.appSummaryService = appSummaryService;
 	}
 
@@ -65,7 +66,7 @@ public class ReCheckAppController extends BaseController {
 	@ResponseBody
 	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
 		DataGrid resut = new DataGrid();
-		PageList<MlAppSummary> appSummaryList = null;
+		PageList<AppSummaryExtend> appSummaryList = null;
 		appSummary.setCurrStep(Constant.STEP_APP_CHECK);
 		appSummaryList = appSummaryService.getPageList(page, appSummary);
 
@@ -187,7 +188,7 @@ public class ReCheckAppController extends BaseController {
 
 	@RequestMapping(value = "submitToInspect")
 	@ResponseBody
-	public Map<String, Object> submitToInspect(String appNo, MlAppCheckResult checkResult) {
+	public Map<String, Object> submitToInspect(String appNo, MlAppCheckResult checkResult,@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String currStep=null;
 
@@ -195,22 +196,50 @@ public class ReCheckAppController extends BaseController {
 			MlAppSummary obj = new MlAppSummary();
 			obj.setAppNo(appNo);
 			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
-			if ("1".equals(checkResult.getCheckResult())) {
+			if (Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())) {
 				currStep=this.appFlowService.getNextStep(as.getCurrStep());
 				as.setPreviousStep(as.getCurrStep());
 				as.setCurrStep(currStep);// 复核阶段
 				as.setStatus(Constant.APP_STATUS_PROCESS);			
-			} else if ("0".equals(checkResult.getCheckResult())) {
+			} else if (Constant.APP_STATUS_BACK.equals(checkResult.getStatus())) {
 				currStep=this.appFlowService.getFirstStep();
 				as.setPreviousStep(as.getCurrStep());
-				as.setCurrStep(currStep);// 复核阶段
-				as.setStatus(Constant.APP_STATUS_PROCESS);				
+				as.setCurrStep(currStep);// 返回第一步
+				as.setStatus(Constant.APP_STATUS_BACK);				
+			} else if (checkResult.getStatus() == null || "".equals(checkResult.getStatus())) {
+				result.put("success", false);
+				result.put("msg", "请选择审核结果！");
+				return result;
 			}
-			as.setFinishTime(new Date());
 			this.appSummaryService.update(as);
-			if (checkResult.getCheckDesc() != null && !"".equals(checkResult.getCheckDesc())) {
-				saveCheckResult(checkResult);
+
+			MlAppCheckResult appCheckResult = new MlAppCheckResult();
+			appCheckResult.setAppNo(appNo);
+			appCheckResult.setFinishTime(new Date());
+			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())){
+				appCheckResult.setStatus(Constant.STEP_STATUS_END);
+				appCheckResult.setCheckDesc("申请复核信息已提交");
+			}else{
+				appCheckResult.setStatus(Constant.STEP_STATUS_BACK);
+				appCheckResult.setCheckDesc("申请复核信息被打回");
 			}
+			this.checkResultService.updateByLastStatus(appCheckResult);
+			
+			appCheckResult = new MlAppCheckResult();
+			appCheckResult.setAppNo(as.getAppNo());
+			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
+			appCheckResult.setBeginTime(as.getEnterTime());
+			appCheckResult.setPreviousStep(as.getPreviousStep());
+			appCheckResult.setCurrStep(as.getCurrStep());
+			appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
+			appCheckResult.setHandler(user.getUserId());
+			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())){
+				appCheckResult.setCheckDesc("进入人工核查阶段");
+			}else{
+				appCheckResult.setCheckDesc("申请信息被打回");
+			}
+			this.checkResultService.create(appCheckResult);
+			
 			result.put("success", true);
 			result.put("msg", "申请信息复合完成，提交成功！");
 		} catch (Exception e) {
@@ -219,20 +248,5 @@ public class ReCheckAppController extends BaseController {
 			result.put("msg", "审核信息提交失败，服务器端处理异常！");
 		}
 		return result;
-	}
-
-	public void saveCheckResult(MlAppCheckResult checkResult) {
-		try {
-			MlAppCheckResult ar = new MlAppCheckResult();
-			ar.setAppNo(checkResult.getAppNo());
-			ar.setCheckType("03");
-			ar.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
-			ar.setCheckResult(checkResult.getCheckResult());
-			ar.setCheckDesc(checkResult.getCheckDesc());
-			this.checkResultService.create(ar);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

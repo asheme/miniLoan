@@ -33,7 +33,8 @@
 			<table tableName="ML_SYS_RESC"/>
 			<table tableName="ML_ROLE"/>			
 			<table tableName="ML_APPROVE_TASK_CFG" />			
-			<table tableName="ML_APP_SUMMARY" />-->	
-			<table tableName="ML_MORTGAGE_INFO" />
+			<table tableName="ML_APP_SUMMARY" />
+			<table tableName="ML_MORTGAGE_INFO" />-->	
+			<table tableName="ML_APP_CHECK_RESULT" />
 	</context>
 </generatorConfiguration>

@@ -38,47 +38,63 @@
 			}, {
 				field : 'name',
 				title : '姓名',
-				width : 15
+				width : 15,
+				formatter:function(value,rec){
+					return rec.naturalApp.name;
+					}
 			}, {
 				field : 'idType',
 				title : '证件类型',
 				width : 15,
-				sortable : true,
-				formatter : function(value, row, index) {
-					return getDictItem("ID_TYPE", value);
-				}
+				formatter:function(value,rec){
+					return getDictItem("ID_TYPE", rec.naturalApp.idType);
+					}
 			}, {
 				field : 'idNo',
 				title : '证件号码',
 				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.naturalApp.idNo;
+					}
 			}, {
 				field : 'mobile',
 				title : '手机',
 				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.naturalApp.mobile;
+					}
 			}, {
 				field : 'educationLvl',
 				title : '学历',
 				sortable : true,
-				width : 20
+				width : 20,
+				formatter:function(value,rec){
+					return rec.naturalApp.educationLvl;
+					}
 			}, {
 				field : 'company',
 				title : '所在公司',
 				width : 20,
-				sortable : true
+				sortable : true,
+				formatter:function(value,rec){
+					return rec.naturalApp.company;
+					}
 			}, {
 				field : 'position',
 				title : '职务',
 				width : 20,
-				sortable : true
+				formatter:function(value,rec){
+					return rec.naturalApp.position;
+					}
 			}, {
 				field:'status',
 				title:'当前状态',
 				width:20,
-				formatter:function(value,row,index){
-					return "退回";
-				}
+				formatter:function(value){
+					return getDictItem("APP_STATUS", value);
+					}
 			}] ],
 			toolbar : '#toolbar'
 		});

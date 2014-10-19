@@ -1,18 +1,23 @@
 package com.wealth.miniloan.service;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
+import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.Page;
 
 public interface LoanNaturalAppServiceI {
-	public PageList<MlNaturalApp> getLoanNaturalAppPageList(Page paramPage, MlNaturalApp naturalApp);
+	public PageList<MlNaturalApp> getPageList(Page paramPage, MlNaturalApp obj);
+	
+	public PageList<AppSummaryExtend> getSummaryPageList(Page paramPage, MlNaturalApp obj);
 
-	public abstract int createNaturalApp(MlNaturalApp paramMlNaturalApp);
+	public abstract int create(MlNaturalApp obj);
 
-	public abstract int updateNaturalApp(MlNaturalApp paramMlNaturalApp);
+	public abstract int update(MlNaturalApp obj);
 
-	public abstract int deleteNaturalApp(String ids);
+	public abstract int delete(String ids);
 
-	public abstract MlNaturalApp getNaturalAppByPriKey(MlNaturalApp paramMlNaturalApp);
+	public abstract MlNaturalApp getByPriKey(MlNaturalApp obj);
+
+	public abstract Object getByExample(Object obj);
 
 }

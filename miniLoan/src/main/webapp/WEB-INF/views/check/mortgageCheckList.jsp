@@ -44,28 +44,47 @@
 					return getDictItem("APP_TYPE", value);
 				}
 			}, {
-				field : 'custId',
+				field : 'idNo',
 				title : '证件号',
 				width : 20,
-				sortable : true
+				sortable : true,
+				formatter:function(value,rec){
+					if(rec.naturalApp == null){
+				       return rec.corpApp.lpIdNo;
+				      } else{
+				    	  return rec.naturalApp.idNo;
+				      }
+					}
 			}, {
 				field : 'name',
-				title : '借款人',
+				title : '借款人(公司名)',
 				width : 20,
-				sortable : true
+				sortable : true,
+				formatter:function(value,rec){
+					if(rec.naturalApp == null){
+					       return rec.corpApp.compName;
+					      } else{
+					    	  return rec.naturalApp.name;
+					      }
+						}
+				
 			}, {
 				field : 'enterTime',
 				title : '进件时间',
 				width : 20,
 				sortable : true
 			}, {
-				field : 'currStep',
-				title : '当前步骤',
+				field : 'status',
+				title : '当前状态',
 				sortable : true,
 				width : 10,
+				formatter:function(value){
+					return getDictItem("APP_STATUS", value);
+					}
+				/* ,
 				formatter : function(value, row, index) {
 					return getDictItem("PROCESS_STEP", value);
-				}
+				} */
 			}] ],
 			toolbar : '#toolbar'
 		});

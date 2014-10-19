@@ -1,6 +1,7 @@
 package com.wealth.miniloan.serviceImpl;
 
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +11,12 @@ import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppCheckResultExample;
 import com.wealth.miniloan.entity.MlAppCheckResultExample.Criteria;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.service.CheckResultServiceI;
 import com.wealth.miniloan.service.CommonServiceI;
 import com.wealth.miniloan.utils.SysUtil;
 
 @Service
-public class CheckResultServiceImpl implements CommonServiceI<MlAppCheckResult> {
+public class CheckResultServiceImpl implements CheckResultServiceI {
 	private AppCheckResultDao appCheckResultDao;
 
 	private final String _ORDER_ATTRS = "approveTime";
@@ -46,32 +48,32 @@ public class CheckResultServiceImpl implements CommonServiceI<MlAppCheckResult> 
 
 	@Override
 	public int create(MlAppCheckResult obj) {
-		// TODO Auto-generated method stub
 		return this.appCheckResultDao.save(obj);
 	}
 
 	@Override
 	public int update(MlAppCheckResult obj) {
-		// TODO Auto-generated method stub
 		return this.appCheckResultDao.update(obj);
 	}
 
 	@Override
-	public int delete(String ids) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
 	public MlAppCheckResult getByPriKey(MlAppCheckResult obj) {
-		// TODO Auto-generated method stub
 		return this.appCheckResultDao.getById(obj.getCheckId());
 	}
 
 	@Override
 	public Object getByExample(Object obj) {
-		// TODO Auto-generated method stub
 		return appCheckResultDao.findOne(obj);
+	}
+
+	@Override
+	public int delete(String ids) {
+		return 0;
+	}
+
+	@Override
+	public int updateByLastStatus(MlAppCheckResult appCheckResult) {
+		return appCheckResultDao.updateByLastStatus(appCheckResult);
 	}
 
 }

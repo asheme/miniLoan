@@ -70,6 +70,10 @@
 					<td width="25%">${mortgageInfo.currValue}</td>
 				</tr>
 				<tr>
+					<th align="center" width="25%">评估建议</th>
+					<td colspan="3"><textarea rows="3" cols="60" name="estDesc" id="estDesc">${mortgageInfo.estDesc}</textarea></td>
+				</tr>
+				<tr>
 					<td colspan="4" align="center"><input type="button"
 						value="返回" class="btn" onclick="javascript:backList();" /></td>
 				</tr>
