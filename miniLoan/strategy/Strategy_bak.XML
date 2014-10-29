@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Strategy>
+	<InVariable>
+		<!-- 输入变量定义，type定义如下：N-数值型，C-字符型 -->
+		<Field name="fraudCheckResult" desc="欺诈检查结果" type="C" defaultValue="N" />
+		<Field name="baseCheckResult" desc="基本检查结果" type="C" defaultValue="N" />
+		<Field name="relevanceCheckResult" desc="关联检查结果" type="C" defaultValue="N" />
+		<Field name="crossCheckResult" desc="交叉检查结果" type="C" defaultValue="N" />
+		<Field name="loanAppAmount" desc="贷款申请金额" type="N" defaultValue="0F" />
+		<Field name="baseLoanRate" desc="贷款基准利率" type="N" defaultValue="0F" />
+		<Field name="hasCreditInfo" desc="是否有征信信息" type="C" defaultValue="N" />
+		<Field name="pastDueTimes" desc="累计逾期次数" type="N" defaultValue="0F" />
+		<Field name="highestDelinquencyCycle" desc="最高逾期期数" type="N" defaultValue="0F" />
+		<Field name="amountOfDelinquency" desc="逾期信用余额" type="N" defaultValue="0F" />
+		<Field name="age" desc="年龄" type="N" defaultValue="0F" />
+		<Field name="marriageStatus" desc="婚姻状态" type="C" defaultValue="" />
+		<Field name="eduLvl" desc="受教育程度" type="C" defaultValue="" />
+		<Field name="workYears" desc="从业年限" type="N" defaultValue="0F" />
+		<Field name="annualIncome" desc="申请人年收入" type="N" defaultValue="0F" />
+		<Field name="mortRatioOfLoan" desc="押品评估价值占贷款申请金额的比例" type="N" defaultValue="0F" />
+	</InVariable>
+	<OutVariable>
+		<Field name="isPassed" desc="预审批授信结果" type="C" defaultValue="N" />
+		<Field name="loanLimit" desc="预审批贷款额度" type="N" defaultValue="0F" />
+		<Field name="loanRate" desc="预审批贷款利率" type="N" defaultValue="0F" />
+		<Field name="reasonCode" desc="原因代码" type="C" defaultValue="" />
+		<Field name="reasonDesc" desc="原因描述" type="C" defaultValue="" />
+	</OutVariable>
+	<Scores>
+		<ScoreCard name="score1" min="0" max="1000">
+			<ExcludeCond>
+				<Condition var="age" scope="18" loper="&lt;" roper="" reasonCode="s0001" reason="年龄不满足18岁" />
+				<Condition var="age" scope="65" loper="&gt;" roper="" reasonCode="s0001" reason="年龄大于65周岁" />
+			</ExcludeCond>
+			<ScoreCal>
+				<Segment var="hasCreditInfo">
+					<Item type="N" scope="Y" loper="=" roper="" radio="0.3F" score="100"  />
+					<Item type="N" scope="N" loper="=" roper="" radio="0.3F" score="30"  />
+				</Segment>
+				<Segment var="pastDueTimes">
+					<Item type="N" scope="0" loper="=" roper="" radio="0.3F" score="100"  />
+					<Item type="N" scope="3" loper="&gt;=" roper="" radio="0.3F" score="0"  />
+					<Item type="O" scope="" loper="" roper="" radio="0.3F" score="50"  />
+				</Segment>
+				<Segment var="highestDelinquencyCycle">
+					<Item type="N" scope="0" loper="=" roper="" radio="0.3F" score="100"  />
+					<Item type="N" scope="1" loper="=" roper="" radio="0.3F" score="80"  />
+					<Item type="N" scope="2" loper="=" roper="" radio="0.3F" score="50"  />
+					<Item type="N" scope="3" loper="&gt;=" roper="" radio="0.3F" score="0"  />
+				</Segment>
+				<Segment var="amountOfDelinquency">
+					<Item type="N" scope="0" loper="=" roper="" radio="0.1F" score="100"  />
+					<Item type="N" scope="0,10000" loper="&gt;" roper="&lt;=" radio="0.1F" score="70"  />
+					<Item type="N" scope="10000,30000" loper="&gt;" roper="&lt;=" radio="0.1F" score="50"  />
+					<Item type="N" scope="30000" loper="&gt;=" roper="" radio="0.1F" score="20"  />
+				</Segment>
+				<Segment var="age">
+					<Item type="N" scope="18,25" loper="&gt;=" roper="&lt;=" radio="0.1F" score="30"  />
+					<Item type="N" scope="25,30" loper="&gt;" roper="&lt;=" radio="0.1F" score="60"  />
+					<Item type="N" scope="30,35" loper="&gt;" roper="&lt;=" radio="0.1F" score="80"  />
+					<Item type="N" scope="35,40" loper="&gt;" roper="&lt;=" radio="0.1F" score="100"  />
+					<Item type="N" scope="40,50" loper="&gt;" roper="&lt;=" radio="0.1F" score="80"  />
+					<Item type="N" scope="50,60" loper="&gt;" roper="&lt;=" radio="0.1F" score="30"  />
+					<Item type="O" scope="" loper="" roper="" radio="0.1F" score="10"  />
+				</Segment>
+				<Segment var="marriageStatus">
+					<Item type="N" scope="01" loper="=" roper="" radio="0.15F" score="80"  />
+					<Item type="N" scope="02" loper="=" roper="" radio="0.15F" score="100"  />
+					<Item type="N" scope="03" loper="=" roper="" radio="0.15F" score="80"  />
+					<Item type="O" scope="" loper="" roper="" radio="0.15F" score="10"  />
+				</Segment>
+				<Segment var="eduLvl">
+					<Item type="N" scope="01" loper="=" roper="" radio="0.2F" score="40"  />
+					<Item type="N" scope="02" loper="=" roper="" radio="0.2F" score="80"  />
+					<Item type="N" scope="03" loper="=" roper="" radio="0.2F" score="100"  />
+					<Item type="N" scope="04" loper="=" roper="" radio="0.2F" score="100"  />
+					<Item type="N" scope="05" loper="=" roper="" radio="0.2F" score="100"  />
+					<Item type="O" scope="" loper="" roper="" radio="0.2F" score="10"  />
+				</Segment>
+				<Segment var="workYears">
+					<Item type="N" scope="2" loper="&lt;=" roper="" radio="0.25F" score="20"  />
+					<Item type="N" scope="2,5" loper="&gt;" roper="&lt;=" radio="0.25F" score="80"  />
+					<Item type="N" scope="5,10" loper="&gt;" roper="&lt;=" radio="0.25F" score="90"  />
+					<Item type="N" scope="10,20" loper="&gt;" roper="&lt;=" radio="0.25F" score="100"  />
+					<Item type="N" scope="20,30" loper="&gt;" roper="&lt;=" radio="0.25F" score="80"  />
+					<Item type="N" scope="30" loper="&gt;" roper="" radio="0.25F" score="70"  />
+					<Item type="O" scope="" loper="" roper="" radio="0.25F" score="10"  />
+				</Segment>
+				<Segment var="annualIncome">
+					<Item type="N" scope="5" loper="&lt;=" roper="" radio="0.3F" score="30"  />
+					<Item type="N" scope="5,10" loper="&gt;" roper="&lt;=" radio="0.3F" score="70"  />
+					<Item type="N" scope="10,20" loper="&gt;" roper="&lt;=" radio="0.3F" score="80"  />
+					<Item type="N" scope="20,30" loper="&gt;" roper="&lt;=" radio="0.3F" score="90"  />
+					<Item type="N" scope="30" loper="&gt;" roper="" radio="0.3F" score="100"  />
+				</Segment>
+				<Segment var="mortRatioOfLoan">
+					<Item type="N" scope="0" loper="=" roper="" radio="1F" score="30"  />
+					<Item type="N" scope="0,0.5" loper="&gt;" roper="&lt;=" radio="1F" score="50"  />
+					<Item type="N" scope="0.5,0.8" loper="&gt;" roper="&lt;=" radio="1F" score="70"  />
+					<Item type="N" scope="0.8" loper="&gt;" roper="" radio="1F" score="100"  />
+				</Segment>				
+			</ScoreCal>
+		</ScoreCard>
+	</Scores>
+	<DecisionTree>
+		<ExcludeCond>
+			<Condition var="age" scope="18" loper="&lt;" roper="" reasonCode="s0001" reason="年龄不满足18岁" />
+			<Condition var="age" scope="65" loper="&gt;" roper="" reasonCode="s0001" reason="年龄大于65周岁" />
+		</ExcludeCond>
+		<Tree>
+			<Branch id="1" var="fraudCheckResult" scope="Y" type="N" loper="=" roper="" isLeaf="N" parentId="" />
+			<Branch id="2" var="fraudCheckResult" scope="N" type="N" loper="=" roper="" isLeaf="Y" parentId="">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" value="0F" type="C" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0001" type="C" />
+					<Item var="reasonDesc" value="未通过欺诈检查" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="3" var="baseCheckResult" scope="Y" type="N" loper="=" roper="" isLeaf="N" parentId="1" />
+			<Branch id="4" var="baseCheckResult" scope="N" type="N" loper="=" roper="" isLeaf="Y" parentId="1">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" value="0F" type="C" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0002" type="C" />
+					<Item var="reasonDesc" value="未通过基本检查" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="5" var="relevanceCheckResult" scope="Y" type="N" loper="=" roper="" isLeaf="N" parentId="3" />
+			<Branch id="6" var="relevanceCheckResult" scope="N" type="N" loper="=" roper="" isLeaf="Y" parentId="3">
+				<Result>
+					<Item var="isPassed" valueType="C" value="F" />
+					<Item var="loanLimit" value="0F" type="C" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="F0001" type="C" />
+					<Item var="reasonDesc" value="未通过关联检查" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="7" var="crossCheckResult" scope="Y" type="N" loper="=" roper="" isLeaf="N" parentId="5" />
+			<Branch id="8" var="crossCheckResult" scope="N" type="N" loper="=" roper="" isLeaf="Y" parentId="5">
+				<Result>
+					<Item var="isPassed" valueType="C" value="F" />
+					<Item var="loanLimit" value="0F" type="C" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="F0002" type="C" />
+					<Item var="reasonDesc" value="未通过交叉检查" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="9" var="score1" scope="500" type="N" loper="&lt;=" roper="" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="N" />
+					<Item var="loanLimit" value="0F" type="C" />
+					<Item var="loanRate" value="0F" type="C" />
+					<Item var="reasonCode" value="R0003" type="C" />
+					<Item var="reasonDesc" value="客户综合评分差" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="10" var="score1" scope="500,600" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="100000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="2" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0001" type="C" />
+					<Item var="reasonDesc" value="客户综合评分低，满足最低授信要求，通过申请" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="11" var="score1" scope="600,750" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="150000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="1.5" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0002" type="C" />
+					<Item var="reasonDesc" value="客户综合评分低，满足最低授信要求，通过申请" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="12" var="score1" scope="750,800" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="200000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="1" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0003" type="C" />
+					<Item var="reasonDesc" value="客户综合评分中等偏低，满足授信要求，通过申请" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="13" var="score1" scope="800,850" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="300000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="1" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0004" type="C" />
+					<Item var="reasonDesc" value="客户综合评分中等，满足授信要求，通过申请" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="14" var="score1" scope="850,900" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="400000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="1F" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0005" type="C" />
+					<Item var="reasonDesc" value="客户综合评分中等较高，满足授信要求，通过申请" type="C" />
+				</Result>
+			</Branch>
+			<Branch id="15" var="score1" scope="900,1000" type="N" loper="&gt;" roper="&lt;=" isLeaf="Y" parentId="7">
+				<Result>
+					<Item var="isPassed" valueType="C" value="Y" />
+					<Item var="loanLimit" valueType="A">
+						<Function name="min" oper="">
+							<!-- 参数：Type：N-数值型常量，V-变量，C-字符型常量 -->
+							<Param name="500000F" type="N" />
+							<Param name="loanAppAmount" type="V" />
+						</Function>
+					</Item>
+					<Item var="loanRate" valueType="A">
+						<Attribute name="baseLoanRate" oper="" type="V" />
+						<Attribute name="0.7F" oper="*" type="N" />
+					</Item>
+					<Item var="reasonCode" value="A0006" type="C" />
+					<Item var="reasonDesc" value="客户综合评分高，通过申请" type="C" />
+				</Result>
+			</Branch>
+		</Tree>
+	</DecisionTree>
+</Strategy>

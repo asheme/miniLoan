@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wealth.miniloan.dao.MlFraudCheckResultMapper" >
+	<select id="getFraudCheckSummaryResult" resultType="java.lang.String" parameterType="java.util.HashMap">
+		select ITEM_TYPE from ml_fraud_check_result where APP_NO=#{appNo} and APP_TYPE=#{appType} and CHECK_RESULT='Y' GROUP BY ITEM_TYPE HAVING count(1)>0
+	</select>
+</mapper>
