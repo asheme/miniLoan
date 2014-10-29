@@ -28,64 +28,47 @@
 			rownumbers : true,
 			nowrap : false,
 			columns : [ [ {
-				field : 'id',
-				checkbox : true
-			},{
 				field : 'appNo',
-				title : '申请编号',
-				width : 20,
-				sortable : true
+				checkbox : true
 			}, {
 				field : 'borrower',
 				title : '借款人',
 				width : 15,
-				formatter:function(value,rec){
-					return rec.corpApp.borrower;
-				}
-				
+				sortable : true
 			}, {
 				field : 'compName',
-				title : '企业名称',
-				width : 15,
-				formatter:function(value,rec){
-					return rec.corpApp.compName;
-				}
-			}, {
-				field : 'legalPerson',
-				title : '法人代表',
-				width : 20,
-				formatter:function(value,rec){
-					return rec.corpApp.legalPerson;
-				}
+				title : '公司名称',
+				width : 30,
+				sortable : true
 			}, {
 				field : 'lpIdNo',
 				title : '法人证件号',
-				width : 20,
-				formatter:function(value,rec){
-					return rec.corpApp.lpIdNo;
-				}
+				width : 15,
+				sortable : true
 			}, {
 				field : 'loanAmount',
 				title : '借款金额',
-				width : 20,
-				formatter:function(value,rec){
-					return rec.corpApp.loanAmount;
-				}
+				width : 15,
+				sortable : true
 			}, {
 				field : 'loanPeriod',
 				title : '借款期限',
-				width : 20,
-				formatter:function(value,rec){
-					return rec.corpApp.loanPeriod;
-				}
+				width : 15,
+				sortable : true
 			}, {
 				field:'status',
 				title:'当前状态',
-				width:20,
+				width:15,
+				sortable : true,
 				formatter:function(value){
 					return getDictItem("APP_STATUS", value);
-					}
+				}
 				
+			}, {
+				field : 'opTime',
+				title : '进件时间',
+				width : 15,
+				sortable : true
 			}] ],
 			toolbar : '#toolbar'
 		});
@@ -226,9 +209,9 @@
 				<table class="querytable" width="100%">
 					<tr>
 						<th width="20%">借款人</th>
-						<td width="30%"><input name="name" style="width: 280px;" /></td>
-						<th width="20%">企业名称</th>
-						<td width="30%"><input name="name" style="width: 280px;" /></td>
+						<td width="30%"><input name="borrower" style="width: 280px;" /></td>
+						<th width="20%">公司名称</th>
+						<td width="30%"><input name="compName" style="width: 280px;" /></td>
 					</tr>
 					<tr>
 						<td colspan="4" align="center"><input type="button"

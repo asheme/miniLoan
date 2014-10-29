@@ -703,12 +703,45 @@ public class ParseStrategy {
 				calFormulaStr+="(";
 				calFormulaStr+=parseResultCalFormula(resultCalElement);
 				calFormulaStr+=")";
+			}else if("Function".equals(resultCalElement.getName())){
+				if(!"".equals(calFormulaStr))
+					calFormulaStr +=resultCalElement.attributeValue("oper");				
+				calFormulaStr+=parseResultFunction(resultCalElement);
 			}
 		}
 		
 		return calFormulaStr;
 	}
 
+	/**
+	 * 解析结果计算中的函数
+	 * @param functionElement
+	 * @return
+	 */
+	private String parseResultFunction(Element functionElement){
+		String functionStr="";
+		Element paramElement = null;
+		boolean isFirstParam=true;
+		
+		functionStr+="StgFunction."+functionElement.attributeValue("name")+"(";
+		for (Iterator paramIterator = functionElement.elementIterator(); paramIterator
+				.hasNext();) {
+			paramElement=(Element)paramIterator.next();
+			if(!isFirstParam)
+				functionStr+=",";
+			if("N".equals(paramElement.attributeValue("type")) || "V".equals(paramElement.attributeValue("type"))){
+				functionStr+=paramElement.attributeValue("name");
+			}else if("C".equals(paramElement.attributeValue("type"))){
+				functionStr+="\""+paramElement.attributeValue("name")+"\"";
+			}
+			
+			isFirstParam=false;
+		}
+		functionStr+=")";
+		
+		return functionStr;
+	}
+	
 	/**
 	 * 解析子樹節點
 	 * 

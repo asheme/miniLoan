@@ -21,11 +21,16 @@ import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlCorpApp;
+import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.entity.UnionLoanApp;
+import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.AppSummaryServiceI;
 import com.wealth.miniloan.service.CheckResultServiceI;
+import com.wealth.miniloan.service.FraudCheckResultServiceI;
 import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
@@ -36,7 +41,14 @@ public class ReCheckAppController extends BaseController {
 	private AppSummaryServiceI appSummaryService = null;
 	private CheckResultServiceI checkResultService = null;
 	private AppFlowServiceI appFlowService=null;
+	private FraudCheckResultServiceI fraudCheckResultService = null;
 
+	@Autowired
+	public void setFraudCheckResultService(
+			FraudCheckResultServiceI fraudCheckResultService) {
+		this.fraudCheckResultService = fraudCheckResultService;
+	}
+	
 	@Autowired
 	public void setCheckResultService(CheckResultServiceI checkResultService) {
 		this.checkResultService = checkResultService;
@@ -64,15 +76,15 @@ public class ReCheckAppController extends BaseController {
 
 	@RequestMapping(value = "recheckAppList")
 	@ResponseBody
-	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
+	public DataGrid getAppSummaryList(Page page, UnionLoanApp unionLoanApp, @ModelAttribute("user") User user) {
 		DataGrid resut = new DataGrid();
-		PageList<AppSummaryExtend> appSummaryList = null;
-		appSummary.setCurrStep(Constant.STEP_APP_CHECK);
-		appSummaryList = appSummaryService.getPageList(page, appSummary);
+		PageList<UnionLoanApp> loanAppList = null;
+		unionLoanApp.setCurrStep(Constant.STEP_APP_CHECK);
+		loanAppList = this.appSummaryService.getLoanAppPageList(page, unionLoanApp,user);
 
-		if (appSummaryList != null) {
-			resut.setRows(appSummaryList);
-			resut.setTotal(Long.valueOf(appSummaryList.getPaginator().getTotalCount()));
+		if (loanAppList != null) {
+			resut.setRows(loanAppList);
+			resut.setTotal(Long.valueOf(loanAppList.getPaginator().getTotalCount()));
 		}
 
 		return resut;
@@ -188,14 +200,12 @@ public class ReCheckAppController extends BaseController {
 
 	@RequestMapping(value = "submitToInspect")
 	@ResponseBody
-	public Map<String, Object> submitToInspect(String appNo, MlAppCheckResult checkResult,@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> submitToInspect(MlAppSummary as, MlAppCheckResult checkResult,@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String currStep=null;
 
 		try {
-			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);
-			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as = this.appSummaryService.getByPriKey(as);
 			if (Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())) {
 				currStep=this.appFlowService.getNextStep(as.getCurrStep());
 				as.setPreviousStep(as.getCurrStep());
@@ -211,24 +221,27 @@ public class ReCheckAppController extends BaseController {
 				result.put("msg", "请选择审核结果！");
 				return result;
 			}
+			as.setHandler(user.getUserId());
+			as.setOperTime(new Date());
 			this.appSummaryService.update(as);
 
 			MlAppCheckResult appCheckResult = new MlAppCheckResult();
-			appCheckResult.setAppNo(appNo);
+			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setFinishTime(new Date());
 			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())){
 				appCheckResult.setStatus(Constant.STEP_STATUS_END);
-				appCheckResult.setCheckDesc("申请复核信息已提交");
 			}else{
 				appCheckResult.setStatus(Constant.STEP_STATUS_BACK);
-				appCheckResult.setCheckDesc("申请复核信息被打回");
 			}
+			appCheckResult.setCheckDesc(checkResult.getCheckDesc());
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.updateByLastStatus(appCheckResult);
 			
 			appCheckResult = new MlAppCheckResult();
 			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
-			appCheckResult.setBeginTime(as.getEnterTime());
+			appCheckResult.setBeginTime(new Date());
 			appCheckResult.setPreviousStep(as.getPreviousStep());
 			appCheckResult.setCurrStep(as.getCurrStep());
 			appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
@@ -238,10 +251,18 @@ public class ReCheckAppController extends BaseController {
 			}else{
 				appCheckResult.setCheckDesc("申请信息被打回");
 			}
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.create(appCheckResult);
 			
+			//重新生成欺诈检查结果
+			if (Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())) {
+				fraudCheckResultService.deleteFraudCheck(as.getAppNo());
+				fraudCheckResultService.dealFraudCheck(as.getAppNo());
+			}
+			
 			result.put("success", true);
-			result.put("msg", "申请信息复合完成，提交成功！");
+			result.put("msg", "申请信息复核完成，提交成功！");
 		} catch (Exception e) {
 			e.printStackTrace();
 			result.put("success", false);

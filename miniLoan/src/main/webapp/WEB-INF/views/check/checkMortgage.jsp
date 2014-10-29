@@ -114,7 +114,7 @@
 				style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
 				<form id="submitForm" method="post">
 					<table class="modifytable" width="100%" height="100%">
-					<tr>
+						<tr>
 						<th align="center" width="30%">核查结果</th>
 						<td width="25%"><input class="easyui-validatebox"
 						name="status" value="${checkResult.status}"

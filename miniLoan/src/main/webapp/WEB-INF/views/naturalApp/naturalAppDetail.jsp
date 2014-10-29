@@ -10,12 +10,12 @@
 <title>view natrual app info</title>
 <script type="text/javascript">
 <!--
-$(function(){
-	$("td.date").each(function(){	
-		var time=dateToStr($(this).text());
-		$(this).text(time);
-	});	
-});
+	$(function() {
+		$("td.date").each(function() {
+			var time = dateToStr($(this).text());
+			$(this).text(time);
+		});
+	});
 //-->
 </script>
 </head>

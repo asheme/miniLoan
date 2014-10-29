@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,11 +18,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.AppSummaryExtend;
+import com.wealth.miniloan.entity.CorpAppInfo;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlCorpApp;
+import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.entity.UnionLoanApp;
+import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.AppFlowServiceI;
 import com.wealth.miniloan.service.AppSummaryServiceI;
 import com.wealth.miniloan.service.CheckResultServiceI;
@@ -29,6 +35,7 @@ import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
+@Transactional(rollbackFor={Exception.class})
 @RequestMapping(value = "/mortgage/check")
 @SessionAttributes("user")
 public class MortgageCheckController extends BaseController {
@@ -63,15 +70,15 @@ public class MortgageCheckController extends BaseController {
 
 	@RequestMapping(value = "mortgageCheckList")
 	@ResponseBody
-	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
+	public DataGrid getLoanAppList(Page page, UnionLoanApp unionLoanApp, @ModelAttribute("user") User user) {
 		DataGrid resut = new DataGrid();
-		PageList<AppSummaryExtend> appSummaryList = null;
-		appSummary.setCurrStep(Constant.STEP_MORT_ESTI);
-		appSummaryList = appSummaryService.getPageList(page, appSummary);
+		PageList<UnionLoanApp> loanAppList = null;
+		unionLoanApp.setCurrStep(Constant.STEP_MORT_ESTI);
+		loanAppList = this.appSummaryService.getLoanAppPageList(page, unionLoanApp,user);
 
-		if (appSummaryList != null) {
-			resut.setRows(appSummaryList);
-			resut.setTotal(Long.valueOf(appSummaryList.getPaginator().getTotalCount()));
+		if (loanAppList != null) {
+			resut.setRows(loanAppList);
+			resut.setTotal(Long.valueOf(loanAppList.getPaginator().getTotalCount()));
 		}
 
 		return resut;
@@ -79,14 +86,12 @@ public class MortgageCheckController extends BaseController {
 
 	@RequestMapping(value = "submitMortgageRevalue")
 	@ResponseBody
-	public Map<String, Object> submitMortgageRevalue(String appNo, MlAppCheckResult checkResult,@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> submitMortgageRevalue(MlAppSummary as, MlAppCheckResult checkResult,@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String currStep=null;
 
 		try {
-			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);
-			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as = this.appSummaryService.getByPriKey(as);
 			if (Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())) {
 				currStep=this.appFlowService.getNextStep(as.getCurrStep());
 				as.setPreviousStep(as.getCurrStep());
@@ -102,33 +107,39 @@ public class MortgageCheckController extends BaseController {
 				result.put("msg", "请选择核查结果！");
 				return result;
 			}
+			as.setHandler(user.getUserId());
+			as.setOperTime(new Date());
 			this.appSummaryService.update(as);
 			
 			MlAppCheckResult appCheckResult = new MlAppCheckResult();
-			appCheckResult.setAppNo(appNo);
+			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setFinishTime(new Date());
 			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())){
 				appCheckResult.setStatus(Constant.STEP_STATUS_END);
-				appCheckResult.setCheckDesc("押品评估信息已提交");
 			}else{
 				appCheckResult.setStatus(Constant.STEP_STATUS_BACK);
-				appCheckResult.setCheckDesc("押品评估信息被打回");
 			}
+			appCheckResult.setCheckDesc(checkResult.getCheckDesc());
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.updateByLastStatus(appCheckResult);
 			
 			appCheckResult = new MlAppCheckResult();
 			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
-			appCheckResult.setBeginTime(as.getEnterTime());
+			appCheckResult.setBeginTime(new Date());
 			appCheckResult.setPreviousStep(as.getPreviousStep());
 			appCheckResult.setCurrStep(as.getCurrStep());
-			appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
 			appCheckResult.setHandler(user.getUserId());
 			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus())){
 				appCheckResult.setCheckDesc("进入复核阶段");
+				appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
 			}else{
 				appCheckResult.setCheckDesc("申请信息被打回");
+				appCheckResult.setStatus(Constant.STEP_STATUS_BACK);
 			}
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.create(appCheckResult);
 			
 			result.put("success", true);

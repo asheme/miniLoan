@@ -28,6 +28,8 @@
 		initComboboxContent("idType", "ID_TYPE");
 		initComboboxContent("spouseIdType", "ID_TYPE");
 		initComboboxContent("linkmanIdType", "ID_TYPE");
+		initComboboxContent("educationLvl", "EDUCATION_LVL");
+		initComboboxContent("marriageStatus", "MARRIAGE_STATUS");
 		
 		$("input[dateFormat='date']").each(function(){				
 			var time=dateToStr($(this).val());
@@ -153,40 +155,52 @@
 						style="width: 250px;" id="educationLvl" /></td>
 				</tr>
 				<tr>
-					<th align="center" width="25%">政治面貌</th>
+						<th align="center" width="25%">婚姻状态</th>
+						<td width="25%"><input class="easyui-validatebox"
+						name="marriageStatus" value="${naturalApp.marriageStatus}"
+						data-options="required:false,validType:'length[0,30]'"
+						style="width: 250px;" id="marriageStatus" /></td>
+						<th align="center" width="25%">政治面貌</th>
 					<td width="25%"><input class="easyui-validatebox"
 						name="politicsStatus" value="${naturalApp.politicsStatus}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="politicsStatus" /></td>
+				</tr>
+				<tr>
 					<th align="center" width="25%">手机号码</th>
 					<td width="25%"><input class="easyui-validatebox"
 						name="mobile" value="${naturalApp.mobile}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="mobile" /></td>
-				</tr>
-				<tr>
-					<th align="center" width="25%">固定电话</th>
+						<th align="center" width="25%">固定电话</th>
 					<td width="25%"><input class="easyui-validatebox"
 						name="homePhone" value="${naturalApp.homePhone}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="homePhone" /></td>
+				</tr>
+				<tr>
 					<th align="center" width="25%">电子邮箱</th>
 					<td width="25%"><input class="easyui-validatebox" name="email"
 						value="${naturalApp.email}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="email" /></td>
-				</tr>
-				<tr>
-					<th align="center" width="25%">所属行业类型</th>
+						<th align="center" width="25%">所属行业类型</th>
 					<td width="25%"><input class="easyui-validatebox"
 						name="industryType" value="${naturalApp.industryType}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="industryType" /></td>
+				</tr>
+				<tr>
 					<th align="center" width="25%">单位名称</th>
 					<td width="25%"><input class="easyui-validatebox"
 						name="company" value="${naturalApp.company}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="company" /></td>
+						<th align="center" width="25%">单位电话</th>
+					<td width="25%"><input class="easyui-validatebox"
+						name="compPhone" value="${naturalApp.compPhone}"
+						data-options="required:false,validType:'length[0,30]'"
+						style="width: 250px;" id="compPhone" /></td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">职务</th>

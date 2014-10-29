@@ -27,19 +27,9 @@
 			rownumbers : true,
 			nowrap : false,
 			columns : [ [ {
-				field : 'checkId',
-				title : '编号',
-				width : 10,
-				sortable : true
-			}, {
-				field : 'appNo',
-				title : '申请编号',
-				width : 20,
-				sortable : true
-			}, {
 				field : 'previousStep',
 				title : '上一步骤',
-				width : 20,
+				width : 10,
 				sortable : true,
 				formatter:function(value){
 					return getStepDesc(value);
@@ -47,20 +37,25 @@
 			}, {
 				field : 'currStep',
 				title : '当前步骤',
-				width : 20,
+				width : 10,
 				sortable : true,
 				formatter:function(value){
 					return getStepDesc(value);
 					} 
 			}, {
+				field : 'beginTime',
+				title : '步骤开始时间',
+				width : 10,
+				sortable : true
+			}, {
 				field : 'finishTime',
-				title : '提交时间',
-				width : 20,
+				title : '步骤结束时间',
+				width : 10,
 				sortable : true
 			}, {
 				field : 'status',
 				title : '状态',
-				width : 20,
+				width : 10,
 				sortable : true,
 				formatter:function(value){
 					return getDictItem("STEP_STATUS", value);
@@ -68,12 +63,12 @@
 			}, {
 				field : 'handler',
 				title : '操作员',
-				width : 20,
+				width : 10,
 				sortable : true
 			}, {
 				field : 'checkDesc',
 				title : '情况说明',
-				width : 20,
+				width : 30,
 				sortable : true
 			}
 			]]

@@ -1,6 +1,7 @@
 package com.wealth.miniloan.serviceImpl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,15 @@ import com.wealth.miniloan.dao.NaturalAttachDao;
 import com.wealth.miniloan.dao.NaturalCreditDao;
 import com.wealth.miniloan.entity.MlAppCheckResultExample;
 import com.wealth.miniloan.entity.MlAppSummaryExample;
-import com.wealth.miniloan.entity.MlAppSummaryExample.Criteria;
 import com.wealth.miniloan.entity.AppSummaryExtend;
+import com.wealth.miniloan.entity.MlDictExample;
 import com.wealth.miniloan.entity.MlMortgageInfoExample;
 import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlNaturalAppExample;
 import com.wealth.miniloan.entity.MlNaturalAttachExample;
 import com.wealth.miniloan.entity.MlNaturalCreditExample;
+import com.wealth.miniloan.entity.NaturalAppExample;
+import com.wealth.miniloan.entity.NaturalAppInfo;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.service.LoanNaturalAppServiceI;
 import com.wealth.miniloan.utils.Constant;
@@ -35,9 +38,9 @@ public class LoanNaturalAppServiceImpl implements LoanNaturalAppServiceI {
 	private NaturalAttachDao naturalAttachDao = null;
 	private NaturalCreditDao naturalCreditDao = null;
 	private MortgageInfoDao mortgageInfoDao = null;
-	private final String _ORDER_ATTRS = "appNo";
-	private final String _ORDER_FIELDS = "APP_NO";
-
+	private final String _ORDER_ATTRS = "appNo,name,idType,idNo,idSignDate,idExpireDate,gender,birthday,age,nation,educationLvl,politicsStatus,marriageStatus,mobile,homePhone,email,industryType,company,position,workYears,currJobStDate,compAddr,compPhone,compZip,homeAddr,homeZip,residentStatus,liveStartTime,carBrand,carNo,carStatus,carBuyDate,deposit,stockValue,monthIncome,spouseMonthIncome,homeIncome,liabilities,hasDowryContract,spouseName,spouseIdType,spouseIdNo,spouseIdSignDate,spouseIdExpireDate,spouseIndustryType,spouseCompany,spousePosition,spouseCompAddr,spouseCompZip,spouseMobile,spouseHomePhone,spouseEmail,linkmanName,linkmanIdType,linkmanIdNo,linkmanIdSignDate,linkmanIdExpireDate,linkmanIndustryType,linkmanCompany,linkmanPosition,linkmanCompAddr,linkmanCompZip,linkmanMobile,linkmanHomePhone,linkmanEmail,guarantee,guarBusiLicenseNo,guarLegalPerson,guarCompOpenDate,guarCompAddr,guarPhone,guarCapital,guarCreditRate,hostageType,hostageNo,hostageOwner,depositAccount,loanUse,loanProduct,loanAmount,loanCycle,payMethod,lendAccount,payAccount,operator,opTime,appType,currApproveLvl,enterTime,previousStep,currStep,nextStep,status,handler,finishTime,manualResult,loanLimit,loanRate,reasonCode,reasonDesc,currUser,operTime";
+	private final String _ORDER_FIELDS = "APP_NO,NAME,ID_TYPE,ID_NO,ID_SIGN_DATE,ID_EXPIRE_DATE,GENDER,BIRTHDAY,AGE,NATION,EDUCATION_LVL,POLITICS_STATUS,MARRIAGE_STATUS,MOBILE,HOME_PHONE,EMAIL,INDUSTRY_TYPE,COMPANY,POSITION,WORK_YEARS,CURR_JOB_ST_DATE,COMP_ADDR,COMP_PHONE,COMP_ZIP,HOME_ADDR,HOME_ZIP,RESIDENT_STATUS,LIVE_START_TIME,CAR_BRAND,CAR_NO,CAR_STATUS,CAR_BUY_DATE,DEPOSIT,STOCK_VALUE,MONTH_INCOME,SPOUSE_MONTH_INCOME,HOME_INCOME,LIABILITIES,HAS_DOWRY_CONTRACT,SPOUSE_NAME,SPOUSE_ID_TYPE,SPOUSE_ID_NO,SPOUSE_ID_SIGN_DATE,SPOUSE_ID_EXPIRE_DATE,SPOUSE_INDUSTRY_TYPE,SPOUSE_COMPANY,SPOUSE_POSITION,SPOUSE_COMP_ADDR,SPOUSE_COMP_ZIP,SPOUSE_MOBILE,SPOUSE_HOME_PHONE,SPOUSE_EMAIL,LINKMAN_NAME,LINKMAN_ID_TYPE,LINKMAN_ID_NO,LINKMAN_ID_SIGN_DATE,LINKMAN_ID_EXPIRE_DATE,LINKMAN_INDUSTRY_TYPE,LINKMAN_COMPANY,LINKMAN_POSITION,LINKMAN_COMP_ADDR,LINKMAN_COMP_ZIP,LINKMAN_MOBILE,LINKMAN_HOME_PHONE,LINKMAN_EMAIL,GUARANTEE,GUAR_BUSI_LICENSE_NO,GUAR_LEGAL_PERSON,GUAR_COMP_OPEN_DATE,GUAR_COMP_ADDR,GUAR_PHONE,GUAR_CAPITAL,GUAR_CREDIT_RATE,HOSTAGE_TYPE,HOSTAGE_NO,HOSTAGE_OWNER,DEPOSIT_ACCOUNT,LOAN_USE,LOAN_PRODUCT,LOAN_AMOUNT,LOAN_CYCLE,PAY_METHOD,LEND_ACCOUNT,PAY_ACCOUNT,OPERATOR,OP_TIME,APP_TYPE,CURR_APPROVE_LVL,ENTER_TIME,PREVIOUS_STEP,CURR_STEP,NEXT_STEP,STATUS,HANDLER,FINISH_TIME,MANUAL_RESULT,LOAN_LIMIT,LOAN_RATE,REASON_CODE,REASON_DESC,CURR_USER,OPER_TIME";
+	
 	@Autowired
 	public void setNaturalAppDao(NaturalAppDao naturalAppDao) {
 		this.naturalAppDao = naturalAppDao;
@@ -69,18 +72,30 @@ public class LoanNaturalAppServiceImpl implements LoanNaturalAppServiceI {
 	}
 	
 	@Override
-	public PageList<AppSummaryExtend> getSummaryPageList(Page paramPage, MlNaturalApp obj) {
-		MlAppSummaryExample asExample = new MlAppSummaryExample();
-		Criteria c = asExample.createCriteria();
-		List<String> endStatusList=new ArrayList<String>();
-		endStatusList.add(Constant.APP_STATUS_REJECT);
-		endStatusList.add(Constant.APP_STATUS_APPROVE);
-		c.andAppTypeEqualTo(Constant.APP_TYPE_NATURAL).andCurrStepEqualTo(Constant.STEP_LOAN_APP).andStatusNotIn(endStatusList);
+	public PageList<NaturalAppInfo> getNatrualAppPageList(Page paramPage,
+			NaturalAppInfo naturalAppInfo) {
+		NaturalAppExample example=new NaturalAppExample();
+		NaturalAppExample.Criteria criteria = example.createCriteria();
+		String idNo = naturalAppInfo.getIdNo();
+		String name = naturalAppInfo.getName();
+		String appNo = naturalAppInfo.getAppNo();
+		if (idNo != null && !"".equals(idNo)) {
+			criteria.andIdNoLike("%" + idNo + "%");
+		}
+		if (name != null && !"".equals(name)) {
+			criteria.andNameLike("%" + name + "%");
+		}
+		if (appNo != null && !"".equals(appNo)) {
+			criteria.andAppNoLike("%" + appNo + "%");
+		}
+		criteria.andCurrStepEqualTo(Constant.STEP_LOAN_APP);
+		criteria.andStatusNotIn(new ArrayList<String>(){{add(Constant.APP_STATUS_REJECT);add(Constant.APP_STATUS_APPROVE);}});
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {
-			asExample.setOrderByClause(order);
+			example.setOrderByClause(order);
 		}
-		return this.appSummaryDao.getPageList(SysUtil.convertPage(paramPage), asExample);
+
+		return this.appSummaryDao.queryNatrualAppPageList(SysUtil.convertPage(paramPage),example);
 	}
 
 	@Override

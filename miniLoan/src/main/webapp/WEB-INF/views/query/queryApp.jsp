@@ -136,11 +136,11 @@
 								frameborder="no" border="0"
 								src="${pageContext.request.contextPath}/corp/attach/viewCorpAttach.do?appNo=${appNo}"></iframe>
 						</div>
-						<div title="交叉检查结果">
+						<%-- <div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0"
 								src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
-						</div>
+						</div> --%>
 						<div title="策略结果">
 							<iframe id="strategyCheckIframe" width="100%" height="100%"
 								frameborder="no" border="0"

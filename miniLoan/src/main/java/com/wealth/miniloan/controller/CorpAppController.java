@@ -10,6 +10,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
-import com.wealth.miniloan.entity.AppSummaryExtend;
+import com.wealth.miniloan.entity.CorpAppInfo;
 import com.wealth.miniloan.entity.DataGrid;
 import com.wealth.miniloan.entity.MlAppCheckResult;
 import com.wealth.miniloan.entity.MlAppSummary;
@@ -36,6 +37,7 @@ import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Controller
+@Transactional(rollbackFor={Exception.class})
 @RequestMapping(value = "/corp/app")
 public class CorpAppController extends BaseController {
 	private LoanCorpAppServiceI corpAppService = null;
@@ -72,10 +74,10 @@ public class CorpAppController extends BaseController {
 
 	@RequestMapping(value = "corpAppList")
 	@ResponseBody
-	public DataGrid getCorpAppList(Page page, MlCorpApp corpApp) {
+	public DataGrid getCorpAppList(Page page, CorpAppInfo corpApp) {
 		DataGrid resut = new DataGrid();
-		PageList<AppSummaryExtend> loanCorpAppList = null;
-		loanCorpAppList = this.corpAppService.getSummaryPageList(page, corpApp);
+		PageList<CorpAppInfo> loanCorpAppList = null;
+		loanCorpAppList = this.corpAppService.getCorpAppPageList(page, corpApp);
 
 		if (loanCorpAppList != null) {
 			resut.setRows(loanCorpAppList);
@@ -129,7 +131,7 @@ public class CorpAppController extends BaseController {
 
 	@RequestMapping(value = "viewCorpApp")
 	@ResponseBody
-	public ModelAndView recheckCorpApp(MlCorpApp corpApp) {
+	public ModelAndView viewCorpApp(MlCorpApp corpApp) {
 		ModelAndView modelAndView = new ModelAndView();
 		corpApp = this.corpAppService.getByPriKey(corpApp);
 		modelAndView.setViewName("corpApp/corpAppDetail");
@@ -172,6 +174,8 @@ public class CorpAppController extends BaseController {
 				as.setCurrStep(currStep);
 				as.setStatus(Constant.APP_STATUS_PROCESS);
 				as.setEnterTime(new Date());
+				as.setHandler(user.getUserId());
+				as.setOperTime(new Date());
 				this.appSummaryService.create(as);
 				
 				//保存check result信息
@@ -183,6 +187,7 @@ public class CorpAppController extends BaseController {
 				appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
 				appCheckResult.setHandler(user.getUserId());
 				appCheckResult.setCheckDesc("申请信息录入");
+				appCheckResult.setOperTime(as.getOperTime());
 				checkResultService.create(appCheckResult);
 
 				result.put("success", true);
@@ -249,18 +254,16 @@ public class CorpAppController extends BaseController {
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "submitApp")
 	@ResponseBody
-	public Map<String, Object> submitApp(String appNo,@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> submitApp(MlAppSummary as,@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String currStep=null;
 		
 		try {
-			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);			
-			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as = this.appSummaryService.getByPriKey(as);
 			
 			MlMortgageInfoExample example = new MlMortgageInfoExample();
 			MlMortgageInfoExample.Criteria c = example.createCriteria();
-			c.andAppNoEqualTo(appNo);
+			c.andAppNoEqualTo(as.getAppNo());
 			List<MlMortgageInfo> nmList = new ArrayList<MlMortgageInfo>();
 			nmList = (List<MlMortgageInfo>) this.mortgageInfoService.getByExample(example);
 			if (nmList != null && nmList.size() > 0) {
@@ -275,19 +278,23 @@ public class CorpAppController extends BaseController {
 				as.setCurrStep(currStep); //进入押品审核步骤
 				as.setStatus(Constant.APP_STATUS_PROCESS);
 			}
+			as.setHandler(user.getUserId());
+			as.setOperTime(new Date());
 			this.appSummaryService.update(as);
 			
 			MlAppCheckResult appCheckResult = new MlAppCheckResult();
-			appCheckResult.setAppNo(appNo);
+			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setFinishTime(new Date());
 			appCheckResult.setStatus(Constant.STEP_STATUS_END);
 			appCheckResult.setCheckDesc("申请录入已提交");
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.updateByLastStatus(appCheckResult);
 			
 			appCheckResult = new MlAppCheckResult();
 			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
-			appCheckResult.setBeginTime(as.getEnterTime());
+			appCheckResult.setBeginTime(new Date());
 			appCheckResult.setCurrStep(as.getCurrStep());
 			appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
 			appCheckResult.setHandler(user.getUserId());
@@ -296,6 +303,8 @@ public class CorpAppController extends BaseController {
 			}else if(Constant.STEP_APP_CHECK.equals(appCheckResult.getCurrStep())){
 				appCheckResult.setCheckDesc("进入申请复核阶段");
 			}
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.create(appCheckResult);
 			
 			result.put("success", true);
@@ -310,37 +319,41 @@ public class CorpAppController extends BaseController {
 
 	@RequestMapping(value = "submitToFinal")
 	@ResponseBody
-	public Map<String, Object> submitToFinal(String appNo,@ModelAttribute("user") MlUser user) {
+	public Map<String, Object> submitToFinal(MlAppSummary as,@ModelAttribute("user") MlUser user) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String currStep=null;
 
 		try {
-			MlAppSummary obj = new MlAppSummary();
-			obj.setAppNo(appNo);
-			MlAppSummary as = this.appSummaryService.getByPriKey(obj);
+			as = this.appSummaryService.getByPriKey(as);
 			currStep=this.appFlowService.getEndStep();
 			as.setPreviousStep(as.getCurrStep());
 			as.setCurrStep(currStep);// 终审
 			as.setStatus(Constant.APP_STATUS_PROCESS);
 			as.setFinishTime(new Date());
+			as.setHandler(user.getUserId());
+			as.setOperTime(new Date());
 			this.appSummaryService.update(as);
 
 			MlAppCheckResult appCheckResult = new MlAppCheckResult();
-			appCheckResult.setAppNo(appNo);
+			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setFinishTime(new Date());
 			appCheckResult.setStatus(Constant.STEP_STATUS_END);
 			appCheckResult.setCheckDesc("申请录入已提交,进入快速审批流程。");
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.updateByLastStatus(appCheckResult);
 			
 			appCheckResult = new MlAppCheckResult();
 			appCheckResult.setAppNo(as.getAppNo());
 			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
-			appCheckResult.setBeginTime(as.getEnterTime());
+			appCheckResult.setBeginTime(new Date());
 			appCheckResult.setPreviousStep(as.getPreviousStep());
 			appCheckResult.setCurrStep(as.getCurrStep());
 			appCheckResult.setStatus(Constant.STEP_STATUS_PROCESS);
 			appCheckResult.setHandler(user.getUserId());
 			appCheckResult.setCheckDesc("进入终审阶段");
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
 			this.checkResultService.create(appCheckResult);
 
 			result.put("success", true);

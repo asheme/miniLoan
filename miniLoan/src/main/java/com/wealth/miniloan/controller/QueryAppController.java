@@ -2,6 +2,7 @@ package com.wealth.miniloan.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.DataGrid;
-import com.wealth.miniloan.entity.MlAppSummary;
+import com.wealth.miniloan.entity.MlCorpApp;
+import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.entity.UnionLoanApp;
 import com.wealth.miniloan.service.AppSummaryServiceI;
+import com.wealth.miniloan.utils.Constant;
 
 @Controller
 @RequestMapping(value = "/query/app")
@@ -40,14 +44,15 @@ public class QueryAppController extends BaseController {
 
 	@RequestMapping(value = "queryAppList")
 	@ResponseBody
-	public DataGrid getAppSummaryList(Page page, MlAppSummary appSummary) {
+	public DataGrid queryLoanAppList(Page page,  UnionLoanApp unionLoanApp) {
 		DataGrid resut = new DataGrid();
-		PageList<AppSummaryExtend> appSummaryList = null;
-		appSummaryList = appSummaryService.getAllPageList(page, appSummary);
+		PageList<UnionLoanApp> loanAppList = null;
+		unionLoanApp.setCurrStep(Constant.STEP_MORT_ESTI);
+		loanAppList = this.appSummaryService.queryLoanAppPageList(page, unionLoanApp);
 
-		if (appSummaryList != null) {
-			resut.setRows(appSummaryList);
-			resut.setTotal(Long.valueOf(appSummaryList.getPaginator().getTotalCount()));
+		if (loanAppList != null) {
+			resut.setRows(loanAppList);
+			resut.setTotal(Long.valueOf(loanAppList.getPaginator().getTotalCount()));
 		}
 
 		return resut;
@@ -58,7 +63,7 @@ public class QueryAppController extends BaseController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("appNo", appNo);
 		modelAndView.addObject("appType", appType);
-		modelAndView.setViewName("query/queryApp");
+		modelAndView.setViewName("query/viewLoanApp");
 		return modelAndView;
 	}
 }

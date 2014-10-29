@@ -78,6 +78,18 @@ $(function() {
 						value="${name.name}"
 						data-options="required:false,validType:'length[0,30]'"
 						style="width: 250px;" id="name" /></td>
+					<th align="center" width="25%">手机号</th>
+					<td width="25%"><input class="easyui-validatebox" name="phoneNumber"
+						value="${name.phoneNumber}"
+						data-options="required:false,validType:'length[0,30]'"
+						style="width: 250px;" id="phoneNumber" /></td>
+				</tr>
+				<tr>
+					<th align="center" width="25%">邮箱</th>
+					<td width="25%"><input class="easyui-validatebox" name="email"
+						value="${name.email}"
+						data-options="required:false,validType:'length[0,30]'"
+						style="width: 250px;" id="email" /></td>
 					<th align="center" width="25%"></th>
 					<td width="25%"></td>
 				</tr>

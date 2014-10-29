@@ -13,6 +13,7 @@
 
 	$(function() {
 		$("#buyDate").datebox();
+		initComboboxContent("mortgagorIdType", "ID_TYPE");
 		$("input[dateFormat='date']").each(function(){				
 			var time=dateToStr($(this).val());
 			$(this).datebox('setValue',time);

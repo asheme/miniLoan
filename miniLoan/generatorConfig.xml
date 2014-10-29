@@ -28,13 +28,17 @@
 			tableName="ML_ORG"/> <table tableName="ML_DICT"/> <table tableName="ML_DICT_ITEM"/> 
 			<table tableName="ML_NATURAL_APP"/> <table tableName="ML_CORP_APP"/> <table 
 			tableName="ML_APPROVE_RESULT"/> <table tableName="ML_APPROVE_DEAL_INFO"/> 
-			<table tableName="ML_APPROVE_TASK_CFG"/> 
-			<table tableName="ML_SYS_AUTHORITY"/>
-			<table tableName="ML_SYS_RESC"/>
-			<table tableName="ML_ROLE"/>			
-			<table tableName="ML_APPROVE_TASK_CFG" />			
-			<table tableName="ML_APP_SUMMARY" />
-			<table tableName="ML_MORTGAGE_INFO" />-->	
-			<table tableName="ML_APP_CHECK_RESULT" />
+			<table tableName="ML_APPROVE_TASK_CFG"/> <table tableName="ML_SYS_AUTHORITY"/> 
+			<table tableName="ML_SYS_RESC"/> <table tableName="ML_ROLE"/> <table tableName="ML_APPROVE_TASK_CFG" 
+			/> <table tableName="ML_APP_SUMMARY" /> <table tableName="ML_MORTGAGE_INFO" 
+			/> <table tableName="ML_FRAUD_CHECK_RESULT" /> <table tableName="ML_SYS_DECISION_EXCLUDE" 
+			/> <table tableName="ML_APP_STRATEGY_RESULT" /> <table tableName="ML_ROLE"/> 
+			<table tableName="ML_APP_SUMMARY" /> 
+			<table domainObjectName="MlNaturalCredit" tableName="ML_NATURAL_CREDIT_INFO" /> -->
+			<table tableName="ML_CORP_CUST_INFO" /> 
+			<table tableName="ML_NATURAL_CUST_INFO" /> 
+			<table tableName="ML_LOAN_INFO" /> 
+			<table tableName="ML_LOAN_RECEIPT" /> 
+			<table tableName="ML_PAY_RECORD" /> 
 	</context>
 </generatorConfiguration>

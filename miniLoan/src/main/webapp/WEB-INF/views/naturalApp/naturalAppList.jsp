@@ -28,73 +28,40 @@
 			rownumbers : true,
 			nowrap : false,
 			columns : [ [ {
-				field : 'id',
-				checkbox : true
-			}, {
 				field : 'appNo',
-				title : '申请编号',
-				width : 20,
-				sortable : true
+				checkbox : true
 			}, {
 				field : 'name',
 				title : '姓名',
 				width : 15,
-				formatter:function(value,rec){
-					return rec.naturalApp.name;
-					}
-			}, {
-				field : 'idType',
-				title : '证件类型',
-				width : 15,
-				formatter:function(value,rec){
-					return getDictItem("ID_TYPE", rec.naturalApp.idType);
-					}
+				sortable : true
 			}, {
 				field : 'idNo',
 				title : '证件号码',
-				sortable : true,
-				width : 20,
-				formatter:function(value,rec){
-					return rec.naturalApp.idNo;
-					}
+				width : 15,
+				sortable : true
 			}, {
-				field : 'mobile',
-				title : '手机',
-				sortable : true,
-				width : 20,
-				formatter:function(value,rec){
-					return rec.naturalApp.mobile;
-					}
+				field : 'loanAmount',
+				title : '贷款金额',
+				width : 10
 			}, {
-				field : 'educationLvl',
-				title : '学历',
-				sortable : true,
-				width : 20,
-				formatter:function(value,rec){
-					return rec.naturalApp.educationLvl;
-					}
-			}, {
-				field : 'company',
-				title : '所在公司',
-				width : 20,
-				sortable : true,
-				formatter:function(value,rec){
-					return rec.naturalApp.company;
-					}
-			}, {
-				field : 'position',
-				title : '职务',
-				width : 20,
-				formatter:function(value,rec){
-					return rec.naturalApp.position;
-					}
+				field : 'loanCycle',
+				title : '贷款周期',
+				width : 10,
+				sortable : true
 			}, {
 				field:'status',
 				title:'当前状态',
-				width:20,
+				width:10,
+				sortable : true,
 				formatter:function(value){
 					return getDictItem("APP_STATUS", value);
-					}
+				}
+			}, {
+				field : 'opTime',
+				title : '进件时间',
+				width : 15,
+				sortable : true
 			}] ],
 			toolbar : '#toolbar'
 		});
@@ -238,9 +205,9 @@
 			<form id="searchForm">
 				<table class="querytable" width="100%">
 					<tr>
-						<th width="20%">姓名</th>
-						<td width="30%"><input name="name" style="width: 280px;" /></td>
 						<th width="20%">证件号码</th>
+						<td width="30%"><input name="idNo" style="width: 280px;" /></td>
+						<th width="20%">姓名</th>
 						<td width="30%"><input name="name" style="width: 280px;" /></td>
 					</tr>
 					<tr>

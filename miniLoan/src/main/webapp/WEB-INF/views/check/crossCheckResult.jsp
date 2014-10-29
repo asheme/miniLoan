@@ -7,29 +7,46 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>natural application check</title>
+<title>cross check</title>
 <script type="text/javascript">
+	
 </script>
 </head>
 <body>
-	<div class="easyui-layout" data-options="fit : true,border : false">
-		<div data-options="region:'north',border : false,collapsible:false"
-			style="overflow: hidden; padding: 1px; height: 100%;">
-			<div class="easyui-panel" data-options="border:false,fit:true"
-				title="交叉检测结果"
-				style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
-				<table class="modifytable" width="100%" height="100%">
-					<tr>
-						<th align="center" width="10%">1</th>
-						<td width="90%">身份证出生日期与申请信息填写生日不符！</td>
-					</tr>
-					<tr>
-						<th align="center" width="10%">2</th>
-						<td width="90%">身份证性别与申请信息填写性别不符！</td>
-					</tr>
-				</table>
-			</div>
-		</div>
+	<div class="easyui-panel" data-options="border:false,fit:true"
+		title="交叉检测结果"
+		style="padding-left: 2px; padding-right: 2px; padding-bottom: 1px; padding-top: 2px;">
+		<table class="modifytable" width="100%" height="100%">
+			<tr>
+				<th align="center" width="10%">检查项编码</th>
+				<th align="center" width="10%">检查项类型</th>
+				<th align="center" width="50%">检查项描述</th>
+				<th align="center" width="10%">是否触发</th>
+				<th align="center" width="20%">检查时间</th>
+			</tr>
+			<c:forEach var="result" items="${checkResult}">
+				<c:choose>
+					<c:when test="${result.checkResult=='是'}">
+						<tr style="color: red">
+							<td width="10%">${result.itemCode}</td>
+							<td width="10%">${result.itemType}</td>
+							<td width="50%">${result.itemDesc}</td>
+							<td width="10%">${result.checkResult}</td>
+							<td width="20%">${result.opTime}</td>
+						</tr>
+					</c:when>
+					<c:otherwise>
+						<tr>
+							<td width="10%">${result.itemCode}</td>
+							<td width="10%">${result.itemType}</td>
+							<td width="50%">${result.itemDesc}</td>
+							<td width="10%">${result.checkResult}</td>
+							<td width="20%">${result.opTime}</td>
+						</tr>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</table>
 	</div>
 </body>
 </html>

@@ -6,7 +6,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
 tr {
@@ -55,22 +55,28 @@ tr {
 					<td width="25%">${naturalApp.educationLvl}</td>
 				</tr>
 				<tr>
+					<th align="center" width="25%">婚姻状态</th>
+					<td width="25%">${naturalApp.marriageStatus}</td>
 					<th align="center" width="25%">政治面貌</th>
 					<td width="25%">${naturalApp.politicsStatus}</td>
+				</tr>
+				<tr>
 					<th align="center" width="25%">手机号码</th>
 					<td width="25%">${naturalApp.mobile}</td>
-				</tr>
-				<tr>
 					<th align="center" width="25%">固定电话</th>
 					<td width="25%">${naturalApp.homePhone}</td>
-					<th align="center" width="25%">电子邮箱</th>
-					<td width="25%">${naturalApp.email}</td>
 				</tr>
 				<tr>
+					<th align="center" width="25%">电子邮箱</th>
+					<td width="25%">${naturalApp.email}</td>
 					<th align="center" width="25%">所属行业类型</th>
 					<td width="25%">${naturalApp.industryType}</td>
+				</tr>
+				<tr>
 					<th align="center" width="25%">单位名称</th>
 					<td width="25%">${naturalApp.company}</td>
+					<th align="center" width="25%">单位电话</th>
+					<td width="25%">${naturalApp.compPhone}</td>
 				</tr>
 				<tr>
 					<th align="center" width="25%">职务</th>

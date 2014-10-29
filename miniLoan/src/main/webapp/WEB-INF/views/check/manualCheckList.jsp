@@ -28,13 +28,8 @@
 			rownumbers : true,
 			nowrap : false,
 			columns : [ [ {
-				field : 'id',
-				checkbox : true
-			}, {
 				field : 'appNo',
-				title : '申请编号',
-				width : 20,
-				sortable : true
+				checkbox : true
 			},{
 				field : 'appType',
 				title : '申请类型',
@@ -44,33 +39,19 @@
 					return getDictItem("APP_TYPE", value);
 				}
 			}, {
-				field : 'idNo',
-				title : '证件号',
-				width : 20,
-				sortable : true,
-				formatter:function(value,rec){
-					if(rec.naturalApp == null){
-				       return rec.corpApp.lpIdNo;
-				      } else{
-				    	  return rec.naturalApp.idNo;
-				      }
-					}
-			}, {
 				field : 'name',
 				title : '借款人(公司名)',
 				width : 20,
-				sortable : true,
-				formatter:function(value,rec){
-					if(rec.naturalApp == null){
-					       return rec.corpApp.compName;
-					      } else{
-					    	  return rec.naturalApp.name;
-					      }
-						}
+				sortable : true
+			}, {
+				field : 'addr',
+				title : '申请人（公司）地址',
+				width : 30,
+				sortable : true
 			}, {
 				field : 'enterTime',
 				title : '进件时间',
-				width : 20,
+				width : 10,
 				sortable : true
 			}, {
 				field : 'status',
@@ -79,15 +60,11 @@
 				width : 10,
 				formatter:function(value){
 					return getDictItem("APP_STATUS", value);
-					}
-				/* ,
-				formatter : function(value, row, index) {
-					return getDictItem("PROCESS_STEP", value);
-				} */
+				}
 			}] ],
 			toolbar : '#toolbar'
 		});
-		
+		initComboboxContent("appType", "APP_TYPE");
 	});
 	 
 	function checkAppDetail() {
@@ -121,15 +98,21 @@
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
 		<div data-options="region:'north',title:'查询条件',border:false"
-			style="height: 103px; overflow: hidden; padding-left: 1px; padding-right: 1px; padding-bottom: 1px; padding-top: 1px;"
+			style="height: 133px; overflow: hidden; padding-left: 1px; padding-right: 1px; padding-bottom: 1px; padding-top: 1px;"
 			align="center">
 			<form id="searchForm">
 				<table class="querytable" width="100%">
 					<tr>
+						<th width="20%">申请类型</th>
+						<td width="30%"><input name="appType" id="appType" style="width: 280px;" /></td>
 						<th width="20%">申请编号</th>
+						<td width="30%"><input name="appNo" style="width: 280px;" /></td>
+					</tr>
+					<tr>
+						<th width="20%">借款人(公司名)</th>
 						<td width="30%"><input name="name" style="width: 280px;" /></td>
-						<th width="20%">证件号码</th>
-						<td width="30%"><input name="name" style="width: 280px;" /></td>
+						<th width="20%">地址</th>
+						<td width="30%"><input name="addr" style="width: 280px;" /></td>
 					</tr>
 					<tr>
 						<td colspan="4" align="center"><input type="button"

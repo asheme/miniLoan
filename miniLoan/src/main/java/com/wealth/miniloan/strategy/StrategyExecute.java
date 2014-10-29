@@ -1,5 +1,9 @@
 package com.wealth.miniloan.strategy;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
@@ -68,6 +72,9 @@ public class StrategyExecute {
 		try {
 			loadStrategy();
 
+			System.out.println("==============>>>>>>>>>>"+inputMap);
+			System.out.println("==============>>>>>>>>>>"+decisionResult);
+			System.out.println("==============>>>>>>>>>>"+access);
 			access.execute(inputMap, decisionResult);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,6 +93,7 @@ public class StrategyExecute {
 
 		try {
 			script = getStrategyScript();
+//			script = this.testStrategyStr();
 			System.out.println("the Execute Body is:");
 			System.out.println(script);
 			ClassPool pool = ClassPool.getDefault();
@@ -125,6 +133,29 @@ public class StrategyExecute {
 		}
 	}
 
+	private String testStrategyStr(){
+		String scripts="";
+		
+		try {
+			FileReader fr=new FileReader("F:\\source\\test\\compile.java");
+			BufferedReader br=new BufferedReader(fr);
+			
+			String line = null;
+			while((line = br.readLine())!=null){
+			    	scripts+=line+"\r";
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return scripts;
+	}
+	
 	public void reloadStrategy() {
 		try {
 			byte[] bytes = createExecuteClass();

@@ -40,6 +40,10 @@
 				title : '角色描述',
 				width : 160
 			}, {
+				field : 'approveLvl',
+				title : '审批级别',
+				width : 60
+			}, {
 				field : 'limitMin',
 				title : '审批额度下限',
 				width : 60

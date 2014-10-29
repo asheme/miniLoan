@@ -37,6 +37,7 @@ table.querytable th {
 	border-color: #a9c6c9;
 	border-style: solid;
 	background-color: #E0ECFF;
+	height: 32px;	
 }
 
 table.querytable td {
@@ -45,6 +46,7 @@ table.querytable td {
 	border-color: #a9c6c9;
 	border-style: solid;
 	background-color: #ffffff;
+	height: 32px;	
 }
 
 table.modifytable {
@@ -72,6 +74,7 @@ table.modifytable td {
 	background-color: #ffffff;
 	height: 32px;
 }
+
 table.detailTable td{
 	text-align:right;
 }

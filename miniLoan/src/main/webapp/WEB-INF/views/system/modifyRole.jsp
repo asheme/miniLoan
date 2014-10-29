@@ -58,6 +58,12 @@ function saveObj(){
 						style="width: 400px" /></td>
 				</tr>
 				<tr>
+					<th align="center" width="35%">审批级别</th>
+					<td><input class="easyui-validatebox" name="approveLvl"
+						value="${role.approveLvl}" validType="length[0, 1]" invalidMessage="审批级别为1位的整数"
+						style="width: 400px" /></td>
+				</tr>
+				<tr>
 					<th align="center" width="35%">审批额度下限</th>
 					<td><input type="text" class="easyui-numberbox" name="limitMin"
 						value="${role.limitMin}" data-options="precision:2"

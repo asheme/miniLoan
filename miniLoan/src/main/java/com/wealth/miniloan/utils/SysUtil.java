@@ -41,7 +41,9 @@ public class SysUtil {
 		}
 		for (int i = 0; i < attrs.length; i++) {
 			if (sortAttr.equals(attrs[i])) {
+				if(!"".equals(fields[i].trim())){
 				orderByStr = fields[i] + " " + order;
+				}
 			}
 		}
 

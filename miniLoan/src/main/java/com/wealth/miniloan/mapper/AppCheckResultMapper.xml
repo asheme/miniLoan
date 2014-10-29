@@ -8,15 +8,38 @@
       This element was generated on Sat Oct 18 21:18:51 GMT+08:00 2014.
     -->
     update ml_app_check_result
-    set APP_NO = #{appNo,jdbcType=VARCHAR},
-      PREVIOUS_STEP = #{previousStep,jdbcType=VARCHAR},
-      CURR_STEP = #{currStep,jdbcType=VARCHAR},
-      NEXT_STEP = #{nextStep,jdbcType=VARCHAR},
-      BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
-      FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
-      STATUS = #{status,jdbcType=CHAR},
-      HANDLER = #{handler,jdbcType=BIGINT},
-      CHECK_DESC = #{checkDesc,jdbcType=VARCHAR}
+    <set >
+      <if test="checkId != null" >
+        CHECK_ID = #{checkId,jdbcType=BIGINT},
+      </if>
+      <if test="appNo != null" >
+        APP_NO = #{appNo,jdbcType=VARCHAR},
+      </if>
+      <if test="previousStep != null" >
+        PREVIOUS_STEP = #{previousStep,jdbcType=VARCHAR},
+      </if>
+      <if test="currStep != null" >
+        CURR_STEP = #{currStep,jdbcType=VARCHAR},
+      </if>
+      <if test="nextStep != null" >
+        NEXT_STEP = #{nextStep,jdbcType=VARCHAR},
+      </if>
+      <if test="beginTime != null" >
+        BEGIN_TIME = #{beginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="finishTime != null" >
+        FINISH_TIME = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="handler != null" >
+        HANDLER = #{handler,jdbcType=BIGINT},
+      </if>
+      <if test="checkDesc != null" >
+        CHECK_DESC = #{checkDesc,jdbcType=VARCHAR},
+      </if>
+    </set>
     where CHECK_ID = (select a.CHECK_ID FROM (select MAX(CHECK_ID) CHECK_ID from ml_app_check_result where APP_NO = #{appNo,jdbcType=VARCHAR}) a)
   </update>
 </mapper>

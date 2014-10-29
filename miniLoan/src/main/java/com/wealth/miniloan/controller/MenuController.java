@@ -132,4 +132,9 @@ public class MenuController {
 	public String queryAppList() {
 		return "query/queryAppList";
 	}
+	
+	@RequestMapping(value = "inteCheckCfgList")
+	public String inteCheckCfgList() {
+		return "config/inteCheckCfgList";
+	}
 }

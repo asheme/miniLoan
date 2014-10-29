@@ -73,6 +73,10 @@
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0" src="${pageContext.request.contextPath}/natural/attach/viewNaturalAttach.do?appNo=${appNo}"></iframe>
 						</div>
+						<div title="完整性检查信息">
+							<iframe id="integrityCheckIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/integrity/viewIntegrityCheck.do?appNo=${appNo}&appType=${appType}"></iframe>
+						</div>
 						<div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0" src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
@@ -103,10 +107,14 @@
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0" src="${pageContext.request.contextPath}/corp/attach/viewCorpAttach.do?appNo=${appNo}"></iframe>
 						</div>
-						<div title="交叉检查结果">
+						<div title="完整性检查信息">
+							<iframe id="integrityCheckIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/integrity/viewIntegrityCheck.do?appNo=${appNo}&appType=${appType}"></iframe>
+						</div>
+						<%-- <div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0" src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
-						</div>
+						</div> --%>
 						<div title="审核记录">
 							<iframe id="checkResultIframe" width="100%" height="100%"
 								frameborder="no" border="0" src="${pageContext.request.contextPath}/app/checkresult/viewCheckResultList.do?appNo=${appNo}"></iframe>

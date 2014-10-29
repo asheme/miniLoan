@@ -11,7 +11,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>strategy check page</title>
 <script type="text/javascript">
 <!--
@@ -63,13 +63,54 @@
 							}
 						});
 	}
+	
+	function submitToHighLevel() {
+		$.messager
+				.confirm(
+						"信息提示",
+						"您确定要提交吗?",
+						function(data) {
+							if (data) {
+								$('#submitForm')
+										.form(
+												'submit',
+												{
+													url : '${pageContext.request.contextPath}/strategycheck/app/submitToHighLevel.do',
+													success : function(result) {
+														try {
+															var r = $
+																	.parseJSON(result);
+															if (r.success) {
+																$.messager
+																		.alert(
+																				'信息提示',
+																				r.msg,
+																				"info",
+																				backList);
+															} else {
+																$.messager
+																		.alert(
+																				'信息提示',
+																				r.msg,
+																				"info");
+															}
+														} catch (e) {
+															$.messager.alert(
+																	'信息提示',
+																	result);
+														}
+													}
+												});
+							}
+						});
+	}
 //-->
 </script>
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
 		<div data-options="region:'center',border : false"
-			style="overflow: hidden; padding: 1px; height: 700px;">
+			style="overflow: hidden; padding: 1px;">
 			<div id="tabs" class="easyui-tabs"
 				data-options="fit:true,border:false">
 				<c:choose>
@@ -94,6 +135,10 @@
 								frameborder="no" border="0"
 								src="${pageContext.request.contextPath}/natural/attach/viewNaturalAttach.do?appNo=${appNo}"></iframe>
 						</div>
+						<div title="完整性检查信息">
+							<iframe id="integrityCheckIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/integrity/viewIntegrityCheck.do?appNo=${appNo}&appType=${appType}"></iframe>
+						</div>
 						<div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0"
@@ -102,7 +147,7 @@
 						<div title="策略结果">
 							<iframe id="strategyCheckIframe" width="100%" height="100%"
 								frameborder="no" border="0"
-								src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
+								src="${pageContext.request.contextPath}/strategy/viewSysDecisionResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="审核记录">
 							<iframe id="checkResultIframe" width="100%" height="100%"
@@ -136,15 +181,19 @@
 								frameborder="no" border="0"
 								src="${pageContext.request.contextPath}/corp/attach/viewCorpAttach.do?appNo=${appNo}"></iframe>
 						</div>
-						<div title="交叉检查结果">
+						<div title="完整性检查信息">
+							<iframe id="integrityCheckIframe" width="100%" height="100%"
+								frameborder="no" border="0" src="${pageContext.request.contextPath}/integrity/viewIntegrityCheck.do?appNo=${appNo}&appType=${appType}"></iframe>
+						</div>
+						<%-- <div title="交叉检查结果">
 							<iframe id="attachIframe" width="100%" height="100%"
 								frameborder="no" border="0"
 								src="${pageContext.request.contextPath}/manualcheck/app/toCrossCheckResult.do?appNo=${appNo}"></iframe>
-						</div>
+						</div> --%>
 						<div title="策略结果">
 							<iframe id="strategyCheckIframe" width="100%" height="100%"
 								frameborder="no" border="0"
-								src="${pageContext.request.contextPath}/strategycheck/app/toStrategyCheckResult.do?appNo=${appNo}"></iframe>
+								src="${pageContext.request.contextPath}/strategy/viewSysDecisionResult.do?appNo=${appNo}"></iframe>
 						</div>
 						<div title="审核记录">
 							<iframe id="checkResultIframe" width="100%" height="100%"
@@ -163,30 +212,30 @@
 				<form id="submitForm" method="post">
 					<table class="modifytable" width="100%">
 						<tr>
-							<th align="center" width="30%">核查结果</th>
-							<td width="25%"><input class="easyui-validatebox"
+							<th align="center" width="15%">核查结果</th>
+							<td width="15%"><input class="easyui-validatebox"
 								name="status" value="${checkResult.status}"
 								data-options="required:false,validType:'length[0,30]'"
-								style="width: 250px;" id="status" /></td>
-							<th align="center" width="25%">审批额度</th>
-							<td width="25%"><input class="easyui-validatebox"
-								name="lastYearPayTax" value=""
+								style="width: 150px;" id="status" /></td>
+							<th align="center" width="15%">审批额度</th>
+							<td width="15%"><input class="easyui-validatebox"
+								name="loanLimit" value=""
 								data-options="required:false,validType:'length[0,30]'"
-								style="width: 250px;" id="lastYearPayTax" /></td>
-						</tr>
-
-						<tr>
-							<th align="center" width="25%">审批产品</th>
-							<td width="25%"><input class="easyui-validatebox"
-								name="lastYearProfit" value=""
+								style="width: 150px;" id="loanLimit" /></td>
+							<th align="center" width="15%">贷款利率</th>
+							<td width="15%"><input class="easyui-validatebox"
+								name="loanRate" value=""
 								data-options="required:false,validType:'length[0,30]'"
-								style="width: 250px;" id="lastYearProfit" /></td>
-							<th align="center" width="25%">审批建议</th>
-							<td><textarea rows="3" cols="60" name="checkDesc"></textarea></td>
+								style="width: 150px;" id="lastYearProfit" /></td>
 						</tr>
 						<tr>
-							<td colspan="4" align="center"><input type="button"
-								value="提交" class="btn" onclick="appApprove();" /> <input
+							<th align="center" width="15%">审批建议</th>
+							<td colspan="5"><textarea rows="2" cols="100" name="checkDesc"></textarea></td>
+						</tr>
+						<tr>
+							<td colspan="6" align="center"><input type="button"
+								value="提交" class="btn" onclick="appApprove();" /> <input type="button"
+								value="提交上级审批" class="btn" onclick="submitToHighLevel();" /> <input
 								type="button" value="返回列表" class="btn" onclick="backList();" />
 								<input type="hidden" name="appNo" value="${appNo}" /> <input
 								type="hidden" name="appType" value="${appType}" /> <input
