@@ -1,0 +1,5 @@
+package com.wealth.miniloan.entity;
+
+public class UnionLoanInfo {
+
+}
