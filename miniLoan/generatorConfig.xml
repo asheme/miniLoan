@@ -40,5 +40,6 @@
 			<table tableName="ML_LOAN_INFO" /> 
 			<table tableName="ML_LOAN_RECEIPT" /> 
 			<table tableName="ML_PAY_RECORD" /> 
+			<table tableName="ML_NATURAL_APP" /> 
 	</context>
 </generatorConfiguration>

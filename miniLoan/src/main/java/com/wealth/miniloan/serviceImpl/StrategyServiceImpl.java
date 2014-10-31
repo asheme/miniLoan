@@ -234,7 +234,7 @@ public class StrategyServiceImpl implements StrategyServiceI {
 				.parseFloat(param.getParamVal())));
 
 		// 是否有征信信息，需调整数据库字段
-		if ("Y".equals(naturalCredit.getHasCreditInfo())) {
+		if (naturalCredit!=null && "Y".equals(naturalCredit.getHasCreditInfo())) {
 			inputMap.put("hasCreditInfo", "Y");
 			strategyResult.setHasCreditInfo("Y");
 			inputMap.put("pastDueTimes", naturalCredit.getPastDueTimes()==null?0:naturalCredit.getPastDueTimes());

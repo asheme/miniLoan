@@ -9,21 +9,21 @@ import org.springframework.stereotype.Service;
 public class CommonService extends BaseService<Object> {
 	public static final String flag = "1";
 
-	public String getAppNo(String date) {
-		String sql = "SELECT APP_NO FROM ML_APP_NO WHERE APP_NO LIKE '" + date + "%'";
+	public String getKey(String date,String subject) {
+		String sql = "SELECT KEY_NO FROM ML_MAIN_KEY WHERE KEY_NO LIKE '" + date + "%' and KEY_TYPE='"+subject+"'";
 		List<Map<String, Object>> list = super.queryForList(sql);
-		String prefix = "0000001";
-		String appNo = "";
+		String suffix = "0000001";
+		String key = "";
 		if (list != null && list.size() > 0) {
-			Long l0 = Long.valueOf(list.get(0).get("APP_NO").toString());
-			appNo = String.valueOf(l0 + 1);
+			Long l0 = Long.valueOf(list.get(0).get("KEY_NO").toString());
+			key = String.valueOf(l0 + 1);
 		} else {
-			appNo = date + prefix;
+			key = date + suffix;
 		}
 
-		String updateSql = "UPDATE ML_APP_NO SET APP_NO = '" + appNo + "'";
+		String updateSql = "UPDATE ML_MAIN_KEY SET KEY_NO = '" + key + "' where KEY_TYPE='"+subject+"'";
 		super.update(updateSql);
 
-		return appNo;
+		return key;
 	}
 }

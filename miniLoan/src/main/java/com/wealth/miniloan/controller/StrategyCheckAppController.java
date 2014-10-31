@@ -28,6 +28,7 @@ import com.wealth.miniloan.entity.UnionLoanApp;
 import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.AppSummaryServiceI;
 import com.wealth.miniloan.service.CheckResultServiceI;
+import com.wealth.miniloan.service.LoanServiceI;
 import com.wealth.miniloan.utils.Constant;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
@@ -38,6 +39,7 @@ import com.wealth.miniloan.utils.key.KeyGenerator;
 public class StrategyCheckAppController extends BaseController {
 	private AppSummaryServiceI appSummaryService = null;
 	private CheckResultServiceI checkResultService = null;
+	private LoanServiceI loanService=null;
 
 	@Autowired
 	public void setCheckResultService(CheckResultServiceI checkResultService) {
@@ -47,6 +49,11 @@ public class StrategyCheckAppController extends BaseController {
 	@Autowired
 	public void setAppSummaryService(AppSummaryServiceI appSummaryService) {
 		this.appSummaryService = appSummaryService;
+	}
+
+	@Autowired
+	public void setLoanService(LoanServiceI loanService) {
+		this.loanService = loanService;
 	}
 
 	/*
@@ -114,7 +121,7 @@ public class StrategyCheckAppController extends BaseController {
 				as.setLoanRate(BigDecimal.valueOf(loanRate));
 				as.setReasonDesc(checkResult.getCheckDesc());
 				as.setStatus(Constant.APP_STATUS_APPROVE);
-				as.setFinishTime(new Date());
+				as.setFinishTime(new Date());				
 			}  else if(Constant.APP_STATUS_REJECT.equals(checkResult.getStatus())) {
 				as.setManualResult(Constant.APP_STATUS_REJECT);
 				as.setStatus(Constant.APP_STATUS_REJECT);
@@ -179,6 +186,11 @@ public class StrategyCheckAppController extends BaseController {
 				this.checkResultService.create(appCheckResult);
 			}
 			
+			//审批通过，将贷款信息保存到客户、贷款信息表中
+			if(Constant.APP_STATUS_APPROVE.equals(checkResult.getStatus()) && hasApprovalAuthority){
+				this.loanService.saveLoanInfo(appNo, as.getAppType(),user);
+			}
+			
 			result.put("success", true);
 			result.put("msg", "审核信息提交成功！");
 		} catch (Exception e) {
@@ -206,6 +218,28 @@ public class StrategyCheckAppController extends BaseController {
 			as.setHandler(user.getUserId());
 			as.setOperTime(new Date());
 			this.appSummaryService.update(as);
+			
+			MlAppCheckResult appCheckResult = new MlAppCheckResult();
+			appCheckResult.setAppNo(appNo);
+			appCheckResult.setFinishTime(as.getOperTime());
+			String checkDesc="审批人确定审批额度："+loanLimit+"，批准利率："+loanRate+"，审批情况说明："+checkResult.getCheckDesc();
+			appCheckResult.setStatus(Constant.STEP_STATUS_END);
+			appCheckResult.setCheckDesc(checkDesc);
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setOperTime(as.getOperTime());
+			this.checkResultService.updateByLastStatus(appCheckResult);
+			
+			appCheckResult = new MlAppCheckResult();
+			appCheckResult.setAppNo(as.getAppNo());
+			appCheckResult.setCheckId(KeyGenerator.getNextKey("ML_APP_CHECK_RESULT", "CHECK_ID"));
+			appCheckResult.setBeginTime(as.getOperTime());
+			appCheckResult.setPreviousStep(as.getPreviousStep());
+			appCheckResult.setCurrStep(as.getCurrStep());
+			appCheckResult.setStatus(Constant.STEP_APP_APPR);
+			appCheckResult.setHandler(user.getUserId());
+			appCheckResult.setCheckDesc("因审批权限不足提交");
+			appCheckResult.setOperTime(as.getOperTime());
+			this.checkResultService.create(appCheckResult);
 			
 			result.put("success", true);
 			result.put("msg", "信息提交成功！");

@@ -373,9 +373,9 @@
 	    <result column="BIRTHDAY" jdbcType="DATE" property="birthday" />
 	    <result column="AGE" jdbcType="INTEGER" property="age" />
 	    <result column="NATION" jdbcType="CHAR" property="nation" />
-	    <result column="EDUCATION_LVL" jdbcType="VARCHAR" property="educationLvl" />
-	    <result column="POLITICS_STATUS" jdbcType="VARCHAR" property="politicsStatus" />
-	    <result column="MARRIAGE_STATUS" jdbcType="VARCHAR" property="marriageStatus" />
+	    <result column="EDUCATION_LVL" jdbcType="CHAR" property="educationLvl" />
+	    <result column="POLITICS_STATUS" jdbcType="CHAR" property="politicsStatus" />
+	    <result column="MARRIAGE_STATUS" jdbcType="CHAR" property="marriageStatus" />
 	    <result column="MOBILE" jdbcType="VARCHAR" property="mobile" />
 	    <result column="HOME_PHONE" jdbcType="VARCHAR" property="homePhone" />
 	    <result column="EMAIL" jdbcType="VARCHAR" property="email" />

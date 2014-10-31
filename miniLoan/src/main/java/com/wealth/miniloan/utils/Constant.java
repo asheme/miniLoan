@@ -73,5 +73,26 @@ public class Constant {
 	public static final int APPRAOVAL_LEVEL_1 = 1; //一级
 	public static final int APPRAOVAL_LEVEL_2 = 2; //二级
 	public static final int APPRAOVAL_LEVEL_3 = 3; //三级
-
+	
+	//字符串主键类别
+	public static final String KEY_TYPE_APP_NO="APP_NO"; //申请编号
+	public static final String KEY_TYPE_CUST_NO="CUST_NO"; //客户编号
+	
+	//客户状态
+	public static final String CUST_STATUS_NORMAL="N"; //正常
+	public static final String CUST_STATUS_DELINQ="M"; //已签合同，未放款
+	public static final String CUST_STATUS_END="E"; //正常结束
+	public static final String CUST_STATUS_CHARGEOFF="C"; //核销
+	public static final String CUST_STATUS_OTHER="O"; //注销
+	
+	//逾期状态
+	public static final String DELI_STATUS_N="N"; //不逾期
+	public static final String DELI_STATUS_Y="Y"; //逾期
+	
+	//贷款状态
+	public static final String LOAN_STATUS_START="S"; //待签合同
+	public static final String LOAN_STATUS_CONTRACT="C"; //已签合同，未放款
+	public static final String LOAN_STATUS_OFFER="O"; //已放款
+	public static final String LOAN_STATUS_PROCESS="P"; //贷款进行中
+	public static final String LOAN_STATUS_END="E"; //贷款进行中
 }

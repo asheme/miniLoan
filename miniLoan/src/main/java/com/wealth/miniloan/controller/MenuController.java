@@ -137,4 +137,9 @@ public class MenuController {
 	public String inteCheckCfgList() {
 		return "config/inteCheckCfgList";
 	}
+	
+	@RequestMapping(value = "loanList")
+	public String loanList() {
+		return "loan/loanList";
+	}
 }
