@@ -17,6 +17,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -25,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping(value = "/role")
 @SessionAttributes("user")
+@Transactional(rollbackFor = Exception.class)
 public class RoleController {
 	private RoleServiceI roleService = null;
 	private UserServiceI userService = null;
@@ -242,5 +245,20 @@ public class RoleController {
 		}
 
 		return result;
+	}
+	
+	@RequestMapping("toChangeRole")
+	@ResponseBody
+	@Transactional(rollbackFor = Exception.class)
+	public ModelAndView getRoleList(@ModelAttribute("user")User user){
+		ModelAndView modelAndView = new ModelAndView("system/userRoleChange");
+		List<MlRole> roleList = null;
+		try{
+			roleList = roleService.findAllByUserId(user.getUserId());
+			modelAndView.addObject("roleList", roleList);
+		} catch (Exception e){
+			
+		}
+		return modelAndView;
 	}
 }

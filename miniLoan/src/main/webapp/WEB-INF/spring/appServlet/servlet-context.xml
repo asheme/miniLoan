@@ -29,6 +29,9 @@
 		up static resources in the ${webappRoot}/resources directory -->
 	<resources mapping="/resources/**" location="/resources/" />
 
+	<interceptors>
+		<beans:bean class="com.wealth.miniloan.interceptor.MlSystemInterceptor" />	
+	</interceptors>
 
 	<!-- Resolves views selected for rendering by @Controllers to .jsp resources 
 		in the /WEB-INF/views directory -->

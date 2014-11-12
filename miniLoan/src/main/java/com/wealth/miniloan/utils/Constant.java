@@ -95,4 +95,8 @@ public class Constant {
 	public static final String LOAN_STATUS_OFFER="O"; //已放款
 	public static final String LOAN_STATUS_PROCESS="P"; //贷款进行中
 	public static final String LOAN_STATUS_END="E"; //贷款进行中
+	
+	//客户类别
+	public static final String CUST_TYPE_NATURAL="01"; //客户类别：自然人
+	public static final String CUST_TYPE_CORP="02"; //客户类别：公司
 }

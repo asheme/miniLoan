@@ -18,7 +18,7 @@ $(function() {
 		striped : true,
 		border : false,
 		pagination : true,
-		idField : 'appNo',
+		idField : 'loanId',
 		pageSize : 10,
 		pageList : [ 10, 20, 30, 40, 50 ],
 		sortName : 'name',
@@ -28,73 +28,119 @@ $(function() {
 		rownumbers : true,
 		nowrap : false,
 		columns : [ [ {
-			field : 'appNo',
-			title : '申请编号',
-			width : 20,
+			field : 'loanId',
+			title : '貸款编号',
+			width : 10,
 			checkbox : true
 		}, {
 			field : 'name',
-			title : '姓名',
-			width : 15,
-			sortable : true
-		}, {
-			field : 'idType',
-			title : '证件类型',
-			width : 15,
-			sortable : true
-		}, {
-			field : 'idNo',
-			title : '证件号码',
-			sortable : true,
-			width : 20
-		}, {
-			field : 'mobile',
-			title : '手机',
-			sortable : true,
-			width : 20
-		}, {
-			field : 'educationLvl',
-			title : '学历',
-			sortable : true,
-			width : 20
-		}, {
-			field : 'company',
-			title : '所在公司',
+			title : '借款人(公司名)',
 			width : 20,
 			sortable : true
 		}, {
-			field : 'position',
-			title : '职务',
-			width : 20,
+			field : 'addr',
+			title : '申请人（公司）地址',
+			width : 30,
+			sortable : true
+		}, {
+			field : 'loanStartTime',
+			title : '贷款开始时间',
+			width : 10,
+			sortable : true
+		}, {
+			field : 'status',
+			title : '状态',
+			width : 10,
 			sortable : true
 		} ] ],
 		toolbar : '#toolbar'
 	});
 });
 
-function addNew() {
-	window.location.href = '${pageContext.request.contextPath}/loan/natural/app/toAddNaturalApp.do';
-	if (navigator.userAgent.indexOf("MSIE") > 0) {// IE特有回收内存方法
-		try {
-			CollectGarbage();
-		} catch (e) {
-		}
-	}
-
-}
-
-function updateObj() {
+//查看贷款信息
+function viewLoanInfo() {
 	var rows = $('#datagrid').datagrid('getChecked');
 	if (rows.length > 0) {
 		if (rows.length == 1) {
-			window.location.href = '${pageContext.request.contextPath}/resc/toUpdate.do?rescId='
-					+ rows[0].rescId;
+			window.location.href = '${pageContext.request.contextPath}/loan/viewLoanInfo.do?loanId='
+					+ rows[0].loanId;
 		} else {
-			$.messager.alert('信息提示', "只能选择一条要修改的记录！", "info");
+			$.messager.alert('信息提示', "只能选择一条要查看的记录！", "info");
 		}
 	} else {
-		$.messager.alert('信息提示', "请您选择要修改的记录！", "info");
+		$.messager.alert('信息提示', "请您选择要查看的记录！", "info");
 	}
+}
+
+//贷款合同维护
+function contractMaintain() {
+	var rows = $('#datagrid').datagrid('getChecked');
+	if (rows.length > 0) {
+		if (rows.length == 1) {
+			window.location.href = '${pageContext.request.contextPath}/loan/contractMaintain.do?loanId='
+					+ rows[0].loanId;
+		} else {
+			$.messager.alert('信息提示', "只能选择一条要维护的贷款的记录！", "info");
+		}
+	} else {
+		$.messager.alert('信息提示', "请您选择要维护的贷款的记录！", "info");
+	}
+}
+
+//贷款借据维护
+function receiptManage() {
+	var rows = $('#datagrid').datagrid('getChecked');
+	if (rows.length > 0) {
+		if (rows.length == 1) {
+			window.location.href = '${pageContext.request.contextPath}/loan/receiptList.do?loanId='
+					+ rows[0].loanId;
+		} else {
+			$.messager.alert('信息提示', "只能选择一条要维护的贷款记录！", "info");
+		}
+	} else {
+		$.messager.alert('信息提示', "请您选择要维护的贷款的记录！", "info");
+	}
+}
+
+//贷款放款管理
+function offerLoanManage() {
+	var rows = $('#datagrid').datagrid('getChecked');
+	if (rows.length > 0) {
+		if (rows.length == 1) {
+			window.location.href = '${pageContext.request.contextPath}/loan/receipt/toLoanReceiptList.do?loanId='
+					+ rows[0].loanId;
+		} else {
+			$.messager.alert('信息提示', "只能选择一条要维护的贷款记录！", "info");
+		}
+	} else {
+		$.messager.alert('信息提示', "请您选择要维护的贷款的记录！", "info");
+	}
+}
+
+//贷款还款管理
+function loanPayManage() {
+	var rows = $('#datagrid').datagrid('getChecked');
+	if (rows.length > 0) {
+		if (rows.length == 1) {
+			window.location.href = '${pageContext.request.contextPath}/pay/record/toPayRecordList.do?loanId='
+					+ rows[0].loanId;
+		} else {
+			$.messager.alert('信息提示', "只能选择一条要维护的贷款记录！", "info");
+		}
+	} else {
+		$.messager.alert('信息提示', "请您选择要维护的贷款的记录！", "info");
+	}
+}
+
+//查询
+function search() {
+	$('#datagrid').datagrid('load', serializeObject($('#searchForm')));
+}
+
+//清空
+function resetSearch() {
+	$('#searchForm :text').val('');
+	$('#datagrid').datagrid('load', {});
 }
 //-->
 </script>
@@ -107,10 +153,10 @@ function updateObj() {
 			<form id="searchForm">
 				<table class="querytable" width="100%">
 					<tr>
-						<th width="20%">姓名</th>
+						<th width="20%">借款人(公司名)</th>
 						<td width="30%"><input name="name" style="width: 280px;" /></td>
-						<th width="20%">证件号码</th>
-						<td width="30%"><input name="name" style="width: 280px;" /></td>
+						<th width="20%">申请编号</th>
+						<td width="30%"><input name="appNo" style="width: 280px;" /></td>
 					</tr>
 					<tr>
 						<td colspan="4" align="center"><input type="button"
@@ -128,20 +174,35 @@ function updateObj() {
 				<table cellspacing="0" cellpadding="0">
 					<tr>
 						<td><a href="#" class="easyui-linkbutton"
-							data-options="iconCls:'icon-ui-add',plain:true"
-							onClick="javascript:addNew();" style="float: left;">新增</a></td>
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:viewLoanInfo();" style="float: left;">贷款信息查看</a></td>
 						<td>
 							<div class="datagrid-btn-separator"></div>
 						</td>
 						<td><a href="#" class="easyui-linkbutton"
-							data-options="iconCls:'icon-ui-edit',plain:true"
-							onClick="javascript:updateObj();" style="float: left;">修改</a></td>
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:contractMaintain();" style="float: left;">合同维护</a></td>
+						<td>
+							<div class="datagrid-btn-separator"></div>
+						</td>
+						<!-- <td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:receiptManage();" style="float: left;">借据管理</a></td>
+						<td>
+							<div class="datagrid-btn-separator"></div>
+						</td> -->
+						<td><a href="#" class="easyui-linkbutton"
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:offerLoanManage();" style="float: left;">放款管理</a></td>
 						<td>
 							<div class="datagrid-btn-separator"></div>
 						</td>
 						<td><a href="#" class="easyui-linkbutton"
-							data-options="iconCls:'icon-ui-remove',plain:true"
-							onClick="javascript:deleteObj();" style="float: left;">删除</a></td>
+							data-options="iconCls:'icon-ui-search',plain:true"
+							onClick="javascript:loanPayManage();" style="float: left;">还款管理</a></td>
+						<td>
+							<div class="datagrid-btn-separator"></div>
+						</td>
 					</tr>
 				</table>
 			</div>

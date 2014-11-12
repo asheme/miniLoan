@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>欢迎使用XX贷款管理系统</title>
+<title>欢迎使用融益贷款管理系统</title>
 <link rel="stylesheet" href="${path}resources/css/login.css"
 	type="text/css" media="all" />
 </head>

@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
-import com.wealth.miniloan.entity.AppSummaryExtend;
 import com.wealth.miniloan.entity.DataGrid;
-import com.wealth.miniloan.entity.MlCorpApp;
-import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.entity.UnionLoanApp;
 import com.wealth.miniloan.service.AppSummaryServiceI;

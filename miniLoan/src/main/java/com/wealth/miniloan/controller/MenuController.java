@@ -142,4 +142,14 @@ public class MenuController {
 	public String loanList() {
 		return "loan/loanList";
 	}
+	
+	@RequestMapping(value = "queryLoanList")
+	public String queryLoanList() {
+		return "query/queryLoanList";
+	}
+	
+	@RequestMapping(value = "contributorList")
+	public String contributorList() {
+		return "contributor/contributorList";
+	}
 }

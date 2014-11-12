@@ -9,6 +9,7 @@ import com.wealth.miniloan.dao.RescDao;
 import com.wealth.miniloan.dao.RoleAuthDao;
 import com.wealth.miniloan.dao.RoleDao;
 import com.wealth.miniloan.dao.RoleRescDao;
+import com.wealth.miniloan.dao.UserRoleDao;
 import com.wealth.miniloan.entity.MlRole;
 import com.wealth.miniloan.entity.MlRoleAuth;
 import com.wealth.miniloan.entity.MlRoleAuthExample;
@@ -21,6 +22,8 @@ import com.wealth.miniloan.entity.MlSysAuthority;
 import com.wealth.miniloan.entity.MlSysAuthorityExample;
 import com.wealth.miniloan.entity.MlSysResc;
 import com.wealth.miniloan.entity.MlSysRescExample;
+import com.wealth.miniloan.entity.MlUserRole;
+import com.wealth.miniloan.entity.MlUserRoleExample;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.entity.RescAuthModel;
 import com.wealth.miniloan.service.RoleServiceI;
@@ -33,6 +36,7 @@ import org.springframework.stereotype.Service;
 @Service("roleService")
 public class RoleServiceImpl implements RoleServiceI {
 	private RoleDao roleDao = null;
+	private UserRoleDao userRoleDao = null;
 	private RescDao rescDao = null;
 	private RoleRescDao roleRescDao = null;
 	private RoleAuthDao roleAuthDao = null;
@@ -47,6 +51,11 @@ public class RoleServiceImpl implements RoleServiceI {
 	@Autowired
 	public void setRoleDao(RoleDao roleDao) {
 		this.roleDao = roleDao;
+	}
+
+	@Autowired
+	public void setUserRoleDao(UserRoleDao userRoleDao) {
+		this.userRoleDao = userRoleDao;
 	}
 
 	public RescDao getRescDao() {
@@ -362,5 +371,65 @@ public class RoleServiceImpl implements RoleServiceI {
 	@Override
 	public List<MlRole> loadSelectedRole(long userId) {
 		return this.roleDao.selectByUserId(userId);
+	}
+
+	@Override
+	public List<MlRole> findAllByUserId(long userId) {
+		MlUserRole userRole = null;
+		MlUserRoleExample example = new MlUserRoleExample();
+		MlUserRoleExample.Criteria criteira = example.createCriteria();
+		criteira.andUserIdEqualTo(userId);
+		List<MlUserRole> userRoles = userRoleDao.findAll(example);
+		
+		List<Long> roleIds = new ArrayList<Long>();
+		if(userRoles!=null){
+			for(int i = 0;i<userRoles.size();++i){
+				userRole=(MlUserRole)userRoles.get(i);
+				roleIds.add(userRole.getRoleId());
+			}
+		}
+		
+		MlRoleExample roleExample = new MlRoleExample();
+		roleExample.createCriteria().andRoleIdIn(roleIds);
+		
+		return roleDao.findAll(roleExample);
+	}
+
+	@Override
+	public List<MlSysResc> getRoleRescs(long roleId) {
+		MlRoleRescExample roleRescExample = new MlRoleRescExample();
+		roleRescExample.createCriteria().andRoleIdEqualTo(roleId);
+		List<MlRoleResc> roleRescList = this.roleRescDao.findAll(roleRescExample);
+		
+		List<Long> rescIds = new ArrayList<Long>();
+		if(roleRescList!=null){
+			MlRoleResc roleResc=null;
+			for(int i = 0;i<roleRescList.size();++i){
+				roleResc = (MlRoleResc)roleRescList.get(i);
+				rescIds.add(roleResc.getRescId());
+			}
+		}
+		MlSysRescExample example = new MlSysRescExample();
+		example.createCriteria().andRescIdIn(rescIds);
+		return rescDao.findAll(example);
+	}
+
+	@Override
+	public List<MlSysAuthority> getRoleAuths(long roleId) {
+		MlRoleAuthExample roleAuthExample = new MlRoleAuthExample();
+		roleAuthExample.createCriteria().andRoleIdEqualTo(roleId);
+		List<MlRoleAuth> roleAuthList = this.roleAuthDao.findAll(roleAuthExample);
+		
+		List<Long> authIds = new ArrayList<Long>();
+		if(roleAuthList!=null){
+			MlRoleAuth roleAuth=null;
+			for(int i = 0;i<roleAuthList.size();++i){
+				roleAuth = (MlRoleAuth)roleAuthList.get(i);
+				authIds.add(roleAuth.getAuthId());
+			}
+		}
+		MlSysAuthorityExample example = new MlSysAuthorityExample();
+		example.createCriteria().andAuthIdIn(authIds);
+		return authorityDao.findAll(example);
 	}
 }

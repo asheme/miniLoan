@@ -8,11 +8,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
-<style type="text/css">
-tr {
-	height: 40px;
-}
-</style>
 </head>
 <body>
 	<div id="updatePanel" class="easyui-panel" title="数据信息"

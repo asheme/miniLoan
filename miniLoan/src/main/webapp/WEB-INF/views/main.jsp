@@ -8,8 +8,27 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>the mini loan management system</title>
+<script type="text/javascript">
+<!--  
+	function logout(){
+		$.messager.confirm('系统提示', '您确定要退出本系统吗?', function(r) {
+			if (r) {
+				window.location.href='${pageContext.request.contextPath}/exit.do';
+			}
+		});
+	}
+	
+	function toChangeRole(){
+		addTab({
+			title : '角色切换',
+			iconCls : 'icon-ui-tree-leaf',
+			url : '${pageContext.request.contextPath}/role/toChangeRole.do'
+		});	
+	}
+//-->
+</script>
 </head>
-<body class="easyui-layout" onunload="javascript:logout()">
+<body class="easyui-layout" oncontextmenu="window.event.returnValue= false;">
 	<div id="topLayout" data-options="region:'north'"
 		style="overflow: hidden; border: 0; height: 40px;">
 		<div class="topbar">
@@ -23,13 +42,11 @@
 				</div>
 				<div class="top_right">
 					<div>
-						<span class="topbar_text">欢迎您 </span><a id='topbar_user'
-							data-toggle="dropdown" href="#"><i class='icon-user'></i>${user.name}<b
-							class="caret"></b></a>
+						<span class="topbar_text">欢迎您&nbsp;&nbsp;<i class='icon-user'></i>${user.name}</span>&nbsp;&nbsp;
 					</div>
 					<div>
-						<a href="#" id='topbar_role' data-toggle="dropdown"><i
-							class="icon-flag"></i>${user.currRole.roleName}<b class="caret"></b></a>
+						<span class="topbar_text"><i
+							class="icon-flag"></i>${user.currRole.roleName}</span>&nbsp;&nbsp;<span class="topbar_text" style="cursor:pointer" onclick="javascript:logout();">注销用户</span>&nbsp;&nbsp;<span class="topbar_text" style="cursor:pointer" onclick="javascript:toChangeRole();">切换角色</span>&nbsp;&nbsp;
 					</div>
 					<div>
 						<span class="topbar_text">系统日期：${user.lastLoginDateStr}</span>

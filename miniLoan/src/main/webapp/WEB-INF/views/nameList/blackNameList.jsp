@@ -145,6 +145,25 @@
 </head>
 <body>
 	<div class="easyui-layout" data-options="fit : true,border : false">
+	<div data-options="region:'north',title:'查询条件',border:false"
+			style="height: 103px; overflow: hidden; padding-left: 1px; padding-right: 1px; padding-bottom: 1px; padding-top: 1px;"
+			align="center">
+			<form id="searchForm">
+				<table class="querytable" width="100%">
+					<tr>
+						<th width="20%">姓名</th>
+						<td width="30%"><input name="name" style="width: 280px;" /></td>
+						<th width="20%">证件号</th>
+						<td width="30%"><input name="idNo" style="width: 280px;" /></td>
+					</tr>
+					<tr>
+						<td colspan="4" align="center"><input type="button"
+							value="查询" class="btn" onclick="search();" /> <input
+							type="button" value="清空" class="btn" onclick="resetSearch();" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
 		<div data-options="region:'center',border:false"
 			style="padding-top: 0px;">
 			<table id="datagrid"></table>

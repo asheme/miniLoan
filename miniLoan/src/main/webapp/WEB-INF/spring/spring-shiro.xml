@@ -7,7 +7,7 @@
 		<property name="securityManager" ref="securityManager" />
 		<property name="loginUrl" value="/toLogin.do" />
 		<!-- <property name="successUrl" value="/logon.do" /> -->
-		<!-- <property name="unauthorizedUrl" value="/noPermission.jsp" /> -->
+		<!-- <property name="unauthorizedUrl" value="/noPermission.jsp" /> -->		
 		<property name="filterChainDefinitions">
 			<value>
 				/toLogin.do = anon

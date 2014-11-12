@@ -2,10 +2,16 @@ package com.wealth.miniloan.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
+import com.wealth.miniloan.entity.MlRole;
+import com.wealth.miniloan.entity.MlSysAuthority;
+import com.wealth.miniloan.entity.MlSysResc;
 import com.wealth.miniloan.entity.MlUser;
 import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.LoginServiceI;
+import com.wealth.miniloan.service.RoleServiceI;
+import com.wealth.miniloan.shiro.MlRealm;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -21,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.ModelAndView;
@@ -30,16 +37,23 @@ import org.springframework.web.servlet.ModelAndView;
 @SessionAttributes("user")
 public class LogonController {
 	private static final Logger logger = LoggerFactory.getLogger(LogonController.class);
-
 	private LoginServiceI loginService = null;
-
-	public LoginServiceI getLoginService() {
-		return this.loginService;
-	}
-
+	private RoleServiceI roleService = null;
+	private MlRealm mlRealm;
+	
 	@Autowired
 	public void setLoginService(LoginServiceI loginService) {
 		this.loginService = loginService;
+	}
+
+	@Autowired
+	public void setRoleService(RoleServiceI roleService) {
+		this.roleService = roleService;
+	}
+	
+	@Autowired
+	public void setMlRealm(MlRealm mlRealm) {
+		this.mlRealm = mlRealm;
 	}
 
 	@RequestMapping(value = "toLogin")
@@ -94,7 +108,59 @@ public class LogonController {
 
 		return modelAndView;
 	}
+	
+	@RequestMapping(value = "sessionOut")
+	public ModelAndView sessionOut() {
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.addObject("errorMsg", "当前会话已失效，请重新登陆系统！");
+		modelAndView.setViewName("index");
 
+		return modelAndView;
+	}
+	
+	@RequestMapping(value = "exit")
+	public String exit() {
+		Subject currUser = SecurityUtils.getSubject();
+		if (currUser.isAuthenticated()) {
+			currUser.logout();
+		}
+		
+		return "index";
+	}
+
+	@RequestMapping(value = "changeRole")
+	public ModelAndView changeRole(Long changedRoleId,
+			@ModelAttribute("user") User user) {
+		ModelAndView modelAndView = new ModelAndView();
+		Subject currUser = SecurityUtils.getSubject();
+		try {
+			// 用户信息保存进入session
+			Session session = currUser.getSession(false);
+			if (user.getRoleId() != null) {// 判断用户是否有角色
+				MlRole role = new MlRole();
+				role.setRoleId(changedRoleId);
+				role = roleService.getRoleByPrikey(role);
+				if (role != null)
+					user.setCurrRole(role); // 切换角色给用户
+				// 角色下的菜单资源
+				List<MlSysResc> rescs = roleService.getRoleRescs(role.getRoleId());
+				user.setRescs(rescs);
+				// 获取该角色的执行权限
+				List<MlSysAuthority> authorities = roleService.getRoleAuths(role.getRoleId());
+				user.setAuthorities(authorities);
+			}
+			modelAndView.setViewName("main");
+			modelAndView.addObject("user", user);
+			this.mlRealm.clearCachedAuthorizationInfo(currUser.getPrincipal().toString());
+		} catch (Exception e) {
+			modelAndView.addObject("errorMsg", "切换角色时出现异常");
+			modelAndView.addObject("errorDetail", e.getMessage());
+			modelAndView.setViewName("index");
+		}
+		
+		return modelAndView;
+	}
+	
 	@RequestMapping(value = "toMenu")
 	public String toMenu() {
 		return "menu";

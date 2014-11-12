@@ -109,6 +109,7 @@ public class FraudCheckResultServiceImpl implements FraudCheckResultServiceI {
 	public void dealFraudCheck(String appNo) {
 		MlNaturalApp naturalApp = this.naturalAppDao.getById(appNo);
 		MlNaturalAppExample example = null;
+//		com.wealth.miniloan.entity.MlNaturalAppExample.Criteria c = example.createCriteria();
 		List<MlNaturalApp> temp = null;
 		String result = Constant.NO;
 		try {

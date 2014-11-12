@@ -23,10 +23,12 @@ import com.wealth.miniloan.entity.MlNaturalApp;
 import com.wealth.miniloan.entity.MlNaturalCustInfo;
 import com.wealth.miniloan.entity.MlNaturalCustInfoExample;
 import com.wealth.miniloan.entity.Page;
+import com.wealth.miniloan.entity.UnionLoanExample;
 import com.wealth.miniloan.entity.UnionLoanInfo;
 import com.wealth.miniloan.entity.User;
 import com.wealth.miniloan.service.LoanServiceI;
 import com.wealth.miniloan.utils.Constant;
+import com.wealth.miniloan.utils.SysUtil;
 import com.wealth.miniloan.utils.key.KeyGenerator;
 
 @Service
@@ -38,7 +40,8 @@ public class LoanServiceImpl implements LoanServiceI {
 	private CorpCustDao corpCustDao;
 	private LoanDao loanDao;
 	private GetMainKeyService getMainKeyService;
-	
+	private final String _ORDER_ATTRS = "loanId,custNo,custType,appNo,loanContractNo,loanAmount,loanCycle,loanRate,offerMethod,payMethod,interestPenalty,overdueFine,loanInterest,offerLoan,payAmount,remainAmount,loanStartTime,loanFinishTime,contractFile,currDelinquency,status,oper,operTime,name,addr";
+	private final String _ORDER_FIELDS = "LOAN_ID,CUST_NO,CUST_TYPE,APP_NO,LOAN_CONTRACT_NO,LOAN_AMOUNT,LOAN_CYCLE,LOAN_RATE,OFFER_METHOD,PAY_METHOD,INTEREST_PENALTY,OVERDUE_FINE,LOAN_INTEREST,OFFER_LOAN,PAY_AMOUNT,REMAIN_AMOUNT,LOAN_START_TIME,LOAN_FINISH_TIME,CONTRACT_FILE,CURR_DELINQUENCY,STATUS,OPER,OPER_TIME,NAME,ADDR";
 
 	@Autowired
 	public void setNaturalAppDao(NaturalAppDao naturalAppDao) {
@@ -203,6 +206,7 @@ public class LoanServiceImpl implements LoanServiceI {
 			loanInfo=new MlLoanInfo();
 			loanInfo.setLoanId(KeyGenerator.getNextKey("ML_LOAN_INFO", "LOAN_ID"));
 			loanInfo.setCustNo(custNo);
+			loanInfo.setCustType(appType);
 			loanInfo.setAppNo(appSummary.getAppNo());
 			loanInfo.setLoanAmount(appSummary.getLoanLimit());
 			loanInfo.setLoanRate(appSummary.getLoanRate());
@@ -263,6 +267,49 @@ public class LoanServiceImpl implements LoanServiceI {
 
 	@Override
 	public PageList<UnionLoanInfo> getLoanPageList(Page page, UnionLoanInfo unionLoanInfo) {
-		return null;
+		UnionLoanExample example=new UnionLoanExample();
+		UnionLoanExample.Criteria criteria = example.createCriteria();
+		String custType=unionLoanInfo.getCustType();
+		String appNo = unionLoanInfo.getAddr();
+		String name = unionLoanInfo.getName();
+		String addr = unionLoanInfo.getAddr();
+		if (custType != null && !"".equals(custType)) {
+			criteria.andCustTypeEqualTo(custType);
+		}
+		if (appNo != null && !"".equals(appNo)) {
+			criteria.andAppNoLike("%" + appNo + "%");
+		}
+		if (name != null && !"".equals(name)) {
+			criteria.andNameLike("%" + name + "%");
+		}
+		if (addr != null && !"".equals(addr)) {
+			criteria.andAddrLike("%" + addr + "%");
+		}
+		String order = SysUtil.dealOrderby(page, _ORDER_ATTRS, _ORDER_FIELDS);
+		if (!order.equals("")) {
+			example.setOrderByClause(order);
+		}
+
+		return this.loanDao.getLoanPageList(SysUtil.convertPage(page),example);
+	}
+
+	@Override
+	public MlLoanInfo getLoanInfo(MlLoanInfo loanInfo) {
+		return this.loanDao.getById(loanInfo.getLoanId());
+	}
+
+	@Override
+	public MlNaturalCustInfo getNaturalCustInfoByLoanInfo(MlLoanInfo loanInfo) {
+		return this.naturalCustDao.getById(loanInfo.getCustNo());
+	}
+
+	@Override
+	public MlCorpCustInfo getCorpCustInfoByLoanInfo(MlLoanInfo loanInfo) {
+		return this.corpCustDao.getById(loanInfo.getCustNo());
+	}
+
+	@Override
+	public void update(MlLoanInfo loanInfo) {
+		this.loanDao.updateSelective(loanInfo);
 	}
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.wealth.miniloan.entity.MlRole;
+import com.wealth.miniloan.entity.MlSysAuthority;
+import com.wealth.miniloan.entity.MlSysResc;
 import com.wealth.miniloan.entity.Page;
 import com.wealth.miniloan.entity.RescAuthModel;
 
@@ -27,4 +29,10 @@ public abstract interface RoleServiceI {
 	public List<MlRole> loadUnselectedRole(long userId);
 
 	public List<MlRole> loadSelectedRole(long userId);
+	
+	public List<MlRole> findAllByUserId(long userId);
+	
+	public List<MlSysResc> getRoleRescs(long roleId);
+	
+	public List<MlSysAuthority> getRoleAuths(long roleId);
 }

@@ -3,6 +3,7 @@ package com.wealth.miniloan.serviceImpl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,13 @@ public class NameListServiceImpl implements CommonServiceI<MlNameList> {
 		MlNameListExample example = new MlNameListExample();
 		com.wealth.miniloan.entity.MlNameListExample.Criteria c = example.createCriteria();
 		c.andNameTypeEqualTo(obj.getNameType());
+		if(StringUtils.isNotEmpty(obj.getName())){
+			c.andNameLike(obj.getName() + "%");
+		}
+		if(StringUtils.isNotEmpty(obj.getIdNo())){
+			c.andIdNoLike(obj.getIdNo() + "%");
+		}
+		
 		String order = SysUtil.dealOrderby(paramPage, _ORDER_ATTRS, _ORDER_FIELDS);
 		if (!order.equals("")) {
 			example.setOrderByClause(order);
