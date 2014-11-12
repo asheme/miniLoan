@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wealth.miniloan.dao.MlLoanInfoMapper">
+	<resultMap type="com.wealth.miniloan.entity.UnionLoanInfo" id="UnionLoanResultMap">
+	    <id column="LOAN_ID" jdbcType="BIGINT" property="loanId" />
+	    <result column="CUST_NO" jdbcType="VARCHAR" property="custNo" />
+	    <result column="CUST_TYPE" jdbcType="CHAR" property="custType" />
+	    <result column="APP_NO" jdbcType="VARCHAR" property="appNo" />
+	    <result column="LOAN_CONTRACT_NO" jdbcType="VARCHAR" property="loanContractNo" />
+	    <result column="LOAN_AMOUNT" jdbcType="DECIMAL" property="loanAmount" />
+	    <result column="LOAN_CYCLE" jdbcType="INTEGER" property="loanCycle" />
+	    <result column="LOAN_RATE" jdbcType="DECIMAL" property="loanRate" />
+	    <result column="OFFER_METHOD" jdbcType="CHAR" property="offerMethod" />
+	    <result column="PAY_METHOD" jdbcType="CHAR" property="payMethod" />
+	    <result column="INTEREST_PENALTY" jdbcType="DECIMAL" property="interestPenalty" />
+	    <result column="OVERDUE_FINE" jdbcType="DECIMAL" property="overdueFine" />
+	    <result column="LOAN_INTEREST" jdbcType="DECIMAL" property="loanInterest" />
+	    <result column="OFFER_LOAN" jdbcType="DECIMAL" property="offerLoan" />
+	    <result column="PAY_AMOUNT" jdbcType="DECIMAL" property="payAmount" />
+	    <result column="REMAIN_AMOUNT" jdbcType="DECIMAL" property="remainAmount" />
+	    <result column="LOAN_START_TIME" jdbcType="TIMESTAMP" property="loanStartTime" />
+	    <result column="LOAN_FINISH_TIME" jdbcType="TIMESTAMP" property="loanFinishTime" />
+	    <result column="CONTRACT_FILE" jdbcType="VARCHAR" property="contractFile" />
+	    <result column="CURR_DELINQUENCY" jdbcType="INTEGER" property="currDelinquency" />
+	    <result column="STATUS" jdbcType="CHAR" property="status" />
+	    <result column="OPER" jdbcType="BIGINT" property="oper" />
+	    <result column="OPER_TIME" jdbcType="TIMESTAMP" property="operTime" />
+    	<result column="NAME" jdbcType="VARCHAR" property="name" />
+    	<result column="ADDR" jdbcType="VARCHAR" property="addr" />
+	</resultMap>
+
+	<select id="queryLoanPageList" parameterType="com.wealth.miniloan.entity.UnionLoanExample" resultMap="UnionLoanResultMap">
+		select * from ((select a.CUST_NO,a.CUST_TYPE,a.LOAN_ID,a.APP_NO,a.LOAN_CONTRACT_NO,a.LOAN_AMOUNT,a.LOAN_CYCLE,a.LOAN_RATE,a.OFFER_METHOD,a.PAY_METHOD,a.INTEREST_PENALTY,a.OVERDUE_FINE,a.LOAN_INTEREST,a.OFFER_LOAN,a.PAY_AMOUNT,a.REMAIN_AMOUNT,a.LOAN_START_TIME,a.LOAN_FINISH_TIME,a.CONTRACT_FILE,a.CURR_DELINQUENCY,a.`STATUS`,a.OPER,a.OPER_TIME
+		,b.NAME,b.HOME_ADDR AS ADDR from ml_loan_info a LEFT JOIN ml_natural_cust_info b on a.CUST_NO = b.CUST_NO where a.CUST_TYPE = '01')
+		UNION
+		(select a.CUST_NO,a.CUST_TYPE,a.LOAN_ID,a.APP_NO,a.LOAN_CONTRACT_NO,a.LOAN_AMOUNT,a.LOAN_CYCLE,a.LOAN_RATE,a.OFFER_METHOD,a.PAY_METHOD,a.INTEREST_PENALTY,a.OVERDUE_FINE,a.LOAN_INTEREST,a.OFFER_LOAN,a.PAY_AMOUNT,a.REMAIN_AMOUNT,a.LOAN_START_TIME,a.LOAN_FINISH_TIME,a.CONTRACT_FILE,a.CURR_DELINQUENCY,a.`STATUS`,a.OPER,a.OPER_TIME
+		,b.COMP_NAME as NAME,b.REG_ADDR as ADDR from ml_loan_info a LEFT JOIN ml_corp_cust_info b on a.CUST_NO = b.CUST_NO where a.CUST_TYPE = '02')) c
+    	<if test="_parameter != null">
+      		<include refid="Example_Where_Clause" />
+   	 	</if>
+    	<if test="orderByClause != null">
+      		order by ${orderByClause}
+    	</if>
+	</select>
+	<select id="countUnionLoan" parameterType="com.wealth.miniloan.entity.UnionLoanExample" resultType="java.lang.Integer">
+		select count(*) from ((select a.CUST_NO,a.CUST_TYPE,a.LOAN_ID,a.APP_NO,a.LOAN_CONTRACT_NO,a.LOAN_AMOUNT,a.LOAN_CYCLE,a.LOAN_RATE,a.OFFER_METHOD,a.PAY_METHOD,a.INTEREST_PENALTY,a.OVERDUE_FINE,a.LOAN_INTEREST,a.OFFER_LOAN,a.PAY_AMOUNT,a.REMAIN_AMOUNT,a.LOAN_START_TIME,a.LOAN_FINISH_TIME,a.CONTRACT_FILE,a.CURR_DELINQUENCY,a.`STATUS`,a.OPER,a.OPER_TIME
+		,b.NAME,b.HOME_ADDR AS ADDR from ml_loan_info a LEFT JOIN ml_natural_cust_info b on a.CUST_NO = b.CUST_NO where a.CUST_TYPE = '01')
+		UNION
+		(select a.CUST_NO,a.CUST_TYPE,a.LOAN_ID,a.APP_NO,a.LOAN_CONTRACT_NO,a.LOAN_AMOUNT,a.LOAN_CYCLE,a.LOAN_RATE,a.OFFER_METHOD,a.PAY_METHOD,a.INTEREST_PENALTY,a.OVERDUE_FINE,a.LOAN_INTEREST,a.OFFER_LOAN,a.PAY_AMOUNT,a.REMAIN_AMOUNT,a.LOAN_START_TIME,a.LOAN_FINISH_TIME,a.CONTRACT_FILE,a.CURR_DELINQUENCY,a.`STATUS`,a.OPER,a.OPER_TIME
+		,b.COMP_NAME as NAME,b.REG_ADDR as ADDR from ml_loan_info a LEFT JOIN ml_corp_cust_info b on a.CUST_NO = b.CUST_NO where a.CUST_TYPE = '02')) c
+    	<if test="_parameter != null">
+      		<include refid="Example_Where_Clause" />
+   	 	</if>
+	</select>
+</mapper>
